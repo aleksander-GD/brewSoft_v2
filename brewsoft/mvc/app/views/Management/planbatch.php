@@ -3,8 +3,15 @@
     Please enter the correct values!
     </br>
     <form method="POST" action="indsæt sti her">
-        <label for="productid"> Product id: [0 1 2 3 4] </label><br>
-        <input type="text" id="productid" name="productid"><br>
+        <label for="productid"> Product id: </label><br>
+        <select id="products">
+        <option value="Pilsner">Pilsner</option>
+        <option value="Wheat">Wheat</option>
+        <option value="IPA">IPA</option>
+        <option value="Stout">Stout</option>
+        <option value="Ale">Ale</option>
+        <option value="Alcohol free">Alcohol free</option>    
+        </select> <br>
         
         <label for="productamount"> Amount: </label><br>
         <input type="text" id="productamount" name="productamount"><br>
