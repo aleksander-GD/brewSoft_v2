@@ -2,6 +2,7 @@
 
 require_once '../core/Database.php';
 require_once '../models/Productionlist.php';
+require 'classes/DatabaseTable.php';
 
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
@@ -14,8 +15,7 @@ class ProductionListTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->database =
-            $productionListClass = new ProductionList();
+        $productionListClass = new ProductionList();
     }
 
 
@@ -36,17 +36,14 @@ class ProductionListTest extends TestCase
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
-
+        global $pdo;
         $pdo = new PDO('pgsql:host=' . $servername . ';port=' . $port, $username, $password, $options);
         return $this->createDefaultDBConnection($pdo, $dbname);
     }
 
-    public function test_insert_batch_invalidData()
+   /*  public function test_insert_batch_invalidData()
     {
-        
-
-
-    }
+    } */
 
     public function test_insert_batch_correctData()
     {
@@ -54,9 +51,13 @@ class ProductionListTest extends TestCase
             'batchid' => '1',
             'productid' => '1',
             'productamount' => '10000',
-            'dead'
+            'deadline' => '2020-04-05',
+            'speed' => '100',
+            'status' => 'Completed',
+            'dateofcreation' => '2020-04-05',
         ];
-        $table = 'users';
+
+        $table = 'productionList';
 
         $stmt = $this->createMock('PDOStatement');
         $stmt->expects($this->once())
@@ -68,14 +69,10 @@ class ProductionListTest extends TestCase
         $pdo = $this->createMock('PDO');
         $pdo->expects($this->once())
             ->method('prepare')
-            ->with("INSERT INTO {$table} (firstname, lastname, email) VALUES (:firstname, :lastname, :email)")
+            ->with("INSERT INTO $table (batchid, productid, productamount, deadline, speed, status, dateofcreation) VALUES (:batchid, :productid, :productamount, :deadline, :speed, :status, :dateofcreation);")
             ->willReturn($stmt);
 
         $users = new DatabaseTable($table);
         $users->insert($validData);
-    }
-    public function testValidData()
-    {
-       
     }
 }

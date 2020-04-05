@@ -3,11 +3,11 @@
 
 class ProductionList extends Database
 {
-    public function insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status)
+    public function insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status, $dateofcreation)
     {
 
-        $insert_query = 'INSERT INTO ProductionList';
-        $values = 'VALUES(:batchID, :productID, :productAmount, :deadline, :speed, :status)';
+        $insert_query = 'INSERT INTO productionList';
+        $values = 'VALUES(:batchID, :productID, :productAmount, :deadline, :speed, :status, :dateofcreation)';
         $prepare_statement = $this->conn->prepare($insert_query . $values);
         if ($prepare_statement !== false) {
 
@@ -17,8 +17,9 @@ class ProductionList extends Database
             $prepare_statement->bindParam(':deadline', $deadline);
             $prepare_statement->bindParam(':speed', $speed);
             $prepare_statement->bindParam(':status', $status);
+            $prepare_statement->bindParam(':dateofcreation', $dateofcreation);
 
-            if ($prepare_statement->execute([$batchID, $productID, $productAmount,  $deadline, $speed, $status])) {
+            if ($prepare_statement->execute([$batchID, $productID, $productAmount,  $deadline, $speed, $status, $dateofcreation])) {
                 return true;
             } else {
                 return false;
