@@ -27,6 +27,28 @@ class ProductionList extends Database
         }
     }
 
+    public function editQueuedBatch($batchID, $productID, $productAmount, $deadline, $speed, $productionListID)
+    {
+        $sql = "UPDATE productionlist SET batchid = :batchid, productid = :productid, productamount = :productamount ,deadline = :deadline, speed = :speed WHERE productionlistid = :productionlistid;";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':batchid', $batchID);
+        $stmt->bindParam(':productid', $productID);
+        $stmt->bindParam(':productamount', $productAmount);
+        $stmt->bindParam(':deadline', $deadline);
+        $stmt->bindParam(':speed', $speed);
+        $stmt->bindParam(':productionlistid', $productionListID);
+        $stmt->execute();
+    }
+
+    public function getQueuedBatches()
+    {
+        $sql = "SELECT * FROM productionlist;";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        return $results;
+    }
+
     public function getLatestBatchNumber()
     {
         $sql = "SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1";
