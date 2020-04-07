@@ -38,7 +38,7 @@ class ManagerController extends Controller
 				$deadline = filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING);
 				$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 
-				$this->model('Productionlist')->editQueuedBatch($productID, $productAmount, $deadline, $speed);
+				$this->model('Productionlist')->editQueuedBatch($productID, $productAmount, $deadline, $speed, $id);
 
 					//redirect to batchqueue 
 				//$this->view('home/batchqueue', $viewbag);
