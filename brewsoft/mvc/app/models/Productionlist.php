@@ -41,7 +41,7 @@ class ProductionList extends Database
 
     public function getQueuedBatches()
     {
-        $sql = "SELECT * FROM productionlist;";
+        $sql = "SELECT * FROM productionlist WHERE status = 'queued';";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
