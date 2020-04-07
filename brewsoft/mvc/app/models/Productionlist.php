@@ -27,11 +27,10 @@ class ProductionList extends Database
         }
     }
 
-    public function editQueuedBatch($batchID, $productID, $productAmount, $deadline, $speed, $productionListID)
+    public function editQueuedBatch($productID, $productAmount, $deadline, $speed, $productionListID)
     {
-        $sql = "UPDATE productionlist SET batchid = :batchid, productid = :productid, productamount = :productamount ,deadline = :deadline, speed = :speed WHERE productionlistid = :productionlistid;";
+        $sql = "UPDATE productionlist SET productid = :productid, productamount = :productamount ,deadline = :deadline, speed = :speed WHERE productionlistid = :productionlistid;";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':batchid', $batchID);
         $stmt->bindParam(':productid', $productID);
         $stmt->bindParam(':productamount', $productAmount);
         $stmt->bindParam(':deadline', $deadline);
