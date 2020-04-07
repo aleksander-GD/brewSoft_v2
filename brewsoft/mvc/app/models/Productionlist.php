@@ -1,5 +1,4 @@
 <?php
-require_once '..\core\Database.php';
 
 class ProductionList extends Database
 {
@@ -38,6 +37,15 @@ class ProductionList extends Database
         $stmt->bindParam(':productionlistid', $productionListID);
         $stmt->execute();
     }
+
+    public function getQueuedBatchFromListID($productionlistID){
+        $sql = "SELECT * FROM productionlist WHERE productionlistid =" . $productionlistID . ";";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $result;
+    }
+
 
     public function getQueuedBatches()
     {
