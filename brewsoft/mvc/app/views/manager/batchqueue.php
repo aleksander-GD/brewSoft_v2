@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <header>
-    <title>batchqueue</title>
+    <title>batch queue</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/batchqueue.css">
@@ -18,6 +18,7 @@
         <div id="tableplace">
             <table id="table">
                 <tr>
+                    <th>Productionlist ID</th>
                     <th>Batch ID</th>
                     <th>Product ID</th>
                     <th>Product amount</th>
@@ -30,6 +31,7 @@
                 foreach ($viewbag['batches'] as $batch) {
                 ?>
                     <tr>
+                        <td><?= $batch['productionlistid'] ?> </td>
                         <td><?= $batch['batchid'] ?></td>
                         <td><?= $batch['productid'] ?></td>
                         <td><?= $batch['productamount'] ?></td>

@@ -35,10 +35,11 @@ class ProductionList extends Database
         $stmt->bindParam(':deadline', $deadline);
         $stmt->bindParam(':speed', $speed);
         $stmt->bindParam(':productionlistid', $productionListID);
-        $stmt->execute();
+        $stmt->execute([$productID, $productAmount, $deadline, $speed, $productionListID]);
     }
 
-    public function getQueuedBatchFromListID($productionlistID){
+    public function getQueuedBatchFromListID($productionlistID)
+    {
         $sql = "SELECT * FROM productionlist WHERE productionlistid =" . $productionlistID . ";";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();

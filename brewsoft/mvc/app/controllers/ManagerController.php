@@ -23,17 +23,15 @@ class ManagerController extends Controller
 
 	public function editBatch($id)
 	{
-		print('I am here');
 		$batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
 		//the selected batch is sent to the view.
 		$viewbag['batch'] = $batch;
-		print_r($batch);
 
 		//redirect to editbatch page
 		$this->view('manager/editbatch', $viewbag);
 
 		//Data that is sent via post from the view, to update the batch
-		if (isset($_POST['edit'])) {
+		if (isset($_POST['editbutton'])) {
 			$productID = filter_input(INPUT_POST, "productID", FILTER_SANITIZE_STRING);
 			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
 			$deadline = filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING);
@@ -42,8 +40,8 @@ class ManagerController extends Controller
 			$this->model('Productionlist')->editQueuedBatch($productID, $productAmount, $deadline, $speed, $id);
 
 			//redirect to batchqueue 
-			$this->view('manager/batchqueue', $viewbag);
-
+			//$this->view('manager/batchqueue');
+			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
 	}
 }
