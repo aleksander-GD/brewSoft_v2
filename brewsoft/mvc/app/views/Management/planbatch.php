@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<header>
+    <title> Create batch </title>
+    <link rel="stylesheet" href="../css/planbatch.css">
+</header>
+
 <body>
     <br>
     Please enter the correct values!
