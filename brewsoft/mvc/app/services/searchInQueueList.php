@@ -12,21 +12,23 @@ $batchQueueResults = $model->getQueuedBatches();
 
 $batchQueueData = array();
 
-
 if ($searchParameter !== "" || !empty($searchParameter)) {
     $searchParameter = strtolower($searchParameter);
     $searchParameterLength = strlen($searchParameter);
     foreach ($batchQueueResults as $batch) {
         if (stristr($searchParameter, substr($batch['batchid'], 0, $searchParameterLength))) {
             array_push($batchQueueData, $batch);
-        } /* if (stristr($searchParameter, substr($batch['deadline'], 0, $searchParameterLength))) {
+        }
+        if (stristr($searchParameter, substr($batch['deadline'], 0, $searchParameterLength))) {
             array_push($batchQueueData, $batch);
-        } */
+        }
     }
 } else {
     // get all batches if nothing is searched
     $batchQueueData = $batchQueueResults;
 }
+
+$batchQueueResults = $batchQueueData;
 
 foreach ($batchQueueResults as $batch) {
 
@@ -40,5 +42,4 @@ foreach ($batchQueueResults as $batch) {
     echo "<td>" . $batch['status'] . "</td>";
     echo "<td>" . $batch['dateofcreation'] . "</td>";
     echo '</tr>';
-    
 }

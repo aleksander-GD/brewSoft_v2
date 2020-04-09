@@ -16,16 +16,18 @@
         <div id="tableplace">
             <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getQueuedBatches(this.value);" onkeyup="getQueuedBatches(this.value);">
             <table id="table">
-                <tr>
-                    <th>Productionlist ID</th>
-                    <th>Batch ID</th>
-                    <th>Product ID</th>
-                    <th>Product amount</th>
-                    <th>Deadline</th>
-                    <th>Speed</th>
-                    <th>Status</th>
-                    <th>Date of creation</th>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Productionlist ID</th>
+                        <th>Batch ID</th>
+                        <th>Product ID</th>
+                        <th>Product amount</th>
+                        <th>Deadline</th>
+                        <th>Speed</th>
+                        <th>Status</th>
+                        <th>Date of creation</th>
+                    </tr>
+                </thead>
 
                 <tbody id="queuedBatchData"></tbody>
 
