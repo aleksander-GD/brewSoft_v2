@@ -65,3 +65,19 @@ $(document).ready(function() {
         });
     }
 });
+
+function getQueuedBatches(searchParameter) {
+    $.ajax({
+        url: "/brewsoft/mvc/app/services/searchInQueueList.php?searchParameter=" + searchParameter,
+        type: "GET",
+        async: true,
+        searchParameter: "searchParameter",
+        success: function(data) {
+            document.getElementById("queuedBatchData").innerHTML = data;
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    getQueuedBatches(document.getElementById("search").value);
+});

@@ -1,5 +1,7 @@
 <?php
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
+
 class ProductionList extends Database
 {
     public function insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status, $dateofcreation)
