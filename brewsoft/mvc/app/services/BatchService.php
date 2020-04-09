@@ -29,7 +29,4 @@ class BatchService
             return $this->MIN_VALUE;
         }
     }
-
-
-
 }

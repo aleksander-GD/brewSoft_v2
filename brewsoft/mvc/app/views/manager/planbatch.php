@@ -9,7 +9,7 @@
     Please enter the correct values!
     </br>
     <form method="POST" action="indsæt sti her">
-        <label for="productid"> Product id: </label><br>
+        <label for="productID"> Product id: </label><br>
         <select id="products">
         <option value="Pilsner">Pilsner</option>
         <option value="Wheat">Wheat</option>
@@ -19,8 +19,8 @@
         <option value="Alcohol free">Alcohol free</option>    
         </select> <br>
         
-        <label for="productamount"> Amount: </label><br>
-        <input type="text" id="productamount" name="productamount"><br>
+        <label for="productAmount"> Amount to produce: </label><br>
+        <input type="text" id="productAmount" name="productAmount"><br>
         
         <label for="deadline"> Deadline: </label><br>
         <input type="date" id="deadline" name="deadline"><br>
@@ -28,6 +28,6 @@
         <label for="speed"> Speed: </label><br>
         <input type="text" id="speed" name="speed"><br>
         
-        <input type="submit" value="Create"/>
+        <input type="submit" name="planbatch" id="planbatch" value="Create"/>
     </form>
 </body>
