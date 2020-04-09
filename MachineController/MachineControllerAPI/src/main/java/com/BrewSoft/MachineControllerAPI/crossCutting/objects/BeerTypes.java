@@ -1,8 +1,5 @@
 package com.BrewSoft.MachineControllerAPI.crossCutting.objects;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public class BeerTypes {
 
     private int indexnumber;
@@ -29,10 +26,6 @@ public class BeerTypes {
     
     public String getTypeName() {
         return this.typeName;
-    }
-    
-    public StringProperty typeNameProperty() {
-        return new SimpleStringProperty(this.typeName);
     }
     
     @Override
