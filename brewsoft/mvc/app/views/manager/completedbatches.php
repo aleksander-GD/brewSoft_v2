@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/batchqueue.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="../js/batch.js"></script>
+<!--     <script src="../js/batch.js"></script> -->
     <html lang="en">
 
 </header>
@@ -48,7 +48,8 @@
 
             </table>
         </div>
-        <input type="button" name="editbatch" class="editbatch" value="edit batch" />
+        <!-- Instead insert button that redirects to batch report dashboard -->
+        <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
     </div>
 
 </body>
