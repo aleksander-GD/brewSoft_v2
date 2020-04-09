@@ -96,7 +96,7 @@ public class MachineController implements IMachineControl {
         sendCntrlCmd(new Variant(4));
         msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
         sendCmdRequest();
-        //subscriber.stoppedproduction(newBatch.getProductionListID());
+        subscriber.stoppedproduction(newBatch.getProductionListID());
         return "Aborted production.";
     }
 
