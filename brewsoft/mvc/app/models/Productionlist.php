@@ -27,11 +27,6 @@ class ProductionList extends Database
         }
     }
 
-
-
-
-
-
     public function getLatestBatchNumber(){
 		$sql = "SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1";
 		$stmt = $this->conn->prepare($sql);
