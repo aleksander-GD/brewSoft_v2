@@ -12,37 +12,28 @@
 </header>
 
 <body>
-
-
     <div id="batch-table-wrapper">
         <div id="tableplace">
+            <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getQueuedBatches(this.value);" onkeyup="getQueuedBatches(this.value);">
             <table id="table">
-                <tr>
-                    <th>Productionlist ID</th>
-                    <th>Batch ID</th>
-                    <th>Product ID</th>
-                    <th>Product amount</th>
-                    <th>Deadline</th>
-                    <th>Speed</th>
-                    <th>Status</th>
-                    <th>Date of creation</th>
-                </tr>
-                <?php
-                foreach ($viewbag['batches'] as $batch) {
-                ?>
+                <thead>
                     <tr>
-                        <td><?= $batch['productionlistid'] ?> </td>
-                        <td><?= $batch['batchid'] ?></td>
-                        <td><?= $batch['productid'] ?></td>
-                        <td><?= $batch['productamount'] ?></td>
-                        <td><?= $batch['deadline'] ?></td>
-                        <td><?= $batch['speed'] ?></td>
-                        <td><?= $batch['status'] ?></td>
-                        <td><?= $batch['dateofcreation'] ?></td>
-
+                        <th>Productionlist ID</th>
+                        <th>Batch ID</th>
+                        <th>Product ID</th>
+                        <th>Product amount</th>
+                        <th>Deadline</th>
+                        <th>Speed</th>
+                        <th>Status</th>
+                        <th>Date of creation</th>
                     </tr>
+                </thead>
 
-                <?php } ?>
+                <tbody id="queuedBatchData"></tbody>
+
+
+
+
 
             </table>
         </div>

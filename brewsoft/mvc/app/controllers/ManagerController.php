@@ -22,11 +22,11 @@ class ManagerController extends Controller
 
 	public function batchQueue()
 	{
-		$batches = $this->model('Productionlist')->getQueuedBatches();
-		$viewbag['batches'] = $batches;
+		/* $batches = $this->model('Productionlist')->getQueuedBatches();
+		$viewbag['batches'] = $batches; */
 
 		//Redirect to correct view
-		$this->view('manager/batchqueue', $viewbag);
+		$this->view('manager/batchqueue');
 	}
 
 	public function editBatch($id)
