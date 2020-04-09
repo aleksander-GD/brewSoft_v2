@@ -5,9 +5,8 @@
 {
     public function insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status)
     {
-
-        $insert_query = 'INSERT INTO productionList';
-        $values = 'VALUES(:batchID, :productID, :productAmount, :deadline, :speed, :status, :dateofcreation)';
+        $insert_query = 'INSERT INTO productionList (batchID, productID, productAmount, deadline, speed, status)';
+        $values = ' VALUES(:batchID, :productID, :productAmount, :deadline, :speed, :status)';
         $prepare_statement = $this->conn->prepare($insert_query . $values);
         if ($prepare_statement !== false) {
 
@@ -18,7 +17,7 @@
             $prepare_statement->bindParam(':speed', $speed);
             $prepare_statement->bindParam(':status', $status);
 
-            if ($prepare_statement->execute([$batchID, $productID, $productAmount,  $deadline, $speed, $status])) {
+            if ($prepare_statement->execute()) {
                 return true;
             } else {
                 return false;

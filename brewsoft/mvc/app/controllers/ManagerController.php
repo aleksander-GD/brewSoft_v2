@@ -53,12 +53,15 @@ class ManagerController extends Controller
 		}
 	}
 	public function planBatch(){
-		$this->BatchService = new BatchService();
+		$this->view('manager/planbatch');
 		if (isset($_POST['planbatch'])){
-			$batchID = $this->BatchService->createBatchNumber(latestBatchNumber());
-			$productID = filter_input(INPUT_POST, "productID", FILTER_SANITIZE_STRING);
+			
+			$batchID = $this->BatchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
+			//$productID = $_POST['products'];
+			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
+
 			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
-			$deadline = filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING);
+			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);

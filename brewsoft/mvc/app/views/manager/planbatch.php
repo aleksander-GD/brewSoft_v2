@@ -5,18 +5,18 @@
 </header>
 
 <body>
+    <div>
     <br>
     Please enter the correct values!
     </br>
-    <form method="POST" action="indsæt sti her">
-        <label for="productID"> Product id: </label><br>
-        <select id="products">
-        <option value="Pilsner">Pilsner</option>
-        <option value="Wheat">Wheat</option>
-        <option value="IPA">IPA</option>
-        <option value="Stout">Stout</option>
-        <option value="Ale">Ale</option>
-        <option value="Alcohol free">Alcohol free</option>    
+    <form method="POST" action="/brewsoft/mvc/public/manager/planbatch">
+        <select name="products" id="products">
+        <option value="0">Pilsner</option>
+        <option value="1">Wheat</option>
+        <option value="2">IPA</option>
+        <option value="3">Stout</option>
+        <option value="4">Ale</option>
+        <option value="5">Alcohol free</option>    
         </select> <br>
         
         <label for="productAmount"> Amount to produce: </label><br>
@@ -30,4 +30,7 @@
         
         <input type="submit" name="planbatch" id="planbatch" value="Create"/>
     </form>
+</div>
+
 </body>
+</html>

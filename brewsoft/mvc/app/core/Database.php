@@ -23,7 +23,6 @@ class Database extends DB_Config
 				echo 'no connection to database, pdoconnection is null';
 				return false;
 			}
-			echo 'success';
 			return $this->conn;
 		} catch (PDOException $e) {
 			echo "Connection failed: " . $e->getMessage();
