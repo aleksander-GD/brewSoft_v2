@@ -26,7 +26,7 @@ public class MachineController implements IMachineControl {
 
     private IMachineSubscribe subscriber;
     private Machine machineObj;
-    
+
     public MachineController(Machine machineObj, IMachineSubscribe subscriber) {
         this.machineObj = machineObj;
         this.mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
@@ -68,8 +68,9 @@ public class MachineController implements IMachineControl {
         System.out.println(newBatch.getBatchID() + " : " + newBatch.getProductionListID() + " : " + newBatch.getTotalAmount());
         return "Machine started. If we're lucky!";
     }
+// Not used?
 
-    public void changeSpeed(float machSpeed) {
+    private void changeSpeed(float machSpeed) {
         NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
         mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant((float) machSpeed)));
     }
@@ -83,21 +84,32 @@ public class MachineController implements IMachineControl {
 
     @Override
     public String stopProduction() {
-        msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
-        subscriber.stoppedproduction(newBatch.getProductionListID());
-        sendCntrlCmd(new Variant(3));
-        sendCmdRequest();
-        
-        return "Machine stopped. If we're lucky!";
+        String returnTxt;
+        if (newBatch != null) {
+            msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
+            subscriber.stoppedproduction(newBatch.getProductionListID());
+            sendCntrlCmd(new Variant(3));
+            sendCmdRequest();
+            returnTxt = "Machine stopped. If we're lucky!";
+        } else {
+            returnTxt = "The machine has not been started yet, you dimwit!";
+        }
+        return returnTxt;
     }
 
     @Override
     public String abortProduction() {
-        sendCntrlCmd(new Variant(4));
-        msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
-        sendCmdRequest();
-        subscriber.stoppedproduction(newBatch.getProductionListID());
-        return "Aborted production.";
+        String returnTxt;
+        if (newBatch != null) {
+            sendCntrlCmd(new Variant(4));
+            msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
+            sendCmdRequest();
+            subscriber.stoppedproduction(newBatch.getProductionListID());
+            returnTxt = "Aborted production.";
+        } else {
+            returnTxt = "The machine has not been started yet, you dimwit!";
+        }
+        return returnTxt;
     }
 
     @Override

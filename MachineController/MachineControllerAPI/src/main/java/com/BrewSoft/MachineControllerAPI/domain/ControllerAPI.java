@@ -2,6 +2,8 @@ package com.BrewSoft.MachineControllerAPI.domain;
 
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.ChooseMachineDataHandler;
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,9 +51,54 @@ public class ControllerAPI {
         //MachineController mc = new MachineController(machineObj, sub);
         return mc.stopProduction();
     }
+    
+    // Rewrite to get list of controls from class?
+    @GetMapping("/MachineControls")
+    public List<String> machineControls() {
+        List<String> machineControls = new ArrayList();
+        machineControls.add("Start");
+        machineControls.add("Stop");
+        machineControls.add("Reset");
+        machineControls.add("Clear");
+        machineControls.add("Abort");
+        return machineControls;
+    }
+    
     /**
-     * NO IDEA IF THIS WORKS
-     * TODO: Catch response and create the correct machineObj
+     * 
+     * @param control
+     * @return 
+     */
+    @PostMapping("/ControlMachine")
+    public String controlMachine(@RequestBody JsonNode control) {
+        String c = control.findValue("control").textValue();
+        String txt;
+        switch(c) {
+            case "Start":
+                txt = mc.startProduction();
+                break;
+            case "Stop":
+                txt = mc.stopProduction();
+                break;
+            case "Reset":
+                txt = mc.resetMachine();
+                break;
+            case "Clear":
+                txt = mc.clearState();
+                break;
+            case "Abort":
+                txt = mc.abortProduction();
+                break;
+            default:
+                txt = "Unknown command";
+                break;
+        }
+        
+        return "textValue: " + control.findValue("control").textValue() + " \r\nPretty: "  + control.toPrettyString() + "\r\ntxt: " + txt;
+    }
+    
+    /**
+     * 
      * @return 
      */
     @GetMapping("/ChooseMachine")
@@ -60,6 +107,11 @@ public class ControllerAPI {
         return cmdh.getMachineList();
     }
     
+    /**
+     * 
+     * @param chosenMachine
+     * @return 
+     */
     @PostMapping("/MachineChoice")
     public String machineChoice(@RequestBody Machine chosenMachine) {
         machineObj = chosenMachine;
