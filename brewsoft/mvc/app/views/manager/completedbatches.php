@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/batchqueue.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<!--     <script src="../js/batch.js"></script> -->
+        <script src="../js/batch.js"></script>
     <html lang="en">
 
 </header>
@@ -16,35 +16,23 @@
 
     <div id="batch-table-wrapper">
         <div id="tableplace">
+        <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getCompletedBatches(this.value);" onkeyup="getCompletedBatches(this.value);">
             <table id="table">
-                <tr>
-                    <th>Batch ID</th>
-                    <th>Brewerymachine ID</th>
-                    <th>Deadline</th>
-                    <th>Date of creation</th>
-                    <th>Date of completion</th>
-                    <th>Product ID</th>
-                    <th>Total count</th>
-                    <th>Defect count</th>
-                    <th>Accepted count</th>
-                </tr>
-                <?php
-                foreach ($viewbag['batches'] as $batch) {
-                ?>
+                <thead>
                     <tr>
-                        <td><?= $batch['batchid'] ?> </td>
-                        <td><?= $batch['brewerymachineid'] ?></td>
-                        <td><?= $batch['deadline'] ?></td>
-                        <td><?= $batch['dateofcreation'] ?></td>
-                        <td><?= $batch['dateofcompletion'] ?></td>
-                        <td><?= $batch['productid'] ?></td>
-                        <td><?= $batch['totalcount'] ?></td>
-                        <td><?= $batch['defectcount'] ?></td>
-                        <td><?= $batch['acceptedcount'] ?></td>
-
+                        <th>Batch ID</th>
+                        <th>Brewerymachine ID</th>
+                        <th>Deadline</th>
+                        <th>Date of creation</th>
+                        <th>Date of completion</th>
+                        <th>Product ID</th>
+                        <th>Total count</th>
+                        <th>Defect count</th>
+                        <th>Accepted count</th>
                     </tr>
+                </thead>
 
-                <?php } ?>
+                <tbody id="completedBatchData"></tbody>
 
             </table>
         </div>
