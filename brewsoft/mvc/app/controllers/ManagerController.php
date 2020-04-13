@@ -44,4 +44,17 @@ class ManagerController extends Controller
 			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
 	}
+
+	public function batchReport($productionlistID){
+		$times = $this->model('TimeInState')->getTimeInStates($productionlistID);
+		print_r($times);
+		echo sizeof($times);
+		$strStart = $times[0]['starttimeinstate'];
+		$strEnd = $times[1]['starttimeinstate'];
+		$dteStart = new DateTime($strStart);
+		$dteEnd   = new DateTime($strEnd);
+		$dteDiff  = $dteStart->diff($dteEnd);
+		print $dteDiff->format("%H:%I:%S");
+		
+	}
 }
