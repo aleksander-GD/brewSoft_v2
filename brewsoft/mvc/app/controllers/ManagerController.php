@@ -54,6 +54,7 @@ class ManagerController extends Controller
 	}
 	public function planBatch(){
 		$this->view('manager/planbatch');
+		$products = $this->model('Productionlist')->getProducts();
 		if (isset($_POST['planbatch'])){
 			
 			$batchID = $this->BatchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
@@ -65,7 +66,8 @@ class ManagerController extends Controller
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
+			echo $products;
+			//header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
 		}
 	}
 }

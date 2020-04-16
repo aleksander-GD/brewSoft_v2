@@ -64,4 +64,11 @@
         $result = $stmt->fetch();
         return $result["batchid"];
     }
+    Public function getProducts(){
+        $sql = "SELECT productid, productName FROM ProductType";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $results;
+    }
 }

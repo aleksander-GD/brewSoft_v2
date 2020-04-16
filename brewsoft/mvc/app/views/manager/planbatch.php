@@ -11,14 +11,12 @@
     </br>
     <form method="POST" action="/brewsoft/mvc/public/manager/planbatch">
         <select name="products" id="products">
-        <option value="0">Pilsner</option>
-        <option value="1">Wheat</option>
-        <option value="2">IPA</option>
-        <option value="3">Stout</option>
-        <option value="4">Ale</option>
-        <option value="5">Alcohol free</option>    
-        </select> <br>
-        
+        <?php foreach ($results_array as $key => $value){ ?>
+        <option value="<?php echo $value['productname']; ?>">
+    <?php echo $value['productname']; ?>
+    <?php } ?>
+    </select>
+    
         <label for="productAmount"> Amount to produce: </label><br>
         <input type="text" id="productAmount" name="productAmount"><br>
         
