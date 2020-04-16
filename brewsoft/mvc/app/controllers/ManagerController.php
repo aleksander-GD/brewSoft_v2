@@ -82,7 +82,7 @@ class ManagerController extends Controller
 	public function displayOeeForDay()
 	{
 
-		//$this->view('manager/oee');
+		$this->view('manager/oee');
 
 
 		if ($this->post()) {
@@ -90,8 +90,7 @@ class ManagerController extends Controller
 			if (isset($_POST['showOee'])) {
 
 				$viewbag['oeeResult'] = round($this->oeeService->calculateOeeForOneDay(), 2);
-				$viewbag['oeeResult'];
-				//$this->view('manager/oee', $viewbag);
+				$this->view('manager/oee', $viewbag);
 			}
 		}
 	}
