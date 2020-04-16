@@ -92,7 +92,7 @@ class MachineApiController extends Controller {
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
-    $this->view("", $viewbag);
+    $this->view("machine/controls", $viewbag);
   }
 
   public function stopProduction() {
@@ -107,7 +107,7 @@ class MachineApiController extends Controller {
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
-    $this->view("", $viewbag);
+    $this->view("machine/controls", $viewbag);
   }
 
   public function resetMachine() {
@@ -122,7 +122,7 @@ class MachineApiController extends Controller {
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
-    $this->view("", $viewbag);
+    $this->view("machine/controls", $viewbag);
   }
 
   public function clearMachine() {
@@ -137,7 +137,7 @@ class MachineApiController extends Controller {
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
-    $this->view("", $viewbag);
+    $this->view("machine/controls", $viewbag);
   }
 
   public function abortMachine() {
@@ -152,7 +152,7 @@ class MachineApiController extends Controller {
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
-    $this->view("", $viewbag);
+    $this->view("machine/controls", $viewbag);
   }
 
   public function machineControls() {
@@ -190,6 +190,6 @@ class MachineApiController extends Controller {
 
     }
     // Show available commands
-    $this->view("", $viewbag);
+    $this->view("machine/controls", $viewbag);
   }
 }
