@@ -31,7 +31,6 @@ class HomeController extends Controller {
 	
 	public function logout() {
 		
-		
 		//if($this->post()) {
 			session_unset();
 			header('Location: /Exercises/mvc/public/home/loggedout');

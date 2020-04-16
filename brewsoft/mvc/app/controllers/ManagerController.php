@@ -3,21 +3,23 @@
 //require_once '..\core\Database.php';
 //require_once '..\services\BatchService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/BatchService.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/OeeService.php';
 
 class ManagerController extends Controller
 {
-	private $BatchService;
+	private $batchService;
+	private $oeeService;
 
-	public function __construct(){
-		$this->BatchService = new BatchService();
+	public function __construct()
+	{
+		$this->batchService = new BatchService();
+		$this->oeeService = new OeeService();
 	}
 
 
 	public function index($param)
 	{
 		//TODO
-
-
 	}
 
 	public function batchQueue()
@@ -53,28 +55,50 @@ class ManagerController extends Controller
 		}
 	}
 
-    public function completedBatches()
-    {
-        $batches = $this->model('Finalbatchinformation')->getCompletedBatches();
+	public function completedBatches()
+	{
+		$batches = $this->model('Finalbatchinformation')->getCompletedBatches();
 		$viewbag['batches'] = $batches;
 		$this->view('manager/completedbatches', $viewbag);
-        
-
-    }
-	public function planBatch(){
+	}
+	public function planBatch()
+	{
 		$product = $this->model('Productionlist')->getProducts();
 		$viewbag['products'] = $product;
 		$this->view('manager/planbatch', $viewbag);
-		
-		if (isset($_POST['planbatch'])){
-			$batchID = $this->BatchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
+
+		if (isset($_POST['planbatch'])) {
+			$batchID = $this->batchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
 			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
 			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
 			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
+			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
+	}
+
+	public function displayOeeForDay()
+	{
+
+		//$this->view('manager/oee');
+
+
+		if ($this->post()) {
+
+			if (isset($_POST['showOee'])) {
+
+				$viewbag['oeeResult'] = round($this->oeeService->calculateOeeForOneDay(), 2);
+				$viewbag['oeeResult'];
+				//$this->view('manager/oee', $viewbag);
+			}
+		}
+	}
+
+	public function displayOeeForBatch()
+	{
+
+		//$this->view('manager/');
 	}
 }

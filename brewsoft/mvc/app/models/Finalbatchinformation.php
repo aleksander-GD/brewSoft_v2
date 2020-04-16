@@ -14,4 +14,29 @@ class Finalbatchinformation extends Database
         $results = $stmt->fetchAll();
         return $results;
     }
+
+
+    public function getAcceptedCount($dateofcompletion)
+    {
+        $select_query = "SELECT fbi.productid, fbi.acceptedcount, pt.idealcycletime ";
+        $from_query = "FROM finalbatchinformation AS fbi, producttype AS pt ";
+        $where_query = "WHERE fbi.dateofcompletion = :dateofcompletion AND fbi.productid = pt.productid; ";
+
+        $query = $select_query . $from_query . $where_query;
+
+        $prepared_statement = $this->conn->prepare($query);
+        $prepared_statement->bindParam(':dateofcompletion', $dateofcompletion);
+        $prepared_statement->execute();
+        $results = $prepared_statement->fetchAll();
+
+        $resultObject = array();
+        foreach ($results as $result) {
+            $convertedResults['productid'] = intval($result['productid']);
+            $convertedResults['acceptedcount'] = intval($result['acceptedcount']);
+            $convertedResults['idealcycletime'] = intval($result['idealcycletime']);
+            $resultObject[] = $convertedResults;
+        }
+
+        return $resultObject;
+    }
 }
