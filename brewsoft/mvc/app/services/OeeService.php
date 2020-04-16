@@ -5,6 +5,7 @@ class OeeService
     private $dateofcompletion;
     private $finalbatchinformationModel;
     private $plannedProductionTime;
+    // importere glumbys
 
     public function __construct()
     {
@@ -34,6 +35,17 @@ class OeeService
     }
 
     public function calculateAvailability()
+    {
+        /*  Availability = Run Time / Planned Production Time
+
+            Run time: Hvornår startede den og hvornår sluttede den, 
+
+            Fra du stopper og du starter den næste. Maintenance og inventory er også downtime. 
+
+            Planned Production Time: 28800 */
+    }
+
+    public function calculateRunTime($data)
     {
     }
     public function calculatePerformance()
