@@ -1,26 +1,37 @@
 <?php
 
 require_once 'db_config.php';
-	
-class Database extends DB_Config {
+
+class Database extends DB_Config
+{
 
 	public $conn;
-	
-	public function __construct() {
+	private $options = [
+		PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+		PDO::ATTR_EMULATE_PREPARES   => false,
+	];
+
+	public function __construct()
+	{
+		$dsn = 'pgsql:host=' . $this->servername . ';port=' . $this->port . ';dbname=' . $this->dbname;
+
 		try {
-			
-			$this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname",
-			$this->username,
-			$this->password,
-			array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-			
+			$this->conn = new PDO($dsn, $this->username, $this->password, $this->options);
+
+			if ($this->conn == null) {
+				echo 'no connection to database, pdoconnection is null';
+				return false;
+			}
+			return $this->conn;
 		} catch (PDOException $e) {
-			echo "Error: " . $e->getMessage();
+			echo "Connection failed: " . $e->getMessage();
+			echo "ERROR";
 		}
 	}
-	
-	public function __destruct() {
+
+	public function __destruct()
+	{
 		$this->conn = null;
 	}
-	
 }
