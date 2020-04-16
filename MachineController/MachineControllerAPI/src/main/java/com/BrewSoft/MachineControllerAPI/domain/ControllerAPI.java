@@ -4,15 +4,14 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.ChooseMachineDataHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 /**
- * This has not been tested yet, but should work.
- * TODO: setting up database connection
  * Remember to have an copy of the simulator running.
  * @author Mathias
  */
@@ -54,13 +53,15 @@ public class ControllerAPI {
     
     // Rewrite to get list of controls from class?
     @GetMapping("/MachineControls")
-    public List<String> machineControls() {
-        List<String> machineControls = new ArrayList();
-        machineControls.add("Start");
-        machineControls.add("Stop");
-        machineControls.add("Reset");
-        machineControls.add("Clear");
-        machineControls.add("Abort");
+    public Map<String, List> machineControls() {
+        Map<String, List> machineControls = new HashMap();
+        List<String> controls = new ArrayList();
+        controls.add("Start");
+        controls.add("Stop");
+        controls.add("Reset");
+        controls.add("Clear");
+        controls.add("Abort");
+        machineControls.put("commands", controls);
         return machineControls;
     }
     
@@ -71,7 +72,7 @@ public class ControllerAPI {
      */
     @PostMapping("/ControlMachine")
     public String controlMachine(@RequestBody JsonNode control) {
-        String c = control.findValue("control").textValue();
+        String c = control.findValue("command").textValue();
         String txt;
         switch(c) {
             case "Start":
@@ -94,7 +95,7 @@ public class ControllerAPI {
                 break;
         }
         
-        return "textValue: " + control.findValue("control").textValue() + " \r\nPretty: "  + control.toPrettyString() + "\r\ntxt: " + txt;
+        return txt;
     }
     
     /**
@@ -117,6 +118,6 @@ public class ControllerAPI {
         machineObj = chosenMachine;
         sub = new MachineSubscriber(machineObj);
         mc = new MachineController(machineObj, sub);
-        return "Machine chosen";
+        return "Machine " + machineObj.getMachineID() + " chosen";
     }
 }

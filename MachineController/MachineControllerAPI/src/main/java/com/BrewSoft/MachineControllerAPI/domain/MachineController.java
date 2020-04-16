@@ -65,7 +65,7 @@ public class MachineController implements IMachineControl {
         // Start the production
         sendCntrlCmd(new Variant(2));
         sendCmdRequest();
-        System.out.println(newBatch.getBatchID() + " : " + newBatch.getProductionListID() + " : " + newBatch.getTotalAmount());
+        //System.out.println(newBatch.getBatchID() + " : " + newBatch.getProductionListID() + " : " + newBatch.getTotalAmount());
         return "Machine started. If we're lucky!";
     }
 // Not used?

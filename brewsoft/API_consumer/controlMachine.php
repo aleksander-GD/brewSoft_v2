@@ -18,16 +18,17 @@
             case 200:  # OK
                 echo "Server JSON Response:" . $resp;
                 $json = json_decode($resp);
-                foreach ($json as $value) {
-                  echo "<button onclick='alert(\"$value\")'>";
-                  echo "$value";
-                  echo "</button>";
-                }
-                echo "<pre>1 : ";var_dump($json[$_GET["id"]]);echo "</pre>";
-                $t["control"] = $json[$_GET["id"]];
-                echo "<pre>";var_dump($t);echo "</pre>";
+                echo "<pre>0 : ";var_dump($json);echo "</pre>";
+
+                $options=array('options'=>array('default'=>2, 'min_range'=>0, 'max_range'=>4));
+
+                $command=filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT, $options);
+                echo "<pre>command: ";var_dump($command);echo "</pre>";
+                echo "<pre>json command: ";var_dump($json->commands[$command]);echo "</pre>";
+                $t["command"] = $json->commands[$command];
+                echo "<pre>return json: ";var_dump($t);echo "</pre>";
                 $response = json_encode($t);
-                echo "<pre>2 : ";var_dump($response);echo "</pre>";
+                echo "<pre>json encoded: ";var_dump($response);echo "</pre>";
 
                 $ch = curl_init('http://localhost:8080/ControlMachine');
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -40,7 +41,7 @@
 
                 $result = curl_exec($ch);
 
-                echo "<pre>";var_dump($result);echo "</pre>";
+                echo "<pre>result: ";var_dump($result);echo "</pre>";
 
                 break;
             default:

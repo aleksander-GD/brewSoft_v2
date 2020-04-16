@@ -18,7 +18,7 @@
             case 200:  # OK
                 echo "Server JSON Response:" . $resp;
                 $json = json_decode($resp);
-                echo "<pre>";var_dump($json[1]);echo "</pre>";
+                echo "<pre>";var_dump($json);echo "</pre>";
                 $response = json_encode($json[1]);
                 echo "<pre>";var_dump($response);echo "</pre>";
 
