@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 /**
  * Remember to have an copy of the simulator running.
- * TODO: Error handling, in case there is no controller started
+ * TODO: Validation of inputs
+ * TODO: Clean up of instantiations
  * @author Mathias
  */
 @RestController
@@ -26,37 +28,62 @@ public class ControllerAPI {
     
     @GetMapping("/machineStart")
     public String mcStart(@RequestParam(value = "machineId") int machineId) {
-        //MachineController mc = new MachineController(machineObj, sub);
         mc = machineControllerMap.get(machineId);
-        return mc.startProduction();
+        String returnText;
+        if(machineControllerMap.containsKey(machineId)) {
+            returnText = mc.startProduction();
+        } else {
+            returnText = "Error, no machine chosen!";
+        }
+        return returnText;
     }
     
     @GetMapping("/machineReset")
     public String mcReset(@RequestParam(value = "machineId") int machineId) {
-        //MachineController mc = new MachineController(machineObj, sub);
         mc = machineControllerMap.get(machineId);
-        return "ID: " + machineId + " : " + mc.resetMachine();
+        String returnText;
+        if(machineControllerMap.containsKey(machineId)) {
+            returnText = mc.resetMachine();
+        } else {
+            returnText = "Error, no machine chosen!";
+        }
+        return returnText;
     }
     
     @GetMapping("/machineClear")
     public String mcClear(@RequestParam(value = "machineId") int machineId) {
-        //MachineController mc = new MachineController(machineObj, sub);
         mc = machineControllerMap.get(machineId);
-        return mc.clearState();
+        String returnText;
+        if(machineControllerMap.containsKey(machineId)) {
+            returnText = mc.clearState();
+        } else {
+            returnText = "Error, no machine chosen!";
+        }
+        return returnText;
     }
     
     @GetMapping("/machineAbort")
     public String mcAbort(@RequestParam(value = "machineId") int machineId) {
-        //MachineController mc = new MachineController(machineObj, sub);
         mc = machineControllerMap.get(machineId);
-        return mc.abortProduction();
+        String returnText;
+        if(machineControllerMap.containsKey(machineId)) {
+            returnText = mc.abortProduction();
+        } else {
+            returnText = "Error, no machine chosen!";
+        }
+        return returnText;
     }
     
     @GetMapping("/machineStop")
     public String mcStop(@RequestParam(value = "machineId") int machineId) {
-        //MachineController mc = new MachineController(machineObj, sub);
         mc = machineControllerMap.get(machineId);
-        return mc.stopProduction();
+        String returnText;
+        if(machineControllerMap.containsKey(machineId)) {
+            returnText = mc.stopProduction();
+        } else {
+            returnText = "Error, no machine chosen!";
+        }
+        return returnText;
     }
     
     // Rewrite to get list of controls from class?
