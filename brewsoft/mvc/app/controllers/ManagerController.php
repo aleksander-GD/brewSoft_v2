@@ -46,7 +46,11 @@ class ManagerController extends Controller
 	}
 
 	public function batchReport($productionlistID){
-		$times = $this->model('TimeInState')->getTimeInStates($productionlistID);
+		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
+		$length = sizeof($timeArray) - 1; 
+		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1 ;
+
+		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
 		print_r($times);
 		echo sizeof($times);
 		$strStart = $times[0]['starttimeinstate'];
