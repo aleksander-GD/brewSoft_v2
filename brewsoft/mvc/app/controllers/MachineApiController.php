@@ -1,6 +1,6 @@
 <?php
 /*
- * TODO: Add error handling of cURL results
+ * TODO: Add error handling of cURL results, i.e. startProduction L89
  */
 class MachineApiController extends Controller {
   private $machineJSON;
@@ -8,6 +8,7 @@ class MachineApiController extends Controller {
 
   public function availableMachines() {
     $endpoint = "http://localhost:8080/availableMachines";
+    $viewbag = [];
     try {
       // Get cURL resource
       $curl = curl_init();
@@ -22,22 +23,22 @@ class MachineApiController extends Controller {
 
       // Check HTTP status code
       if (!curl_errno($curl)) {
-          switch ($http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE)) {
-              case 200:  # OK
-                  $this->machineJSON = json_decode($resp);
-                  $viewbag["json"] = $this->machineJSON;
-                  break;
-              default:
-              /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-                  $viewbag["error"]["http_code"] = 'Unexpected HTTP code: ', $http_code, "\n";
-                  $viewbag["error"]["response"] = $resp;
-          }
+        switch ($http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE)) {
+          case 200:  # OK
+            $this->machineJSON = json_decode($resp);
+            $viewbag["json"] = $this->machineJSON;
+            break;
+          default:
+          /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
+            $viewbag["error"]["http_code"] = 'Unexpected HTTP code: '. $http_code. "\n";
+            $viewbag["error"]["response"] = $resp;
+        }
       }
       // Close request to clear up some resources
       curl_close($curl);
     } catch (Exception $ex) {
 /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-        printf("Error while sending request, reason: %s\n",$ex->getMessage());
+        $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
 
     }
     // Show the available machines
@@ -45,13 +46,14 @@ class MachineApiController extends Controller {
   }
 
   public function chooseMachine() {
+    $viewbag = [];
     try {
       $max_range = count($machineJSON) - 1;
       /*
        DEFAULT VALUE MIGHT CAUSE PROBLEMS!
        DIFFERENT WAY TO VALIDATE?
       */
-      $options = array("options"=>array("default"=>0, "min_range"=>0, "max_range"=>$max_range);
+      $options = array("options"=>array("default"=>0, "min_range"=>0, "max_range"=>$max_range));
       $machine = filter_input(INPUT_POST, "", FILTER_VALIDATE_INT, $options);
       $machineId = $machineJSON[$machine]->machineID;
       $response = json_encode($machineJSON[$machine]);
@@ -70,7 +72,7 @@ class MachineApiController extends Controller {
       curl_close($ch);
     } catch (Exception $ex) {
 /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-        printf("Error while sending request, reason: %s\n",$ex->getMessage());
+        $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
 
     }
     // Machine chosen, start controlling it
@@ -78,6 +80,7 @@ class MachineApiController extends Controller {
   }
 
   public function startProduction() {
+    $viewbag = [];
     try {
       $ch = curl_init('http://localhost:8080/machineStart?machineId='.$machineId);
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
@@ -86,7 +89,7 @@ class MachineApiController extends Controller {
       $viewbag["result"] = curl_exec($ch);
     } catch (Exception $ex) {
   /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      printf("Error while sending request, reason: %s\n",$ex->getMessage());
+      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
     $this->view("", $viewbag);
@@ -101,7 +104,7 @@ class MachineApiController extends Controller {
       $viewbag["result"] = curl_exec($ch);
     } catch (Exception $ex) {
     /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      printf("Error while sending request, reason: %s\n",$ex->getMessage());
+      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
     $this->view("", $viewbag);
@@ -116,7 +119,7 @@ class MachineApiController extends Controller {
       $viewbag["result"] = curl_exec($ch);
     } catch (Exception $ex) {
     /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      printf("Error while sending request, reason: %s\n",$ex->getMessage());
+      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
     $this->view("", $viewbag);
@@ -131,7 +134,7 @@ class MachineApiController extends Controller {
       $viewbag["result"] = curl_exec($ch);
     } catch (Exception $ex) {
     /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      printf("Error while sending request, reason: %s\n",$ex->getMessage());
+      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
     $this->view("", $viewbag);
@@ -146,7 +149,7 @@ class MachineApiController extends Controller {
       $viewbag["result"] = curl_exec($ch);
     } catch (Exception $ex) {
     /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      printf("Error while sending request, reason: %s\n",$ex->getMessage());
+      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
     $this->view("", $viewbag);
@@ -154,6 +157,7 @@ class MachineApiController extends Controller {
 
   public function machineControls() {
     $endpoint = "http://localhost:8080/MachineControls";
+    $viewbag = [];
 
     try {
       // Get cURL resource
@@ -169,20 +173,20 @@ class MachineApiController extends Controller {
 
       // Check HTTP status code
       if (!curl_errno($curl)) {
-          switch ($http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE)) {
-              case 200:  # OK
-                  $viewbag["json"] = json_decode($resp);
-                  break;
-              default:
-                  $viewbag["error"]["http_code"] = 'Unexpected HTTP code: ', $http_code, "\n";
-                  $viewbag["error"]["response"] = $resp;
-          }
+        switch ($http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE)) {
+          case 200:  # OK
+            $viewbag["json"] = json_decode($resp);
+            break;
+          default:
+            $viewbag["error"]["http_code"] = 'Unexpected HTTP code: '. $http_code. "\n";
+            $viewbag["error"]["response"] = $resp;
+        }
       }
       // Close request to clear up some resources
       curl_close($curl);
     } catch (Exception $ex) {
 /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-        printf("Error while sending request, reason: %s\n",$ex->getMessage());
+      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
 
     }
     // Show available commands
