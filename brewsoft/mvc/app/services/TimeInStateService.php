@@ -1,9 +1,10 @@
 <?php
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
 class TimeInStateService
 {
 
-    private $timeinstate;
+    protected $timeinstate;
 
     public function __construct()
     {
@@ -19,8 +20,8 @@ class TimeInStateService
         $AllTimeInStatesList = array();
 
         $count = 0;
-        if ($count < $length - 1) {
-            foreach ($times as $time) {
+        foreach ($times as $time) {
+            if ($count < $length - 1) {
                 $strStart = $time['starttimeinstate'];
                 $strEnd = $times[$count + 1]['starttimeinstate'];
                 $dteStart = new DateTime($strStart);
@@ -28,37 +29,64 @@ class TimeInStateService
                 $dteDiff  = $dteStart->diff($dteEnd);
                 $dteDiff->format("%H:%I:%S");
 
-                $AllTimeInStatesList->array_push(array($count, $time['machinestate'], $dteDiff));
+                $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
+                $count++;
+            } else if ($count == $length - 1) {
+
+                $strStart = $times[$count]['starttimeinstate'];
+                $strEnd = $nextBatchFirstState[0]['starttimeinstate'];
+                $dteStart = new DateTime($strStart);
+                $dteEnd = new DateTime($strEnd);
+                $dteDiff  = $dteStart->diff($dteEnd);
+                $dteDiff->format("%H:%I:%S");
+
+                $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
                 $count++;
             }
-        } else if ($count == $length - 1) {
-            $strStart = $times[$count]['starttimeinstate'];
-            $strEnd = $nextBatchFirstState[0]['starttimeinstate'];
-            $dteStart = new DateTime($strStart);
-            $dteEnd   = new DateTime($strEnd);
-            $dteDiff  = $dteStart->diff($dteEnd);
-            $dteDiff->format("%H:%I:%S");
-
-            $AllTimeInStatesList->array_push(array($count, $time['machinestate'], $dteDiff));
-            $count++;
         }
-
         return $AllTimeInStatesList;
-
-        /*         print_r($times);
-        echo sizeof($times);
-        $strStart = $times[0]['starttimeinstate'];
-        $strEnd = $times[1]['starttimeinstate'];
-        $dteStart = new DateTime($strStart);
-        $dteEnd   = new DateTime($strEnd);
-        $dteDiff  = $dteStart->diff($dteEnd);
-        print $dteDiff->format("%H:%I:%S"); */
     }
 
     // En funktion som lægger gentagende states sammen
     public function getSortedTimeInStates($AllTimeInStatesList)
     {
+        $sorted = array();
+        $count = 0;
+        foreach ($AllTimeInStatesList as $state) {
+            if (empty($sorted)) {
+                $sorted[$count] = ["machinestate" => $state['machinestate'],"timeinstate" => $state["timeinstate"]];
+                $count++;
+            
+            } else if (in_array($state["machinestate"], array_column($sorted,'machinestate'))) {
+
+                $index = array_search($state["machinestate"],array_column($sorted,"machinestate"));
+
+                $tempoldtime = ($sorted[$index]["timeinstate"]);
+                $oldtime = $tempoldtime;
+
+                $newtime = $state["timeinstate"];
+
+                // Create a datetime object and clone it
+                $dt = new DateTime();
+                $dt_diff = clone $dt;
+
+                // Add the two intervals from before to the first one
+                $dt->add($oldtime);
+                $dt->add($newtime);
+
+                // The result of the two intervals is now the difference between the datetimeobject and its clone
+                $result = $dt->diff($dt_diff);
+
+
+                $sorted[$index] = ["machinestate" => $state['machinestate'],"timeinstate" => $result];
+
+            } else {
+                $sorted[$count] = ["machinestate" => $state['machinestate'],"timeinstate" => $state["timeinstate"]];
+                $count++;
+            }
+        }
+
+        return $sorted;
     }
 
-    //evt funktion som fjerne dem som vi ikke vil have med?
 }
