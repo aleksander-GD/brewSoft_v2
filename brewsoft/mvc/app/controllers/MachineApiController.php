@@ -6,6 +6,10 @@ class MachineApiController extends Controller {
   private $machineJSON;
   private $machineId;
 
+  public function index() {
+    $this->availableMachines();
+  }
+
   public function availableMachines() {
     $endpoint = "http://localhost:8080/availableMachines";
     $viewbag = [];
@@ -37,7 +41,7 @@ class MachineApiController extends Controller {
       // Close request to clear up some resources
       curl_close($curl);
     } catch (Exception $ex) {
-/* LOG ERROR, SEND TO ALARM VIEW THINGIE */
+      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
         $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
 
     }
@@ -71,9 +75,8 @@ class MachineApiController extends Controller {
       // Close request to clear up some resources
       curl_close($ch);
     } catch (Exception $ex) {
-/* LOG ERROR, SEND TO ALARM VIEW THINGIE */
+      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
         $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
-
     }
     // Machine chosen, start controlling it
     $this->view("", $viewbag);
@@ -88,7 +91,7 @@ class MachineApiController extends Controller {
 
       $viewbag["result"] = curl_exec($ch);
     } catch (Exception $ex) {
-  /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
+      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // new view?
@@ -185,7 +188,7 @@ class MachineApiController extends Controller {
       // Close request to clear up some resources
       curl_close($curl);
     } catch (Exception $ex) {
-/* LOG ERROR, SEND TO ALARM VIEW THINGIE */
+      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
 
     }
