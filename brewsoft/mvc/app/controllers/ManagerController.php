@@ -48,8 +48,9 @@ class ManagerController extends Controller
     public function completedBatches()
     {
         $batches = $this->model('Finalbatchinformation')->getCompletedBatches();
-        $this->view('manager/completedbatches', $viewbag);
-        $viewbag['batches'] = $batches;
+		$viewbag['batches'] = $batches;
+		$this->view('manager/completedbatches', $viewbag);
+        
 
     }
 }
