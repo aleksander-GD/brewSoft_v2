@@ -52,6 +52,15 @@ class ManagerController extends Controller
 			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
 	}
+
+    public function completedBatches()
+    {
+        $batches = $this->model('Finalbatchinformation')->getCompletedBatches();
+		$viewbag['batches'] = $batches;
+		$this->view('manager/completedbatches', $viewbag);
+        
+
+    }
 	public function planBatch(){
 		$product = $this->model('Productionlist')->getProducts();
 		$viewbag['products'] = $product;
