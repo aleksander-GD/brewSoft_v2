@@ -13,30 +13,22 @@ class BatchServiceTest extends TestCase
         $this->batchservice = new BatchService();
     }
 
-    /* 
-
-    function that checks batch number from database. 
-
-    public function testGetLatestBatchNumber()
-    {
-        $expected = 66;
-        $actual = $this->batchservice->getLatestBatchNumber();
-        $this->assertEquals($expected, $actual);
-    }
-    */
-    
-    public function testCreateBatchNumber()
+    public function testBatchNumberStartOver()
     {
         $latestBatchNumber = 65535;
         $expected = 0;
         $actual = $this->batchservice->createBatchNumber($latestBatchNumber);
         $this->assertEquals($expected, $actual);
-
+    }
+    public function testBatchNumberIncrement()
+    {
         $latestBatchNumber = 0;
         $expected = 1;
         $actual = $this->batchservice->createBatchNumber($latestBatchNumber);
         $this->assertEquals($expected, $actual);
-
+    }
+    public function testBatchNumberForNull()
+    {
         $latestBatchNumber = null;
         $expected = 0;
         $actual = $this->batchservice->createBatchNumber($latestBatchNumber);

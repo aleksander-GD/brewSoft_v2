@@ -2,34 +2,19 @@ $(document).ready(function() {
     var productionlistIDValue;
     var batchIDValue;
 
-    $("#table tr").click(function() {
-        $(this).addClass('selected').siblings().removeClass('selected');
-        var productlistid = $(this).find('td:eq(0)').html();
-        var batchid = $(this).find('td:eq(1)').html();
-        console.log('productlistid: ' + productlistid);
-        console.log('batchid: ' + batchid);
-    });
+
 
     $('.editbatch').on('click', function(e) {
         event.preventDefault();
-        productionlistIDValue = $("#table tr.selected td:eq(0)").html();
-        batchIDValue = $("#table tr.selected td:eq(1)").html();
+        productionlistIDValue = $("#queuedBatchData tr.selected td:eq(0)").html();
+        batchIDValue = $("#queuedBatchData tr.selected td:eq(1)").html();
         if (productionlistIDValue != null) {
             window.location = 'editBatch/' + productionlistIDValue;
 
         } else {
             window.location = 'batchqueue';
         }
-
-        // To make a post request towards the controller with batchID value.
-        /* var url = 'editBatch/' + value;
-        var form = $('<form action="' + url + '" method="post">' + '</form>');
-        $('body').append(form);
-        form.submit(); */
     });
-
-
-
 
     $('.canceleditbutton').on('click', function(e) {
         event.preventDefault();
@@ -66,6 +51,27 @@ $(document).ready(function() {
     }
 });
 
+function getQueuedBatches(searchParameter) {
+    $.ajax({
+        url: "/brewsoft/mvc/app/services/searchInQueueList.php?searchParameter=" + searchParameter,
+        type: "GET",
+        async: true,
+        searchParameter: "searchParameter",
+        success: function(data) {
+            document.getElementById("queuedBatchData").innerHTML = data;
+            $("#queuedBatchData tr").click(function() {
+                $(this).addClass('selected').siblings().removeClass('selected');
+                var productlistid = $(this).find('td:eq(0)').html();
+                var batchid = $(this).find('td:eq(1)').html();
+                console.log('productlistid: ' + productlistid);
+                console.log('batchid: ' + batchid);
+            });
+        }
+    });
+}
+
+    
+
 function getCompletedBatches(searchParameter) {
     $.ajax({
         url: "/brewsoft/mvc/app/services/searchInCompletedBatches.php?searchParameter=" + searchParameter,
@@ -87,4 +93,5 @@ function getCompletedBatches(searchParameter) {
 
 document.addEventListener("DOMContentLoaded", function() {
     getCompletedBatches(document.getElementById("search").value);
+    getQueuedBatches(document.getElementById("search").value);
 });
