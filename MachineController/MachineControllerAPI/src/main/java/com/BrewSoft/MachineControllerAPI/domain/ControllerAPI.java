@@ -2,7 +2,6 @@ package com.BrewSoft.MachineControllerAPI.domain;
 
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.ChooseMachineDataHandler;
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,44 +9,53 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 /**
  * Remember to have an copy of the simulator running.
+ * TODO: Error handling, in case there is no controller started
  * @author Mathias
  */
 @RestController
 public class ControllerAPI {
     private Machine machineObj = new Machine(1, "localhost", 4840);
+    private Map<Integer, MachineController> machineControllerMap = new HashMap();
+    private Map<Integer, MachineSubscriber> machineSubscriberMap = new HashMap(); // NEEDED FOR SHOWING THE "LIVE" DASHBOARD
     private MachineSubscriber sub = new MachineSubscriber(machineObj);
     private MachineController mc = new MachineController(machineObj, sub);
     
     @GetMapping("/machineStart")
-    public String mcStart() {
+    public String mcStart(@RequestParam(value = "machineId") int machineId) {
         //MachineController mc = new MachineController(machineObj, sub);
+        mc = machineControllerMap.get(machineId);
         return mc.startProduction();
     }
     
     @GetMapping("/machineReset")
-    public String mcReset() {
+    public String mcReset(@RequestParam(value = "machineId") int machineId) {
         //MachineController mc = new MachineController(machineObj, sub);
-        return mc.resetMachine();
+        mc = machineControllerMap.get(machineId);
+        return "ID: " + machineId + " : " + mc.resetMachine();
     }
     
     @GetMapping("/machineClear")
-    public String mcClear() {
+    public String mcClear(@RequestParam(value = "machineId") int machineId) {
         //MachineController mc = new MachineController(machineObj, sub);
+        mc = machineControllerMap.get(machineId);
         return mc.clearState();
     }
     
     @GetMapping("/machineAbort")
-    public String mcAbort() {
+    public String mcAbort(@RequestParam(value = "machineId") int machineId) {
         //MachineController mc = new MachineController(machineObj, sub);
+        mc = machineControllerMap.get(machineId);
         return mc.abortProduction();
     }
     
     @GetMapping("/machineStop")
-    public String mcStop() {
+    public String mcStop(@RequestParam(value = "machineId") int machineId) {
         //MachineController mc = new MachineController(machineObj, sub);
+        mc = machineControllerMap.get(machineId);
         return mc.stopProduction();
     }
     
@@ -67,43 +75,10 @@ public class ControllerAPI {
     
     /**
      * 
-     * @param control
      * @return 
      */
-    @PostMapping("/ControlMachine")
-    public String controlMachine(@RequestBody JsonNode control) {
-        String c = control.findValue("command").textValue();
-        String txt;
-        switch(c) {
-            case "Start":
-                txt = mc.startProduction();
-                break;
-            case "Stop":
-                txt = mc.stopProduction();
-                break;
-            case "Reset":
-                txt = mc.resetMachine();
-                break;
-            case "Clear":
-                txt = mc.clearState();
-                break;
-            case "Abort":
-                txt = mc.abortProduction();
-                break;
-            default:
-                txt = "Unknown command";
-                break;
-        }
-        
-        return txt;
-    }
-    
-    /**
-     * 
-     * @return 
-     */
-    @GetMapping("/ChooseMachine")
-    public List<Machine> chooseMachine() {
+    @GetMapping("/availableMachines")
+    public List<Machine> availableMachine() {
         ChooseMachineDataHandler cmdh = new ChooseMachineDataHandler();
         return cmdh.getMachineList();
     }
@@ -113,11 +88,13 @@ public class ControllerAPI {
      * @param chosenMachine
      * @return 
      */
-    @PostMapping("/MachineChoice")
-    public String machineChoice(@RequestBody Machine chosenMachine) {
+    @PostMapping("/chooseMachine")
+    public String chooseMachine(@RequestBody Machine chosenMachine) {
         machineObj = chosenMachine;
         sub = new MachineSubscriber(machineObj);
+        machineSubscriberMap.put(machineObj.getMachineID(), sub);
         mc = new MachineController(machineObj, sub);
+        machineControllerMap.put(machineObj.getMachineID(), mc);
         return "Machine " + machineObj.getMachineID() + " chosen";
     }
 }
