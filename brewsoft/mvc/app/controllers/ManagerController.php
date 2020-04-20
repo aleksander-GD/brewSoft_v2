@@ -4,21 +4,24 @@
 //require_once '..\services\BatchService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/BatchService.php';
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/TimeInStateService.php';
+
 class ManagerController extends Controller
 {
 	private $BatchService;
+    protected $timeInStateService;
 
 	public function __construct(){
 		$this->BatchService = new BatchService();
+        $this->timeInStateService = new TimeInStateService();
 	}
 
+	
 
 	public function index($param)
 	{
-		//TODO
-
-
 	}
+
 
 	public function batchQueue()
 	{
@@ -75,6 +78,32 @@ class ManagerController extends Controller
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
 			header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
+		}
+	}
+
+	public function batchReport($productionlistID)
+	{
+		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
+		//print_r($timeArray);
+		$length = sizeof($timeArray) - 1;
+		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
+		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
+		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
+		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
+		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
+
+		$viewbag['alltimes'] = $allTimesInStateList;
+		$viewbag['sortedtimes'] = $sorted;
+
+		$this->view('manager/batchreport', $viewbag);
+
+
+		foreach ($allTimesInStateList as $state) {
+			print "<pre>";
+			print_r($state);
+			print "</pre>";
+			//echo $state['machinestate'];
+			//echo $state["timeinstate"]->format("%H:%I:%S:%f");
 		}
 	}
 }
