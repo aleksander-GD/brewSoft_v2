@@ -1,14 +1,12 @@
 <?php
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
-
-class ProductionList extends Database
+    class ProductionList extends Database
 {
-    public function insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status, $dateofcreation)
+    public function insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status)
     {
-
-        $insert_query = 'INSERT INTO productionList';
-        $values = 'VALUES(:batchID, :productID, :productAmount, :deadline, :speed, :status, :dateofcreation)';
+        $insert_query = 'INSERT INTO productionList (batchID, productID, productAmount, deadline, speed, status)';
+        $values = ' VALUES(:batchID, :productID, :productAmount, :deadline, :speed, :status)';
         $prepare_statement = $this->conn->prepare($insert_query . $values);
         if ($prepare_statement !== false) {
 
@@ -18,9 +16,8 @@ class ProductionList extends Database
             $prepare_statement->bindParam(':deadline', $deadline);
             $prepare_statement->bindParam(':speed', $speed);
             $prepare_statement->bindParam(':status', $status);
-            $prepare_statement->bindParam(':dateofcreation', $dateofcreation);
 
-            if ($prepare_statement->execute([$batchID, $productID, $productAmount,  $deadline, $speed, $status, $dateofcreation])) {
+            if ($prepare_statement->execute()) {
                 return true;
             } else {
                 return false;
@@ -66,5 +63,14 @@ class ProductionList extends Database
         $stmt->execute();
         $result = $stmt->fetch();
         return $result["batchid"];
+    }
+
+    Public function getProducts()
+    {
+        $sql = "SELECT productid, productname FROM ProductType";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        return $results;
     }
 }
