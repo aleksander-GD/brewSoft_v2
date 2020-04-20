@@ -14,4 +14,14 @@ class Finalbatchinformation extends Database
         $results = $stmt->fetchAll();
         return $results;
     }
+
+    public function getDateOfCompletion($productionlistID){
+        $sql = "SELECT dateofcompletion 
+                FROM finalbatchinformation
+                WHERE productionlistid =" . $productionlistID . ";";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetch();
+        return $results;
+    }
 }

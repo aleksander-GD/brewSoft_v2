@@ -1,11 +1,15 @@
 <?php
 
 $array = $viewbag['alltimes'];
+$dateTime = $viewbag['datetime'];
+
 
 
 foreach ($array as $entry) {
     print "</pre>";
+    print_r($entry);
     print_r($entry['timeinstate']->s); // get seconds from DateInterval object. 
+    //print_r($entry['dateobject']);
     print "<pre>";
 }
 
@@ -23,43 +27,17 @@ foreach ($array as $entry) {
 
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['Activity', 'Start Time', 'End Time'],
+                ['State', 'Start Time', 'End Time'],
+                
                 ['Sleep',
-                    new Date(2014, 10, 15, 0, 30),
-                    new Date(2014, 10, 15, 6, 30)
+                    new Date('2020-04-20 09:55:26'),
+                    new Date('2020-04-20 10:55:26')
                 ],
                 ['Eat Breakfast',
-                    new Date(2014, 10, 15, 6, 45),
-                    new Date(2014, 10, 15, 7)
+                    new Date('2020-04-20 10:55:26'),
+                    new Date('2020-04-20 11:55:26')
                 ],
-                ['Get Ready',
-                    new Date(2014, 10, 15, 7, 4),
-                    new Date(2014, 10, 15, 7, 30)
-                ],
-                ['Commute To Work',
-                    new Date(2014, 10, 15, 7, 30),
-                    new Date(2014, 10, 15, 8, 30)
-                ],
-                ['Work',
-                    new Date(2014, 10, 15, 8, 30),
-                    new Date(2014, 10, 15, 17)
-                ],
-                ['Commute Home',
-                    new Date(2014, 10, 15, 17),
-                    new Date(2014, 10, 15, 18)
-                ],
-                ['Gym',
-                    new Date(2014, 10, 15, 18),
-                    new Date(2014, 10, 15, 18, 45)
-                ],
-                ['Eat Dinner',
-                    new Date(2014, 10, 15, 19),
-                    new Date(2014, 10, 15, 20)
-                ],
-                ['Get Ready For Bed',
-                    new Date(2014, 10, 15, 21),
-                    new Date(2014, 10, 15, 22)
-                ]
+                
             ]);
 
             var options = {

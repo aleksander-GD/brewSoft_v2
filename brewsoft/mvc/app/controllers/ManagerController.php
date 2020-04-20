@@ -92,18 +92,20 @@ class ManagerController extends Controller
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
 		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 
+		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
+
+		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
+
+		
 		$viewbag['alltimes'] = $allTimesInStateList;
 		$viewbag['sortedtimes'] = $sorted;
+		$viewbag['datetime'] = $dateTimeArray;
 
 		$this->view('manager/batchreport', $viewbag);
-
-
-		foreach ($allTimesInStateList as $state) {
-			print "<pre>";
-			print_r($state);
-			print "</pre>";
-			//echo $state['machinestate'];
-			//echo $state["timeinstate"]->format("%H:%I:%S:%f");
+		print_r($completionDate);
+		foreach($dateTimeArray as $states){
+			print_r($states);
 		}
+
 	}
 }

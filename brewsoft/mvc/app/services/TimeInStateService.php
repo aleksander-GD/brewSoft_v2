@@ -11,14 +11,28 @@ class TimeInStateService
         $this->timeinstate = new TimeInState;
     }
 
-    public function getTimestampArray($timeArray, $nextBatchFirstState){
+    // Funktion som får de nødvendige tider og states. 
+    public function getTimestampArray($timeArray, $nextBatchFirstState)
+    {
         $times = array_merge($timeArray, $nextBatchFirstState);
         return $timeArray;
     }
 
+    public function getDateTimeArray($timeArray, $completiondate)
+    {
+        $times = $timeArray;
+        foreach ($timeArray as $key => $value) {
+            $times[$key]['starttimeinstate'] = $completiondate['dateofcompletion']. " " . $value['starttimeinstate'];
+        }
+        return $times; 
+    }
+
+
+
+
+    // Funktion som udregner tiden i hver state
     public function getTimeDifference($timeArray)
     {
-        //$times = $timeArray;
         $times = $timeArray;
         $length = sizeof($times);
 
@@ -26,7 +40,7 @@ class TimeInStateService
 
         $count = 0;
         foreach ($times as $time) {
-            if($count < $length-1) {
+            if ($count < $length - 1) {
                 $strStart = $time['starttimeinstate'];
                 $strEnd = $times[$count + 1]['starttimeinstate'];
                 $dteStart = new DateTime($strStart);
@@ -36,18 +50,6 @@ class TimeInStateService
 
                 $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
                 $count++;
-                /* } else if ($count == $length - 1) {
-
-                $strStart = $times[$count]['starttimeinstate'];
-                $strEnd = $nextBatchFirstState[0]['starttimeinstate'];
-                $dteStart = new DateTime($strStart);
-                $dteEnd = new DateTime($strEnd);
-                $dteDiff  = $dteStart->diff($dteEnd);
-                $dteDiff->format("%H:%I:%S");
-
-                $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
-                $count++;
-            } */
             }
         }
         return $AllTimeInStatesList;
