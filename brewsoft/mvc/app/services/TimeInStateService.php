@@ -11,9 +11,14 @@ class TimeInStateService
         $this->timeinstate = new TimeInState;
     }
 
-    // Lav et array med tiden og staten, gentagelser af states tages der ikke højde for
-    public function getAllTimeInStates($timeArray, $nextBatchFirstState)
+    public function getTimestampArray($timeArray, $nextBatchFirstState){
+        $times = array_merge($timeArray, $nextBatchFirstState);
+        return $timeArray;
+    }
+
+    public function getTimeDifference($timeArray)
     {
+        //$times = $timeArray;
         $times = $timeArray;
         $length = sizeof($times);
 
@@ -21,7 +26,7 @@ class TimeInStateService
 
         $count = 0;
         foreach ($times as $time) {
-            if ($count < $length - 1) {
+            if($count < $length-1) {
                 $strStart = $time['starttimeinstate'];
                 $strEnd = $times[$count + 1]['starttimeinstate'];
                 $dteStart = new DateTime($strStart);
@@ -31,7 +36,7 @@ class TimeInStateService
 
                 $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
                 $count++;
-            } else if ($count == $length - 1) {
+                /* } else if ($count == $length - 1) {
 
                 $strStart = $times[$count]['starttimeinstate'];
                 $strEnd = $nextBatchFirstState[0]['starttimeinstate'];
@@ -42,6 +47,7 @@ class TimeInStateService
 
                 $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
                 $count++;
+            } */
             }
         }
         return $AllTimeInStatesList;
@@ -54,12 +60,11 @@ class TimeInStateService
         $count = 0;
         foreach ($AllTimeInStatesList as $state) {
             if (empty($sorted)) {
-                $sorted[$count] = ["machinestate" => $state['machinestate'],"timeinstate" => $state["timeinstate"]];
+                $sorted[$count] = ["machinestate" => $state['machinestate'], "timeinstate" => $state["timeinstate"]];
                 $count++;
-            
-            } else if (in_array($state["machinestate"], array_column($sorted,'machinestate'))) {
+            } else if (in_array($state["machinestate"], array_column($sorted, 'machinestate'))) {
 
-                $index = array_search($state["machinestate"],array_column($sorted,"machinestate"));
+                $index = array_search($state["machinestate"], array_column($sorted, "machinestate"));
 
                 $tempoldtime = ($sorted[$index]["timeinstate"]);
                 $oldtime = $tempoldtime;
@@ -78,15 +83,13 @@ class TimeInStateService
                 $result = $dt->diff($dt_diff);
 
 
-                $sorted[$index] = ["machinestate" => $state['machinestate'],"timeinstate" => $result];
-
+                $sorted[$index] = ["machinestate" => $state['machinestate'], "timeinstate" => $result];
             } else {
-                $sorted[$count] = ["machinestate" => $state['machinestate'],"timeinstate" => $state["timeinstate"]];
+                $sorted[$count] = ["machinestate" => $state['machinestate'], "timeinstate" => $state["timeinstate"]];
                 $count++;
             }
         }
 
         return $sorted;
     }
-
 }

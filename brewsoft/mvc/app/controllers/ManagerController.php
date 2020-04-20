@@ -55,17 +55,26 @@ class ManagerController extends Controller
 	public function batchReport($productionlistID)
 	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
+		//print_r($timeArray);
 		$length = sizeof($timeArray) - 1;
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
-		$allTimesInStateList = $this->timeInStateService->getAllTimeInStates($timeArray, $nextBatchFirstTime);
+		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
+		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
 		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
-		foreach ($sorted as $state) {
+
+		$viewbag['alltimes'] = $allTimesInStateList;
+		$viewbag['sortedtimes'] = $sorted;
+
+		$this->view('manager/batchreport', $viewbag);
+
+
+		foreach ($allTimesInStateList as $state) {
 			print "<pre>";
 			print_r($state);
 			print "</pre>";
-/* 			echo $state['machinestate'];
-			echo $state["timeinstate"]->format("%H:%I:%S"); */
+			//echo $state['machinestate'];
+			//echo $state["timeinstate"]->format("%H:%I:%S:%f");
 		}
 	}
 }
