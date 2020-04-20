@@ -6,6 +6,15 @@ class MachineApiController extends Controller {
   private $machineJSON;
   private $machineId;
 
+  public function __construct() {
+    if(empty($machineJSON) && !empty($_SESSION["machineJSON"])) {
+      $this->machineJSON = $_SESSION["machineJSON"];
+    }
+    if(empty($machineId) && !empty($_SESSION["machineId"])) {
+      $this->$machineId = $_SESSION["machineId"];
+    }
+  }
+
   public function index() {
     $this->availableMachines();
   }
@@ -30,6 +39,7 @@ class MachineApiController extends Controller {
         switch ($http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE)) {
           case 200:  # OK
             $this->machineJSON = json_decode($resp);
+            $_SESSION["machineJSON"] = $this->machineJSON;
             $viewbag["json"] = $this->machineJSON;
             break;
           default:
@@ -45,22 +55,24 @@ class MachineApiController extends Controller {
         $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
 
     }
+    echo "<pre>"; var_dump($viewbag); echo "</pre>";
     // Show the available machines
-    $this->view("", $viewbag);
+    //$this->view("", $viewbag);
   }
 
   public function chooseMachine() {
     $viewbag = [];
     try {
-      $max_range = count($machineJSON) - 1;
+      $max_range = count($this->machineJSON) - 1;
       /*
        DEFAULT VALUE MIGHT CAUSE PROBLEMS!
        DIFFERENT WAY TO VALIDATE?
       */
       $options = array("options"=>array("default"=>0, "min_range"=>0, "max_range"=>$max_range));
       $machine = filter_input(INPUT_POST, "", FILTER_VALIDATE_INT, $options);
-      $machineId = $machineJSON[$machine]->machineID;
-      $response = json_encode($machineJSON[$machine]);
+      $this->machineId = $this->machineJSON[$machine]->machineID;
+      $_SESSION["machineID"] = $this->machineId;
+      $response = json_encode($this->machineJSON[$machine]);
 
       $ch = curl_init('http://localhost:8080/chooseMachine');
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -79,7 +91,8 @@ class MachineApiController extends Controller {
         $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
     }
     // Machine chosen, start controlling it
-    $this->view("", $viewbag);
+    echo "<pre>"; var_dump($viewbag); echo "</pre>";
+    //$this->view("", $viewbag);
   }
 
   public function startProduction() {
