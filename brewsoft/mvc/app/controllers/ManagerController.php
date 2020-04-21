@@ -10,6 +10,7 @@ class ManagerController extends Controller
 {
 	private $batchService;
 	private $oeeService;
+    protected $timeInStateService;
 
 	public function __construct()
 	{
@@ -20,6 +21,7 @@ class ManagerController extends Controller
 
 
 		
+        
 	public function index($param)
 	{
 	
@@ -58,20 +60,56 @@ class ManagerController extends Controller
 		}
 	}
 
+
+    public function completedBatches()
+    {
+        $batches = $this->model('Finalbatchinformation')->getCompletedBatches();
+		$viewbag['batches'] = $batches;
+		$this->view('manager/completedbatches', $viewbag);
+        
+
+    }
+	public function planBatch(){
+		$product = $this->model('Productionlist')->getProducts();
+		$viewbag['products'] = $product;
+		$this->view('manager/planbatch', $viewbag);
+		
+		if (isset($_POST['planbatch'])){
+			$batchID = $this->BatchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
+			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
+			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
+			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
+			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
+			$status = 'queued';
+			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
+			header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
+		}
+	}
+}
+
 	public function batchReport($productionlistID)
 	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
+		//print_r($timeArray);
 		$length = sizeof($timeArray) - 1;
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
-		$allTimesInStateList = $this->timeInStateService->getAllTimeInStates($timeArray, $nextBatchFirstTime);
+		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
+		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
 		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
-		foreach ($sorted as $state) {
+
+		$viewbag['alltimes'] = $allTimesInStateList;
+		$viewbag['sortedtimes'] = $sorted;
+
+		$this->view('manager/batchreport', $viewbag);
+
+
+		foreach ($allTimesInStateList as $state) {
 			print "<pre>";
 			print_r($state);
 			print "</pre>";
-/* 			echo $state['machinestate'];
-			echo $state["timeinstate"]->format("%H:%I:%S"); */
+			//echo $state['machinestate'];
+			//echo $state["timeinstate"]->format("%H:%I:%S:%f");
 		}
 	}
 
@@ -121,3 +159,4 @@ class ManagerController extends Controller
 		//$this->view('manager/');
 	}
 }
+

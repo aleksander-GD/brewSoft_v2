@@ -20,7 +20,7 @@ class TimeInState extends Database
 
     public function getFirstTimeNextBatch($timeInStateID){
         
-        $sql = "SELECT starttimeinstate, machinestate FROM timeinstate AS ts, machinestate AS ms WHERE timeinstateid =" . $timeInStateID . "AND ts.machinestateid = ms.machinestateid ORDER BY timeinstateid ASC;";
+        $sql = "SELECT timeinstateid, starttimeinstate, machinestate FROM timeinstate AS ts, machinestate AS ms WHERE timeinstateid =" . $timeInStateID . "AND ts.machinestateid = ms.machinestateid ORDER BY timeinstateid ASC;";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
