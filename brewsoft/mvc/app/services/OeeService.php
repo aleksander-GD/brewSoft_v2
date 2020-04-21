@@ -132,7 +132,7 @@ class OeeService
 
     public function calculateOeeForABatch($productionListid)
     {
-        // 
+        // oee of 0.047677519379845 for productionlistid 30 thats 4,7 %, is that correct?
         $oee = $this->calculateAvailability($productionListid) * $this->calculatePerformance($productionListid) * $this->calculateQuality($productionListid);
         return $oee;
     }
