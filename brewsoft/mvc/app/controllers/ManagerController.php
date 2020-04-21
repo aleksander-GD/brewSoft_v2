@@ -90,28 +90,28 @@ class ManagerController extends Controller
 	public function batchReport($productionlistID)
 	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
-		//print_r($timeArray);
 		$length = sizeof($timeArray) - 1;
+
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
+
 		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
 		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 
 		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
-
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
 
-		
-		$viewbag['alltimes'] = $allTimesInStateList;
-		$viewbag['sortedtimes'] = $sorted;
-		$viewbag['datetime'] = $dateTimeArray;
+		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
 
+		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
+
+		$viewbag['tempandhumid'] = $tempAndHumidity;
+		$viewbag['datetime'] = $dateTimeArray;
+		$viewbag['products'] = $products;
 		$this->view('manager/batchreport', $viewbag);
-		print_r($completionDate);
-		foreach($dateTimeArray as $states){
-			print_r($states);
-		}
+
+
 
 	}
 

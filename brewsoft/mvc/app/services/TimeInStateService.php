@@ -21,10 +21,15 @@ class TimeInStateService
     public function getDateTimeArray($timeArray, $completiondate)
     {
         $times = $timeArray;
+        $count = 0;
         foreach ($timeArray as $key => $value) {
-            $times[$key]['starttimeinstate'] = $completiondate['dateofcompletion']. " " . $value['starttimeinstate'];
+            $times[$key]['starttimeinstate'] = $completiondate['dateofcompletion'] . " " . $value['starttimeinstate'];
+            if ($count < sizeof($times) - 1) {
+                $times[$key]['endtimeinstate'] = $completiondate['dateofcompletion'] . " " . $times[$key + 1]['starttimeinstate'];
+            }
+            $count++;
         }
-        return $times; 
+        return array_slice($times, 0, sizeof($times) - 1);
     }
 
 
