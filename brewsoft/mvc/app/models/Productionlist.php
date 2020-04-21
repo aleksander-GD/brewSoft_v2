@@ -56,6 +56,15 @@
         return $results;
     }
 
+    public function getCompletedBatches()
+    {
+        $sql = "SELECT * FROM productionlist WHERE status = 'completed';";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        return $results;
+    }
+
     public function getLatestBatchNumber()
     {
         $sql = "SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1";

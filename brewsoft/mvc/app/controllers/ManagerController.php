@@ -85,7 +85,7 @@ class ManagerController extends Controller
 			header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
 		}
 	}
-}
+
 
 	public function batchReport($productionlistID)
 	{
@@ -115,30 +115,6 @@ class ManagerController extends Controller
 
 	}
 
-	public function completedBatches()
-	{
-		$batches = $this->model('Finalbatchinformation')->getCompletedBatches();
-		$viewbag['batches'] = $batches;
-		$this->view('manager/completedbatches', $viewbag);
-	}
-	public function planBatch()
-	{
-		$product = $this->model('Productionlist')->getProducts();
-		$viewbag['products'] = $product;
-		$this->view('manager/planbatch', $viewbag);
-
-		if (isset($_POST['planbatch'])) {
-			$batchID = $this->batchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
-			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
-			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
-			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
-			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
-			$status = 'queued';
-			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchqueue');
-		}
-	}
-
 	public function displayOeeForDay()
 	{
 		if ($this->post()) {
@@ -155,10 +131,13 @@ class ManagerController extends Controller
 		}
 	}
 
-	public function displayOeeForBatch()
+	public function displayOeeForBatch($productionlistID)
 	{
+		/* $this->oeeService->calculateAvailability($productionlistID);
+		$this->oeeService->calculatePerformance($productionlistID);
+		$this->oeeService->calculateQuality($productionlistID); */
 
+		$this->oeeService->calculateOeeForABatch($productionlistID);
 		//$this->view('manager/');
 	}
 }
-

@@ -1,10 +1,16 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Finalbatchinformation.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Productionlist.php';
+
 class OeeService
 {
     private $dateofcompletion;
     private $finalbatchinformationModel;
     private $plannedProductionTime;
+    private $timeinstateModel;
+    private $timeInStateService;
+    private $runtime;
     // importere glumbys
 
     public function __construct()
@@ -13,12 +19,14 @@ class OeeService
         //$this->dateofcompletion = "2019-12-04"; // For test
 
         $this->finalbatchinformationModel = new Finalbatchinformation();
+        $this->timeInStateService = new TimeInStateService();
+        $this->timeinstateModel = new TimeInState();
         $this->plannedProductionTime = 28800;
     }
 
     public function calculateOeeForOneDay()
     {
-        $batchResults = $this->finalbatchinformationModel->getAcceptedCount($this->dateofcompletion);
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCount($this->dateofcompletion);
 
         $oee = 0;
         foreach ($batchResults as $batchData) {
@@ -34,7 +42,7 @@ class OeeService
         return $calculateOee;
     }
 
-    public function calculateAvailability()
+    public function calculateAvailability($productionListid)
     {
         /*  Availability = Run Time / Planned Production Time
 
@@ -43,16 +51,89 @@ class OeeService
             Fra du stopper og du starter den næste. Maintenance og inventory er også downtime. 
 
             Planned Production Time: 28800 */
+        //$completedBatches = $this->finalbatchinformationModel->getCompletedBatches();
+
+
+
+        $runtime = $this->calculateRuntime($productionListid);
+
+        $availability = $runtime / $this->plannedProductionTime;
+
+        return $availability;
+    }
+    private function calculateRuntime($productionListid)
+    {
+        $timeArray = $this->timeinstateModel->getTimeInStates($productionListid);
+
+        $completedDate = $this->finalbatchinformationModel->getDateOfCompletion($productionListid);
+
+        $dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
+
+        $timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
+
+        $sortedTimes = $this->timeInStateService->getSortedTimeInStates($timeDifference);
+
+        $startTime = 0;
+        $endTime = 0;
+        $downTime = 0;
+
+        foreach ($sortedTimes as $time) {
+
+            if (strtolower($time["machinestate"]) == 'execute') {
+                $seconds = $time["timeinstate"]->days * 86400 + $time["timeinstate"]->h * 3600 + $time["timeinstate"]->i * 60 + $time["timeinstate"]->s;
+                $startTime = $seconds;
+            }
+            if (strtolower($time["machinestate"]) == 'complete') {
+                $seconds = $time["timeinstate"]->days * 86400 + $time["timeinstate"]->h * 3600 + $time["timeinstate"]->i * 60 + $time["timeinstate"]->s;
+                $endTime = $seconds;
+            }
+            if (strtolower($time["machinestate"]) == 'held') {
+                $seconds = $time["timeinstate"]->days * 86400 + $time["timeinstate"]->h * 3600 + $time["timeinstate"]->i * 60 + $time["timeinstate"]->s;
+                $downTime = $seconds;
+            }
+        }
+        $this->runtime = ($this->plannedProductionTime - ($startTime + $endTime)) - $downTime;
+        //$this->runtime = ($startTime + $endTime) - $downTime;
+        return $this->runtime;
     }
 
-    public function calculateRunTime($data)
+    public function calculatePerformance($productionListid)
     {
-    }
-    public function calculatePerformance()
-    {
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdID($productionListid);
+
+        foreach ($batchResults as $batchData) {
+            if (is_numeric($batchData['totalcount']) && is_numeric($batchData['idealcycletime'])) {
+                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $batchData['idealcycletime'];
+            } else {
+                // error handling
+            }
+        }
+
+        $performance = $idealCycleTimeMultiTotalCount / $this->runtime;
+
+        return $performance;
     }
 
-    public function calculateQuality()
+    public function calculateQuality($productionListid)
     {
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdID($productionListid);
+
+        $quality = 0;
+        foreach ($batchResults as $batchData) {
+            if (is_numeric($batchData['totalcount']) && is_numeric($batchData['acceptedcount'])) {
+                $quality = $batchData['totalcount'] / $batchData['acceptedcount'];
+            } else {
+                // error handling
+            }
+        }
+
+        return $quality;
+    }
+
+    public function calculateOeeForABatch($productionListid)
+    {
+        // 
+        $oee = $this->calculateAvailability($productionListid) * $this->calculatePerformance($productionListid) * $this->calculateQuality($productionListid);
+        return $oee;
     }
 }

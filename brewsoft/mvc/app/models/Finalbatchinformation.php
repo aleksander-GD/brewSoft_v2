@@ -14,11 +14,10 @@ class Finalbatchinformation extends Database
         $results = $stmt->fetchAll();
         return $results;
     }
-
-
-    public function getAcceptedCount($dateofcompletion)
+    
+    public function getAcceptedAndTotalCount($dateofcompletion)
     {
-        $select_query = "SELECT fbi.productid, fbi.acceptedcount, pt.idealcycletime ";
+        $select_query = "SELECT fbi.productid, fbi.acceptedcount, fbi.totalcount, pt.idealcycletime ";
         $from_query = "FROM finalbatchinformation AS fbi, producttype AS pt ";
         $where_query = "WHERE fbi.dateofcompletion = :dateofcompletion AND fbi.productid = pt.productid; ";
 
@@ -33,7 +32,33 @@ class Finalbatchinformation extends Database
         foreach ($results as $result) {
             $convertedResults['productid'] = intval($result['productid']);
             $convertedResults['acceptedcount'] = intval($result['acceptedcount']);
-            $convertedResults['idealcycletime'] = intval($result['idealcycletime']);
+            $convertedResults['totalcount'] = intval($result['totalcount']);
+            $convertedResults['idealcycletime'] = floatval($result['idealcycletime']);
+            $resultObject[] = $convertedResults;
+        }
+
+        return $resultObject;
+    }
+
+    public function getAcceptedAndTotalCountForProdID($productionlistid)
+    {
+        $select_query = "SELECT fbi.productid, fbi.acceptedcount, fbi.totalcount, pt.idealcycletime ";
+        $from_query = "FROM finalbatchinformation AS fbi, producttype AS pt ";
+        $where_query = "WHERE fbi.productionlistid = :productionlistid AND fbi.productid = pt.productid; ";
+
+        $query = $select_query . $from_query . $where_query;
+
+        $prepared_statement = $this->conn->prepare($query);
+        $prepared_statement->bindParam(':productionlistid', $productionlistid);
+        $prepared_statement->execute();
+        $results = $prepared_statement->fetchAll();
+
+        $resultObject = array();
+        foreach ($results as $result) {
+            $convertedResults['productid'] = intval($result['productid']);
+            $convertedResults['acceptedcount'] = intval($result['acceptedcount']);
+            $convertedResults['totalcount'] = intval($result['totalcount']);
+            $convertedResults['idealcycletime'] = floatval($result['idealcycletime']);
             $resultObject[] = $convertedResults;
         }
 
