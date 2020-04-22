@@ -28,7 +28,7 @@ class Finalbatchinformation extends Database
 
     public function getProductCounts($productionlistID)
     {
-        $sql = "SELECT pt.productname, fb.defectcount, fb.acceptedcount 
+        $sql = "SELECT pt.productname, fb.totalcount, fb.defectcount, fb.acceptedcount 
         FROM producttype AS pt, finalbatchinformation as fb
         WHERE pt.productid = fb.productid AND productionlistid =" . $productionlistID . ";";
         $stmt = $this->conn->prepare($sql);
