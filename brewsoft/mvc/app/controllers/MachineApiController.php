@@ -24,7 +24,7 @@ class MachineApiController extends Controller {
     $viewbag = [];
     if($this->post()) {
       try {
-        var_dump($_POST);
+        //var_dump($_POST);
         $max_range = $_SESSION['machineMax'];//count($this->machineJSON) - 1; // Get from $_POST or other place.
         /*
          DEFAULT VALUE MIGHT CAUSE PROBLEMS!
@@ -44,7 +44,7 @@ class MachineApiController extends Controller {
         $machine = filter_input_array(INPUT_POST, $filters);
         //$_SESSION["machine"][] = $machine;
         $response = json_encode($machine);
-        echo "<pre>"; var_dump($response); echo "</pre>";
+        //echo "<pre>"; var_dump($response); echo "</pre>";
 
         $ch = curl_init('http://localhost:8080/chooseMachine');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -67,8 +67,8 @@ class MachineApiController extends Controller {
     }
 
     // Machine chosen, start controlling it
-    echo "<pre>"; var_dump($viewbag); echo "</pre>";
-   // $this->view("machine/machines", $viewbag);
+    //echo "<pre>"; var_dump($viewbag); echo "</pre>";
+    $this->view("machine/choice", $viewbag);
   }
 
   public function startProduction() {
