@@ -27,11 +27,17 @@ public class ControllerAPI {
     private MachineController mc = new MachineController(machineObj, sub);
     
     @GetMapping("/machineStart")
-    public String mcStart(@RequestParam(value = "machineId") int machineId) {
-        mc = machineControllerMap.get(machineId);
+    public String mcStart(@RequestParam(value = "machineId") String machineId) {
         String returnText;
-        if(machineControllerMap.containsKey(machineId)) {
-            returnText = mc.startProduction();
+        Integer machineID;
+        if(!machineId.isBlank()) {
+            machineID = Integer.parseInt(machineId);
+            if(machineControllerMap.containsKey(machineID)) {
+                mc = machineControllerMap.get(machineID);
+                returnText = mc.startProduction();
+            } else {
+                returnText = "Error, machineId not found!";
+            }
         } else {
             returnText = "Error, no machine chosen!";
         }
@@ -39,11 +45,17 @@ public class ControllerAPI {
     }
     
     @GetMapping("/machineReset")
-    public String mcReset(@RequestParam(value = "machineId") int machineId) {
-        mc = machineControllerMap.get(machineId);
+    public String mcReset(@RequestParam(value = "machineId") String machineId) {
         String returnText;
-        if(machineControllerMap.containsKey(machineId)) {
-            returnText = mc.resetMachine();
+        Integer machineID;
+        if(!machineId.isBlank()) {
+            machineID = Integer.parseInt(machineId);
+            if(machineControllerMap.containsKey(machineID)) {
+                mc = machineControllerMap.get(machineID);
+                returnText = mc.resetMachine();
+            } else {
+                returnText = "Error, machineId not found!";
+            }
         } else {
             returnText = "Error, no machine chosen!";
         }
@@ -51,11 +63,17 @@ public class ControllerAPI {
     }
     
     @GetMapping("/machineClear")
-    public String mcClear(@RequestParam(value = "machineId") int machineId) {
-        mc = machineControllerMap.get(machineId);
+    public String mcClear(@RequestParam(value = "machineId") String machineId) {
         String returnText;
-        if(machineControllerMap.containsKey(machineId)) {
-            returnText = mc.clearState();
+        Integer machineID;
+        if(!machineId.isBlank()) {
+            machineID = Integer.parseInt(machineId);
+            if(machineControllerMap.containsKey(machineID)) {
+                mc = machineControllerMap.get(machineID);
+                returnText = mc.clearState();
+            } else {
+                returnText = "Error, machineId not found!";
+            }
         } else {
             returnText = "Error, no machine chosen!";
         }
@@ -63,11 +81,17 @@ public class ControllerAPI {
     }
     
     @GetMapping("/machineAbort")
-    public String mcAbort(@RequestParam(value = "machineId") int machineId) {
-        mc = machineControllerMap.get(machineId);
+    public String mcAbort(@RequestParam(value = "machineId") String machineId) {
         String returnText;
-        if(machineControllerMap.containsKey(machineId)) {
-            returnText = mc.abortProduction();
+        Integer machineID;
+        if(!machineId.isBlank()) {
+            machineID = Integer.parseInt(machineId);
+            if(machineControllerMap.containsKey(machineID)) {
+                mc = machineControllerMap.get(machineID);
+                returnText = mc.abortProduction();
+            } else {
+                returnText = "Error, machineId not found!";
+            }
         } else {
             returnText = "Error, no machine chosen!";
         }
@@ -75,11 +99,17 @@ public class ControllerAPI {
     }
     
     @GetMapping("/machineStop")
-    public String mcStop(@RequestParam(value = "machineId") int machineId) {
-        mc = machineControllerMap.get(machineId);
+    public String mcStop(@RequestParam(value = "machineId") String machineId) {
         String returnText;
-        if(machineControllerMap.containsKey(machineId)) {
-            returnText = mc.stopProduction();
+        Integer machineID;
+        if(!machineId.isBlank()) {
+            machineID = Integer.parseInt(machineId);
+            if(machineControllerMap.containsKey(machineID)) {
+                mc = machineControllerMap.get(machineID);
+                returnText = mc.stopProduction();
+            } else {
+                returnText = "Error, machineId not found!";
+            }
         } else {
             returnText = "Error, no machine chosen!";
         }
