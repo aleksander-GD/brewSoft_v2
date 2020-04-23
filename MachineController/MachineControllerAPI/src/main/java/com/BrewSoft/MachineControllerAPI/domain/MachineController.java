@@ -45,6 +45,10 @@ public class MachineController implements IMachineControl {
         return rtm;
     }
 
+    /**
+     * TODO: Check if the machine actually starts, somehow...
+     * @return 
+     */
     @Override
     public Map<String, String> startProduction() {
         String returnTxt;
