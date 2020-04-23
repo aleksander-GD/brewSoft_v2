@@ -14,10 +14,10 @@
 <form id="machineform">
     <select id="machines" name="machinelist" form="machineform">
         <?php
-        if (count($viewbag["json"]) != 0) {
-            for ($i = 0; $i < count($viewbag["json"]); $i++) {
+        if (count($viewbag["availableMachines"]) != 0) {
+            for ($i = 0; $i < count($viewbag["availableMachines"]); $i++) {
                 ?>
-                <option value="<?php echo $i ?>">Machine <?php echo $i ?></option>
+                <option value="<?php echo $i ?>"<?php if (isset($_GET["machinelist"]) && $_GET["machinelist"] == $i) {echo "selected";} ?>>Machine <?php echo $i+1 ?></option>
                 <?php
             }
         } else {
@@ -27,17 +27,30 @@
         }
         ?>
     </select>
-
-    <br><br>
-
-    <label for="machineid">Machine ID:</label>
-    <input type="text" id="machineid" value="<?php if (isset($_GET["machinelist"])) { echo $viewbag["json"][$_GET["machinelist"]]["machineID"]; } ?>" readonly><br><br>
-    <label for="hostname">Hostname:</label>
-    <input type="text" id="hostname" value="<?php if (isset($_GET["machinelist"])) { echo $viewbag["json"][$_GET["machinelist"]]["hostname"]; } ?>" readonly><br><br>
-    <label for="port">Port:</label>
-    <input type="text" id="port" value="<?php if (isset($_GET["machinelist"])) { echo $viewbag["json"][$_GET["machinelist"]]["port"]; } ?>" readonly><br><br>
-
-    <input type="submit" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/chooseMachine')" value="Choose">
+    <input type="submit" class="item" value="Choose">
 </form>
+    <br><br>
+    <?php
+    if (isset($_GET["machinelist"])) {
+        ?>
+        <form action="/brewsoft/mvc/public/machineapi/chooseMachine" method="POST">
+            <label for="machineID">Machine ID:</label>
+            <input type="text" id="machineID" name="machineID" value="<?php if (isset($_GET["machinelist"])) {
+                echo $viewbag["availableMachines"][$_GET["machinelist"]]["brewerymachineid"];
+            } ?>" readonly><br><br>
+            <label for="hostname">Hostname:</label>
+            <input type="text" id="hostname" name="hostname" value="<?php if (isset($_GET["machinelist"])) {
+                echo $viewbag["availableMachines"][$_GET["machinelist"]]["hostname"];
+            } ?>" readonly><br><br>
+            <label for="port">Port:</label>
+            <input type="text" id="port" name="port" value="<?php if (isset($_GET["machinelist"])) {
+                echo $viewbag["availableMachines"][$_GET["machinelist"]]["port"];
+            } ?>" readonly><br><br>
+
+            <input type="submit" class="item" value="Confirm">
+        </form>
+        <?php
+    }
+    ?>
 </body>
 </html>

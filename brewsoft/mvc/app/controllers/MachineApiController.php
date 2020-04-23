@@ -68,7 +68,7 @@ class MachineApiController extends Controller {
 
     // Machine chosen, start controlling it
     echo "<pre>"; var_dump($viewbag); echo "</pre>";
-    $this->view("machine/machines", $viewbag);
+   // $this->view("machine/machines", $viewbag);
   }
 
   public function startProduction() {
