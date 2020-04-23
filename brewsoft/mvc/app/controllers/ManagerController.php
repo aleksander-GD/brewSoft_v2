@@ -10,21 +10,20 @@ class ManagerController extends Controller
 {
 	private $batchService;
 	private $oeeService;
-    protected $timeInStateService;
+	protected $timeInStateService;
 
 	public function __construct()
 	{
 		$this->batchService = new BatchService();
 		$this->oeeService = new OeeService();
-        $this->timeInStateService = new TimeInStateService();
+		$this->timeInStateService = new TimeInStateService();
 	}
 
 
-		
-        
+
+
 	public function index($param)
 	{
-	
 	}
 
 	public function batchQueue()
@@ -61,20 +60,19 @@ class ManagerController extends Controller
 	}
 
 
-    public function completedBatches()
-    {
-        $batches = $this->model('Finalbatchinformation')->getCompletedBatches();
+	public function completedBatches()
+	{
+		$batches = $this->model('Finalbatchinformation')->getCompletedBatches();
 		$viewbag['batches'] = $batches;
 		$this->view('manager/completedbatches', $viewbag);
-        
-
-    }
-	public function planBatch(){
+	}
+	public function planBatch()
+	{
 		$product = $this->model('Productionlist')->getProducts();
 		$viewbag['products'] = $product;
 		$this->view('manager/planbatch', $viewbag);
-		
-		if (isset($_POST['planbatch'])){
+
+		if (isset($_POST['planbatch'])) {
 			$batchID = $this->BatchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
 			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
 			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
@@ -82,7 +80,7 @@ class ManagerController extends Controller
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
+			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
 	}
 
@@ -110,9 +108,6 @@ class ManagerController extends Controller
 		$viewbag['datetime'] = $dateTimeArray;
 		$viewbag['products'] = $products;
 		$this->view('manager/batchreport', $viewbag);
-
-
-
 	}
 
 	public function displayOeeForDay()
@@ -131,13 +126,21 @@ class ManagerController extends Controller
 		}
 	}
 
-	public function displayOeeForBatch($productionlistID)
+	public function displayOeeForBatch($productionListid)
 	{
-		/* $this->oeeService->calculateAvailability($productionlistID);
-		$this->oeeService->calculatePerformance($productionlistID);
-		$this->oeeService->calculateQuality($productionlistID); */
+		$timeArray = $this->timeinstateModel->getTimeInStates($productionListid);
 
-		$this->oeeService->calculateOeeForABatch($productionlistID);
+		$completedDate = $this->finalbatchinformationModel->getDateOfCompletion($productionListid);
+
+		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
+
+		$timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
+
+		$availability = $this->oeeService->calculateAvailability($productionListid, $timeDifference);
+		$performance = $this->oeeService->calculatePerformance($productionListid);
+		$quality = $this->oeeService->calculateQuality($productionListid);
+
+		$this->oeeService->calculateOeeForABatch($productionListid, $availability, $performance, $quality);
 		//$this->view('manager/');
 	}
 }

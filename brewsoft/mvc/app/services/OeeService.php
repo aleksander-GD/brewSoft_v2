@@ -42,35 +42,16 @@ class OeeService
         return $calculateOee;
     }
 
-    public function calculateAvailability($productionListid)
+    public function calculateAvailability($productionListid, $timeDifference)
     {
-        /*  Availability = Run Time / Planned Production Time
-
-            Run time: Hvornår startede den og hvornår sluttede den, 
-
-            Fra du stopper og du starter den næste. Maintenance og inventory er også downtime. 
-
-            Planned Production Time: 28800 */
-        //$completedBatches = $this->finalbatchinformationModel->getCompletedBatches();
-
-
-
-        $runtime = $this->calculateRuntime($productionListid);
+        $runtime = $this->calculateRuntime($productionListid, $timeDifference);
 
         $availability = $runtime / $this->plannedProductionTime;
 
         return $availability;
     }
-    private function calculateRuntime($productionListid)
+    private function calculateRuntime($productionListid, $timeDifference)
     {
-        $timeArray = $this->timeinstateModel->getTimeInStates($productionListid);
-
-        $completedDate = $this->finalbatchinformationModel->getDateOfCompletion($productionListid);
-
-        $dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
-
-        $timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
-
         $sortedTimes = $this->timeInStateService->getSortedTimeInStates($timeDifference);
 
         $startTime = 0;
@@ -92,7 +73,7 @@ class OeeService
                 $downTime = $seconds;
             }
         }
-        $this->runtime = ($this->plannedProductionTime - ($startTime + $endTime)) - $downTime;
+        $this->runtime = (($startTime + $endTime)) - $downTime;
         //$this->runtime = ($startTime + $endTime) - $downTime;
         return $this->runtime;
     }
@@ -130,10 +111,11 @@ class OeeService
         return $quality;
     }
 
-    public function calculateOeeForABatch($productionListid)
+    public function calculateOeeForABatch($availability, $performance, $quality)
     {
         // oee of 0.047677519379845 for productionlistid 30 thats 4,7 %, is that correct?
-        $oee = $this->calculateAvailability($productionListid) * $this->calculatePerformance($productionListid) * $this->calculateQuality($productionListid);
+        //$oee = $this->calculateAvailability($productionListid, $timeDifference) * $this->calculatePerformance($productionListid) * $this->calculateQuality($productionListid);
+        $oee = $availability * $performance * $quality;
         return $oee;
     }
 }
