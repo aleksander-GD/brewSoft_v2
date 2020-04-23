@@ -5,15 +5,18 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/BatchService.php';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/TimeInStateService.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/ProductionInfoService.php';
 
 class ManagerController extends Controller
 {
 	private $BatchService;
-    protected $timeInStateService;
+	protected $timeInStateService;
+	protected $productionInfoService;
 
 	public function __construct(){
 		$this->BatchService = new BatchService();
-        $this->timeInStateService = new TimeInStateService();
+		$this->timeInStateService = new TimeInStateService();
+		$this->productionInfoService = new ProductionInfoService;
 	}
 
 	
@@ -84,26 +87,30 @@ class ManagerController extends Controller
 	public function batchReport($productionlistID)
 	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
-		//print_r($timeArray);
 		$length = sizeof($timeArray) - 1;
+
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
+
 		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
-		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 
-		$viewbag['alltimes'] = $allTimesInStateList;
-		$viewbag['sortedtimes'] = $sorted;
+		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
+		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
 
+		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
+
+		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
+
+		$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
+
+
+		$viewbag['tempandhumid'] = $tempAndHumidity;
+		$viewbag['datetime'] = $dateTimeArray;
+		$viewbag['products'] = $products;
 		$this->view('manager/batchreport', $viewbag);
 
 
-		foreach ($allTimesInStateList as $state) {
-			print "<pre>";
-			print_r($state);
-			print "</pre>";
-			//echo $state['machinestate'];
-			//echo $state["timeinstate"]->format("%H:%I:%S:%f");
-		}
+
 	}
 }

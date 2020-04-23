@@ -14,4 +14,26 @@ class Finalbatchinformation extends Database
         $results = $stmt->fetchAll();
         return $results;
     }
+
+    public function getDateOfCompletion($productionlistID)
+    {
+        $sql = "SELECT dateofcompletion 
+                FROM finalbatchinformation
+                WHERE productionlistid =" . $productionlistID . ";";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetch();
+        return $results;
+    }
+
+    public function getProductCounts($productionlistID)
+    {
+        $sql = "SELECT pt.productname, fb.totalcount, fb.defectcount, fb.acceptedcount 
+        FROM producttype AS pt, finalbatchinformation as fb
+        WHERE pt.productid = fb.productid AND productionlistid =" . $productionlistID . ";";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetch();
+        return $results;
+    }
 }
