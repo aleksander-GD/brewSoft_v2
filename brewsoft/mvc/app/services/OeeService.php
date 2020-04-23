@@ -1,8 +1,4 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Finalbatchinformation.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Productionlist.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/ProductType.php';
 
 class OeeService
 {
@@ -18,23 +14,18 @@ class OeeService
     public function __construct()
     {
         $this->dateofcompletion = filter_input(INPUT_POST, "dateofcompletion", FILTER_SANITIZE_STRING);
-        //$this->dateofcompletion = "2019-12-04"; // For test
-
-        $this->finalbatchinformationModel = new Finalbatchinformation();
         $this->timeInStateService = new TimeInStateService();
-        $this->timeinstateModel = new TimeInState();
-        $this->producttypeModel = new ProductType();
         $this->plannedProductionTime = 28800;
     }
-
-    public function calculateOeeForOneDay()
+    public function getDateOfCompletion(){
+        return $this->dateofcompletion;
+    }
+    public function calculateOeeForOneDay($batchResults, $idealCycleTime)
     {
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForDate($this->dateofcompletion);
-
         $oee = 0;
         foreach ($batchResults as $batchData) {
-            if (is_numeric($batchData['acceptedcount']) && is_numeric($batchData['idealcycletime'])) {
-                $oee += $batchData['acceptedcount'] + $batchData['idealcycletime'];
+            if (is_numeric($batchData['acceptedcount'])) {
+                $oee += $batchData['acceptedcount'] + $idealCycleTime[0]['idealcycletime'];
             } else {
                 // error handling
             }
@@ -45,16 +36,13 @@ class OeeService
         return $calculateOee;
     }
 
-    public function calculateAvailability($productionListid, $timeDifference)
+    public function calculateAvailability($result, $timeDifference, $idealcycletime)
     {
-        $runtime = $this->calculateRuntime($productionListid, $timeDifference);
-
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdlistID($productionListid);
-
-        foreach ($batchResults as $batchData) {
+        $runtime = $this->calculateRuntime($timeDifference);
+        foreach ($result as $batchData) {
             if (is_numeric($batchData['totalcount'])) {
-                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] *
-                    $this->producttypeModel->getIdealCycleTimeForProductID($batchData['productid'])[0]['idealcycletime'];
+                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $idealcycletime;
+                    
             } else {
                 // error handling
             }
@@ -63,7 +51,7 @@ class OeeService
 
         return $availability;
     }
-    private function calculateRuntime($productionListid, $timeDifference)
+    private function calculateRuntime($timeDifference)
     {
         $sortedTimes = $this->timeInStateService->getSortedTimeInStates($timeDifference);
 
@@ -90,14 +78,11 @@ class OeeService
         return $this->runtime;
     }
 
-    public function calculatePerformance($productionListid)
+    public function calculatePerformance($result, $idealcycletime)
     {
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdlistID($productionListid);
-
-        foreach ($batchResults as $batchData) {
+        foreach ($result as $batchData) {
             if (is_numeric($batchData['totalcount'])) {
-                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] *
-                    $this->producttypeModel->getIdealCycleTimeForProductID($batchData['productid'])[0]['idealcycletime'];;
+                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $idealcycletime;
             } else {
                 // error handling
             }
@@ -108,12 +93,10 @@ class OeeService
         return $performance;
     }
 
-    public function calculateQuality($productionListid)
+    public function calculateQuality($result)
     {
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdlistID($productionListid);
-
         $quality = 0;
-        foreach ($batchResults as $batchData) {
+        foreach ($result as $batchData) {
             if (is_numeric($batchData['totalcount']) && is_numeric($batchData['acceptedcount'])) {
                 $quality = $batchData['acceptedcount'] / $batchData['totalcount'];
             } else {

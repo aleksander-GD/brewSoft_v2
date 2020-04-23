@@ -65,6 +65,7 @@ class ManagerController extends Controller
 
 	public function completedBatches()
 	{
+		
 		$batches = $this->model('Finalbatchinformation')->getCompletedBatches();
 		$viewbag['batches'] = $batches;
 		$this->view('manager/completedbatches', $viewbag);
@@ -120,8 +121,14 @@ class ManagerController extends Controller
 		if ($this->post()) {
 
 			if (isset($_POST['showOee'])) {
-
-				$viewbag['oeeResult'] = round($this->oeeService->calculateOeeForOneDay(), 2);
+				$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForDate($this->oeeService->getDateOfCompletion());
+				$productid = 0;
+				foreach ($batchResults as $batchData){
+					$productid = $batchData['productid'];
+				}
+				
+				$idealCycleTime = $this->model('ProductType')->getIdealCycleTimeForProductID($productid);
+				$viewbag['oeeResult'] = round($this->oeeService->calculateOeeForOneDay($batchResults,$idealCycleTime), 2);
 				//print_r($viewbag);
 
 				$this->view('manager/oee', $viewbag);
@@ -133,6 +140,7 @@ class ManagerController extends Controller
 
 	public function displayOeeForBatch($productionListid)
 	{
+		echo phpinfo();
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionListid);
 
 		$completedDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionListid);
@@ -140,11 +148,14 @@ class ManagerController extends Controller
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
 
 		$timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
-		print_r($timeDifference);
 
-		$availability = $this->oeeService->calculateAvailability($productionListid, $timeDifference);
-		$performance = $this->oeeService->calculatePerformance($productionListid);
-		$quality = $this->oeeService->calculateQuality($productionListid);
+		$result = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionListid);
+		$idealcycletime = $this->model('ProductType') ->getIdealCycleTimeForProductID($result[0]['productid'])[0]['idealcycletime'];
+
+		$availability = $this->oeeService->calculateAvailability($result, $timeDifference, $idealcycletime);
+		$performance = $this->oeeService->calculatePerformance($result, $idealcycletime);
+
+		$quality = $this->oeeService->calculateQuality($result);
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
 		$viewbag['availability'] = $availability * 100;

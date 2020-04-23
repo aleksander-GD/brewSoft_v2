@@ -1,6 +1,6 @@
 <?php
 //require_once '..\core\Database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
 class Finalbatchinformation extends Database
 {

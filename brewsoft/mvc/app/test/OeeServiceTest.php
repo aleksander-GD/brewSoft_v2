@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once '..\services\OeeService.php';
+require_once '../services/OeeService.php';
 /* require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/OeeService.php'; */
 
 class OeeServiceTest extends TestCase
@@ -15,7 +15,8 @@ class OeeServiceTest extends TestCase
     protected $oeeForBatch;
     protected $prodlistid;
     protected $timeDifference;
-
+    protected $idealCycleTime;
+    protected $batchResult;
     protected $oeeservice;
 
 
@@ -26,6 +27,10 @@ class OeeServiceTest extends TestCase
         $this->performance = 92.307692307692;
         $this->quality = 87.5;
         $this->oeeForBatch = 87.5;
+
+        $this->testdate = '2019-12-11';
+        $this->expectedOee = 0.19;
+        
 
         $this->prodlistid = 26;
 
@@ -64,42 +69,35 @@ class OeeServiceTest extends TestCase
                 'timeinstate' => $this->dteDiff5
             )
         );
+
+        $this->batchResult = array(
+            0 => array(
+                'acceptedcount' => '50'
+            ),
+            1 => array(
+                'acceptedcount' => '5'
+            )
+        );
+        $this->idealcycletimearray = array(
+            0 => array(
+                'idealcycletime' => '0.3'
+            ),
+            1 => array(
+                'idealcycletime' => '0.3'
+            )
+        );
+
     }
 
     public function testAvailabilityCorrect()
     {
-        $expected = $this->availability;
+    $expected = $this->availability;
         $actual = $this->oeeservice->calculateAvailability($this->prodlistid, $this->timeDifference) * 100;
         $this->assertEquals($expected, $actual);
     }
-    /* public function testLowHumidity()
-    {
-        $expected = 2;
-        $array = $this->productionservice->getHighLowValues($this->valuearray);
-        $actual = $array['minhumid'];
+    public function testOEEforOneDay(){
+        $expected = $this->expectedOee;
+        $actual = $this->oeeservice->calculateOeeForOneDay($batchResults, $idealCycleTime);
         $this->assertEquals($expected, $actual);
-    }
-
-    public function testHighHumidity()
-    {
-        $expected = 12;
-        $array = $this->productionservice->getHighLowValues($this->valuearray);
-        $actual = $array['maxhumid'];
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testLowTemp()
-    {
-        $expected = 15;
-        $array = $this->productionservice->getHighLowValues($this->valuearray);
-        $actual = $array['mintemp'];
-        $this->assertEquals($expected, $actual);
-    }
-    public function testHighTemp()
-    {
-        $expected = 24;
-        $array = $this->productionservice->getHighLowValues($this->valuearray);
-        $actual = $array['maxtemp'];
-        $this->assertEquals($expected, $actual);
-    } */
+    } 
 }
