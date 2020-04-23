@@ -46,7 +46,6 @@
         return $result;
     }
 
-
     public function getQueuedBatches()
     {
         $sql = "SELECT * FROM productionlist WHERE status = 'queued';";
@@ -74,12 +73,5 @@
         return $result["batchid"];
     }
 
-    Public function getProducts()
-    {
-        $sql = "SELECT productid, productname FROM ProductType";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $results = $stmt->fetchAll();
-        return $results;
-    }
+    
 }

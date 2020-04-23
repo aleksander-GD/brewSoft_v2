@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<header>
+<html>
+
+<head>
     <title> CalculateOEE </title>
-</header>
+</head>
 
 <body>
     <div>
@@ -20,7 +22,7 @@
                                 echo $viewbag['oeeResult'] . '&#37';
                             } ?> </p><br>
         </div>
-       
+
     </div>
 
 </body>

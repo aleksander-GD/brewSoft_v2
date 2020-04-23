@@ -2,6 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Finalbatchinformation.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Productionlist.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/ProductType.php';
 
 class OeeService
 {
@@ -11,7 +12,8 @@ class OeeService
     private $timeinstateModel;
     private $timeInStateService;
     private $runtime;
-    // importere glumbys
+    private $producttypeModel;
+  
 
     public function __construct()
     {
@@ -21,12 +23,13 @@ class OeeService
         $this->finalbatchinformationModel = new Finalbatchinformation();
         $this->timeInStateService = new TimeInStateService();
         $this->timeinstateModel = new TimeInState();
+        $this->producttypeModel = new ProductType();
         $this->plannedProductionTime = 28800;
     }
 
     public function calculateOeeForOneDay()
     {
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCount($this->dateofcompletion);
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForDate($this->dateofcompletion);
 
         $oee = 0;
         foreach ($batchResults as $batchData) {
@@ -45,12 +48,13 @@ class OeeService
     public function calculateAvailability($productionListid, $timeDifference)
     {
         $runtime = $this->calculateRuntime($productionListid, $timeDifference);
-        
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdID($productionListid);
+
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdlistID($productionListid);
 
         foreach ($batchResults as $batchData) {
-            if (is_numeric($batchData['totalcount']) && is_numeric($batchData['idealcycletime'])) {
-                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $batchData['idealcycletime'];
+            if (is_numeric($batchData['totalcount'])) {
+                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] *
+                    $this->producttypeModel->getIdealCycleTimeForProductID($batchData['productid'])[0]['idealcycletime'];
             } else {
                 // error handling
             }
@@ -83,17 +87,17 @@ class OeeService
             }
         }
         $this->runtime = (($startTime + $endTime)) - $downTime;
-        //$this->runtime = ($startTime + $endTime) - $downTime;
         return $this->runtime;
     }
 
     public function calculatePerformance($productionListid)
     {
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdID($productionListid);
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdlistID($productionListid);
 
         foreach ($batchResults as $batchData) {
-            if (is_numeric($batchData['totalcount']) && is_numeric($batchData['idealcycletime'])) {
-                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $batchData['idealcycletime'];
+            if (is_numeric($batchData['totalcount'])) {
+                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] *
+                    $this->producttypeModel->getIdealCycleTimeForProductID($batchData['productid'])[0]['idealcycletime'];;
             } else {
                 // error handling
             }
@@ -106,7 +110,7 @@ class OeeService
 
     public function calculateQuality($productionListid)
     {
-        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdID($productionListid);
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdlistID($productionListid);
 
         $quality = 0;
         foreach ($batchResults as $batchData) {
@@ -118,12 +122,10 @@ class OeeService
         }
 
         return $quality;
-    } 
+    }
 
     public function calculateOeeForABatch($availability, $performance, $quality)
     {
-        // oee of 0.047677519379845 for productionlistid 30 thats 4,7 %, is that correct?
-        //$oee = $this->calculateAvailability($productionListid, $timeDifference) * $this->calculatePerformance($productionListid) * $this->calculateQuality($productionListid);
         $oee = ($availability * $performance * $quality) * 100;
         return $oee;
     }

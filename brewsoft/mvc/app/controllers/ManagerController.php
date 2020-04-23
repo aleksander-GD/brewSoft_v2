@@ -71,7 +71,7 @@ class ManagerController extends Controller
 	}
 	public function planBatch()
 	{
-		$product = $this->model('Productionlist')->getProducts();
+		$product = $this->model('ProductType')->getProducts();
 		$viewbag['products'] = $product;
 		$this->view('manager/planbatch', $viewbag);
 
@@ -140,6 +140,7 @@ class ManagerController extends Controller
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
 
 		$timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
+		print_r($timeDifference);
 
 		$availability = $this->oeeService->calculateAvailability($productionListid, $timeDifference);
 		$performance = $this->oeeService->calculatePerformance($productionListid);
