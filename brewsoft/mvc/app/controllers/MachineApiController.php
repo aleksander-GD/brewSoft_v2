@@ -17,7 +17,7 @@ class MachineApiController extends Controller {
 
     //echo "<pre>"; var_dump($viewbag); echo "</pre>";
     // Show the available machines
-    $this->view("machine/choice", $viewbag);
+    $this->view("machine/machines", $viewbag);
   }
 
   public function chooseMachine() {
@@ -68,7 +68,7 @@ class MachineApiController extends Controller {
 
     // Machine chosen, start controlling it
     echo "<pre>"; var_dump($viewbag); echo "</pre>";
-    //$this->view("machine/choice", $viewbag);
+    $this->view("machine/machines", $viewbag);
   }
 
   public function startProduction() {
