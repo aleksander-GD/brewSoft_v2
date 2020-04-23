@@ -31,10 +31,6 @@
 
                 <tbody id="queuedBatchData"></tbody>
 
-
-
-
-
             </table>
         </div>
         <input type="button" name="editbatch" class="editbatch" value="edit batch" />

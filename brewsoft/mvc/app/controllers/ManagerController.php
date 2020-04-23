@@ -12,12 +12,14 @@ class ManagerController extends Controller
 	private $batchService;
 	private $oeeService;
 	protected $timeInStateService;
+	protected $productionInfoService;
 
 	public function __construct()
 	{
 		$this->batchService = new BatchService();
 		$this->oeeService = new OeeService();
 		$this->timeInStateService = new TimeInStateService();
+		$this->productionInfoService = new ProductionInfoService();
 	}
 
 
@@ -131,9 +133,9 @@ class ManagerController extends Controller
 
 	public function displayOeeForBatch($productionListid)
 	{
-		$timeArray = $this->timeinstateModel->getTimeInStates($productionListid);
+		$timeArray = $this->model('TimeInState')->getTimeInStates($productionListid);
 
-		$completedDate = $this->finalbatchinformationModel->getDateOfCompletion($productionListid);
+		$completedDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionListid);
 
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
 
@@ -143,7 +145,12 @@ class ManagerController extends Controller
 		$performance = $this->oeeService->calculatePerformance($productionListid);
 		$quality = $this->oeeService->calculateQuality($productionListid);
 
-		$this->oeeService->calculateOeeForABatch($productionListid, $availability, $performance, $quality);
-		//$this->view('manager/');
+		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
+		$viewbag['availability'] = $availability * 100;
+		$viewbag['performance'] = $performance * 100;
+		$viewbag['quality'] = $quality * 100;
+
+		$viewbag['oeeForBatch'] = $oee;
+		$this->view('manager/showOeeForBatch', $viewbag);
 	}
 }

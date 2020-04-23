@@ -45,8 +45,17 @@ class OeeService
     public function calculateAvailability($productionListid, $timeDifference)
     {
         $runtime = $this->calculateRuntime($productionListid, $timeDifference);
+        
+        $batchResults = $this->finalbatchinformationModel->getAcceptedAndTotalCountForProdID($productionListid);
 
-        $availability = $runtime / $this->plannedProductionTime;
+        foreach ($batchResults as $batchData) {
+            if (is_numeric($batchData['totalcount']) && is_numeric($batchData['idealcycletime'])) {
+                $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $batchData['idealcycletime'];
+            } else {
+                // error handling
+            }
+        }
+        $availability = $runtime / ($idealCycleTimeMultiTotalCount);
 
         return $availability;
     }
@@ -102,20 +111,20 @@ class OeeService
         $quality = 0;
         foreach ($batchResults as $batchData) {
             if (is_numeric($batchData['totalcount']) && is_numeric($batchData['acceptedcount'])) {
-                $quality = $batchData['totalcount'] / $batchData['acceptedcount'];
+                $quality = $batchData['acceptedcount'] / $batchData['totalcount'];
             } else {
                 // error handling
             }
         }
 
         return $quality;
-    }
+    } 
 
     public function calculateOeeForABatch($availability, $performance, $quality)
     {
         // oee of 0.047677519379845 for productionlistid 30 thats 4,7 %, is that correct?
         //$oee = $this->calculateAvailability($productionListid, $timeDifference) * $this->calculatePerformance($productionListid) * $this->calculateQuality($productionListid);
-        $oee = $availability * $performance * $quality;
+        $oee = ($availability * $performance * $quality) * 100;
         return $oee;
     }
 }

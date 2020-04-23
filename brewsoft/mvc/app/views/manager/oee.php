@@ -17,9 +17,10 @@
 
         <div>
             <p for="OEE"> <?php if (!empty($viewbag['oeeResult'])) {
-                                echo $viewbag['oeeResult'];
+                                echo $viewbag['oeeResult'] . '&#37';
                             } ?> </p><br>
         </div>
+       
     </div>
 
 </body>

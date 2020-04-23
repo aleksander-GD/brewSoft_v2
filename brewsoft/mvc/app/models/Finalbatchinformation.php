@@ -6,7 +6,8 @@ class Finalbatchinformation extends Database
 {
     public function getCompletedBatches()
     {
-        $sql = "SELECT pl.batchid, fb.* 
+        $sql = "SELECT pl.batchid, fb.productionlistid, fb.brewerymachineid, fb.deadline, 
+        fb.dateofcreation, fb.dateofcompletion, fb.productid, fb.totalcount, fb.defectcount, fb.acceptedcount 
                 FROM productionlist AS pl, finalbatchinformation as fb
                 WHERE pl.productionlistid = fb.productionlistid;";
         $stmt = $this->conn->prepare($sql);
@@ -14,7 +15,7 @@ class Finalbatchinformation extends Database
         $results = $stmt->fetchAll();
         return $results;
     }
-    
+
     public function getAcceptedAndTotalCount($dateofcompletion)
     {
         $select_query = "SELECT fbi.productid, fbi.acceptedcount, fbi.totalcount, pt.idealcycletime ";
