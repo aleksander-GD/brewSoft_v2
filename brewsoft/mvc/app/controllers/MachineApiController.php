@@ -99,7 +99,7 @@ class MachineApiController extends Controller {
   }
 
   public function stopProduction($machineId) {
-    $viewbag = [];
+      $viewbag = [];
     try {
       $ch = curl_init('http://localhost:8080/machineStop?machineId='.$machineId);
       curl_setopt_array($ch, array(
@@ -124,7 +124,7 @@ class MachineApiController extends Controller {
   }
 
   public function resetMachine($machineId) {
-    $viewbag = [];
+      $viewbag = [];
     try {
       $endpoint = 'http://localhost:8080/machineReset?machineId='.$machineId;
       $ch = curl_init();
@@ -156,7 +156,7 @@ class MachineApiController extends Controller {
   }
 
   public function clearMachine($machineId) {
-    $viewbag = [];
+      $viewbag = [];
     try {
       $ch = curl_init('http://localhost:8080/machineClear?machineId='.$machineId);
       curl_setopt_array($ch, array(
@@ -181,7 +181,7 @@ class MachineApiController extends Controller {
   }
 
   public function abortMachine($machineId) {
-    $viewbag = [];
+      $viewbag = [];
     try {
       $ch = curl_init('http://localhost:8080/machineAbort?machineId='.$machineId);
       curl_setopt_array($ch, array(
