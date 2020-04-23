@@ -1,5 +1,6 @@
 <?php
 
+require_once 'TimeInStateService.php';
 class OeeService
 {
     private $dateofcompletion;
@@ -9,7 +10,6 @@ class OeeService
     private $timeInStateService;
     private $runtime;
     private $producttypeModel;
-  
 
     public function __construct()
     {
@@ -17,7 +17,8 @@ class OeeService
         $this->timeInStateService = new TimeInStateService();
         $this->plannedProductionTime = 28800;
     }
-    public function getDateOfCompletion(){
+    public function getDateOfCompletion()
+    {
         return $this->dateofcompletion;
     }
     public function calculateOeeForOneDay($batchResults, $idealCycleTime)
@@ -33,21 +34,20 @@ class OeeService
 
         $calculateOee = ($oee / $this->plannedProductionTime) * 100;
 
-        return $calculateOee;
+        return round($calculateOee, 2);
     }
 
-    public function calculateAvailability($result, $timeDifference, $idealcycletime)
+    public function calculateAvailability($batchResultArray, $timeDifference, $idealcycletime)
     {
         $runtime = $this->calculateRuntime($timeDifference);
-        foreach ($result as $batchData) {
+        foreach ($batchResultArray as $batchData) {
             if (is_numeric($batchData['totalcount'])) {
                 $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $idealcycletime;
-                    
             } else {
                 // error handling
             }
         }
-        $availability = $runtime / ($idealCycleTimeMultiTotalCount);
+        $availability = ($runtime / ($idealCycleTimeMultiTotalCount)) * 100;
 
         return $availability;
     }
@@ -74,13 +74,19 @@ class OeeService
                 $downTime = $seconds;
             }
         }
-        $this->runtime = (($startTime + $endTime)) - $downTime;
+        $runtime = (($startTime + $endTime)) - $downTime;
+        return $runtime;
+    }
+
+    public function getRuntime()
+    {
         return $this->runtime;
     }
 
-    public function calculatePerformance($result, $idealcycletime)
+    public function calculatePerformance($batchResultArray, $timeDifference, $idealcycletime)
     {
-        foreach ($result as $batchData) {
+        $runtime = $this->calculateRuntime($timeDifference);
+        foreach ($batchResultArray as $batchData) {
             if (is_numeric($batchData['totalcount'])) {
                 $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $idealcycletime;
             } else {
@@ -88,17 +94,17 @@ class OeeService
             }
         }
 
-        $performance = $idealCycleTimeMultiTotalCount / $this->runtime;
+        $performance = ($idealCycleTimeMultiTotalCount / $runtime) * 100;
 
         return $performance;
     }
 
-    public function calculateQuality($result)
+    public function calculateQuality($batchResultArray)
     {
         $quality = 0;
-        foreach ($result as $batchData) {
+        foreach ($batchResultArray as $batchData) {
             if (is_numeric($batchData['totalcount']) && is_numeric($batchData['acceptedcount'])) {
-                $quality = $batchData['acceptedcount'] / $batchData['totalcount'];
+                $quality = ($batchData['acceptedcount'] / $batchData['totalcount']) * 100;
             } else {
                 // error handling
             }
@@ -109,7 +115,7 @@ class OeeService
 
     public function calculateOeeForABatch($availability, $performance, $quality)
     {
-        $oee = ($availability * $performance * $quality) * 100;
+        $oee = (($availability / 100) * ($performance / 100) * ($quality / 100)) * 100;
         return $oee;
     }
 }

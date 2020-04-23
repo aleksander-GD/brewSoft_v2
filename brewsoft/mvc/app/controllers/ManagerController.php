@@ -65,7 +65,7 @@ class ManagerController extends Controller
 
 	public function completedBatches()
 	{
-		
+
 		$batches = $this->model('Finalbatchinformation')->getCompletedBatches();
 		$viewbag['batches'] = $batches;
 		$this->view('manager/completedbatches', $viewbag);
@@ -123,12 +123,12 @@ class ManagerController extends Controller
 			if (isset($_POST['showOee'])) {
 				$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForDate($this->oeeService->getDateOfCompletion());
 				$productid = 0;
-				foreach ($batchResults as $batchData){
+				foreach ($batchResults as $batchData) {
 					$productid = $batchData['productid'];
 				}
-				
+
 				$idealCycleTime = $this->model('ProductType')->getIdealCycleTimeForProductID($productid);
-				$viewbag['oeeResult'] = round($this->oeeService->calculateOeeForOneDay($batchResults,$idealCycleTime), 2);
+				$viewbag['oeeResult'] = $this->oeeService->calculateOeeForOneDay($batchResults, $idealCycleTime);
 				//print_r($viewbag);
 
 				$this->view('manager/oee', $viewbag);
@@ -140,7 +140,6 @@ class ManagerController extends Controller
 
 	public function displayOeeForBatch($productionListid)
 	{
-		echo phpinfo();
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionListid);
 
 		$completedDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionListid);
@@ -149,18 +148,17 @@ class ManagerController extends Controller
 
 		$timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
 
-		$result = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionListid);
-		$idealcycletime = $this->model('ProductType') ->getIdealCycleTimeForProductID($result[0]['productid'])[0]['idealcycletime'];
+		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionListid);
+		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
 
-		$availability = $this->oeeService->calculateAvailability($result, $timeDifference, $idealcycletime);
-		$performance = $this->oeeService->calculatePerformance($result, $idealcycletime);
-
-		$quality = $this->oeeService->calculateQuality($result);
+		$availability = $this->oeeService->calculateAvailability($batchResults, $timeDifference, $idealcycletime);
+		$performance = $this->oeeService->calculatePerformance($batchResults, $timeDifference,  $idealcycletime);
+		$quality = $this->oeeService->calculateQuality($batchResults);
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
-		$viewbag['availability'] = $availability * 100;
-		$viewbag['performance'] = $performance * 100;
-		$viewbag['quality'] = $quality * 100;
+		$viewbag['availability'] = $availability;
+		$viewbag['performance'] = $performance;
+		$viewbag['quality'] = $quality;
 
 		$viewbag['oeeForBatch'] = $oee;
 		$this->view('manager/showOeeForBatch', $viewbag);

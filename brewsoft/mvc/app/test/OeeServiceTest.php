@@ -10,13 +10,16 @@ class OeeServiceTest extends TestCase
 
     protected $productionservice;
     protected $availability;
+    protected $runtime;
     protected $performance;
     protected $quality;
     protected $oeeForBatch;
     protected $prodlistid;
     protected $timeDifference;
-    protected $idealCycleTime;
-    protected $batchResult;
+    protected $idealcycletimeOeeForBatch;
+    protected $batchResultOeeForBatch;
+    protected $idealcycletimeOeeOneDay;
+    protected $batchResultOeeOneDay;
     protected $oeeservice;
 
 
@@ -24,13 +27,14 @@ class OeeServiceTest extends TestCase
     {
         $this->oeeservice = new OeeService();
         $this->availability = 108.33333333333;
+        $this->runtime = 260;
         $this->performance = 92.307692307692;
         $this->quality = 87.5;
         $this->oeeForBatch = 87.5;
 
         $this->testdate = '2019-12-11';
         $this->expectedOee = 0.19;
-        
+
 
         $this->prodlistid = 26;
 
@@ -44,8 +48,6 @@ class OeeServiceTest extends TestCase
         $this->dteDiff2  = $this->DateTime2->diff($this->DateTime3);
         $this->dteDiff3  = $this->DateTime3->diff($this->DateTime4);
         $this->dteDiff4  = $this->DateTime4->diff($this->DateTime5);
-        $this->dteDiff5  = $this->DateTime5->diff($this->DateTime6);
-
 
         $this->timeDifference = array(
             0 => array(
@@ -64,40 +66,87 @@ class OeeServiceTest extends TestCase
                 'machinestate' => 'Idle',
                 'timeinstate' => $this->dteDiff4
             ),
-            4 => array(
+            /* 4 => array(
                 'machinestate' => 'Execute',
                 'timeinstate' => $this->dteDiff5
-            )
+            ) */
         );
 
-        $this->batchResult = array(
+        $this->batchResultOeeForBatch = array(
             0 => array(
-                'acceptedcount' => '50'
-            ),
-            1 => array(
-                'acceptedcount' => '5'
+                'productid' => 3,
+                'acceptedcount' => 700,
+                'totalcount' => 800
             )
         );
-        $this->idealcycletimearray = array(
-            0 => array(
-                'idealcycletime' => '0.3'
-            ),
-            1 => array(
-                'idealcycletime' => '0.3'
-            )
-        );
+        $this->idealcycletimeOeeForBatch =  0.3;
 
+        $this->batchResultOeeOneDay = array(
+            0 => array(
+                'acceptedcount' => 50
+            ),
+            1 => array(
+                'acceptedcount' => 5
+            )
+        );
+        $this->idealcycletimeOeeOneDay = array(
+            0 => array(
+                'idealcycletime' => 0.3
+            ),
+            1 => array(
+                'idealcycletime' => 0.3
+            )
+        );
     }
 
-    public function testAvailabilityCorrect()
+
+    public function testOEEforOneDay()
     {
-    $expected = $this->availability;
-        $actual = $this->oeeservice->calculateAvailability($this->prodlistid, $this->timeDifference) * 100;
+        $expected = $this->expectedOee;
+        $actual = $this->oeeservice->calculateOeeForOneDay($this->batchResultOeeOneDay, $this->idealcycletimeOeeOneDay);
         $this->assertEquals($expected, $actual);
     }
-    public function testOEEforOneDay(){
-        $expected = $this->expectedOee;
-        $actual = $this->oeeservice->calculateOeeForOneDay($batchResults, $idealCycleTime);
+
+    public function testCalculationOfAvailabilityCorrectValues()
+    {
+        $expected = $this->availability;
+        $actual = $this->oeeservice->calculateAvailability($this->batchResultOeeForBatch, $this->timeDifference, $this->idealcycletimeOeeForBatch);
         $this->assertEquals($expected, $actual);
-    } 
+    }
+
+    /* public function testCalculationOfAvailabilityInvalidValues()
+    {
+      
+    } */
+    public function testCalculationOfPerformanceCorrectValues()
+    {
+        $expected = $this->performance;
+        $actual = $this->oeeservice->calculatePerformance($this->batchResultOeeForBatch, $this->timeDifference, $this->idealcycletimeOeeForBatch);
+        $this->assertEquals($expected, $actual);
+    }
+    /* public function testCalculationOfPerformanceInvalidValues()
+    {
+      
+    } */
+    public function testCalculationOfQualityCorrectValues()
+    {
+        $expected = $this->quality;
+        $actual = $this->oeeservice->calculateQuality($this->batchResultOeeForBatch);
+        $this->assertEquals($expected, $actual);
+    }
+    /* public function testCalculationOfQualityInvalidValues()
+    {
+      
+    } */
+
+    public function testCalculationOfOeeForABatchCorrectValues()
+    {
+        $expected = $this->oeeForBatch;
+        $actual = $this->oeeservice->calculateOeeForABatch($this->availability, $this->performance, $this->quality);
+        $this->assertEquals($expected, $actual);
+    }
+    /* public function testCalculationOfOeeForABatchInvalidValues()
+    {
+      
+    } */
 }
