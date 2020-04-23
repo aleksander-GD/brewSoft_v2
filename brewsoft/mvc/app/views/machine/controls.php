@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-
-<header>
+<html lang="en">
+<head>
+    <body>
     <title>Machine Control</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src=""></script>
-    <html lang="en">
-</header>
-<pre>
-<?php var_dump($viewbag); ?>
-</pre>
+</head>
+
 <p>Machine buttons:</p>
 
 <form method="post">
     <div>
-        <input type="button" class="item" onclick="window.location.replace('/brewsoft/mvc/public/machineapi/startProduction');" value="Start Production">
+        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/startProduction')" value="Start Production">
     </div>
     <div>
-        <input type="button" class="item" onclick="location.replace(/machineapi/stopProduction)" value="Stop Production">
+        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/stopProduction')" value="Stop Production">
     </div>
     <div>
-        <input type="button" class="item" onclick="location.replace(/machineapi/abortMachine)" value="Abort Production">
+        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/abortMachine')" value="Abort Production">
     </div>
     <div>
-        <input type="button" class="item" onclick="location.replace(/machineapi/clearMachine)" value="Clear State">
+        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/clearMachine')" value="Clear State">
     </div>
     <div>
-       <input type="button" class="item" onclick="location.replace(/machineapi/resetMachine)" value="Reset Machine">
+       <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/resetMachine')" value="Reset Machine">
     </div>
 </form>
+</body>
 </html>
