@@ -1,21 +1,14 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
 class TimeInStateService
 {
-
-    protected $timeinstate;
-
-    public function __construct()
-    {
-        $this->timeinstate = new TimeInState;
-    }
 
     // Funktion som får de nødvendige tider og states. 
     public function getTimestampArray($timeArray, $nextBatchFirstState)
     {
         $times = array_merge($timeArray, $nextBatchFirstState);
-        return $timeArray;
+        return $times;
     }
 
     public function getDateTimeArray($timeArray, $completiondate)
@@ -35,10 +28,10 @@ class TimeInStateService
 
 
 
-    // Funktion som udregner tiden i hver state
-    public function getTimeDifference($timeArray)
+    // Funktion som udregner tiden brugt i hver state
+    public function getTimeDifference($mergedArray)
     {
-        $times = $timeArray;
+        $times = $mergedArray;
         $length = sizeof($times);
 
         $AllTimeInStatesList = array();

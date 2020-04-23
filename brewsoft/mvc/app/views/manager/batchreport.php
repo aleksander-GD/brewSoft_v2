@@ -1,14 +1,12 @@
 <?php
 
 $dateTime = $viewbag['datetime'];
+
 $tempAndHumid = $viewbag['tempandhumid'];
+$highlow = $viewbag['highlowtemphumid'];
+
+
 $products = $viewbag['products'];
-
-
-print_r($products);
-echo $products['acceptedcount'];
-
-
 
 
 ?>
@@ -30,8 +28,7 @@ echo $products['acceptedcount'];
         google.charts.load('current', {
             'packages': ['corechart']
         });
-
-
+        
         //Callback timeline
         google.charts.setOnLoadCallback(drawTimeline);
         //Callback lineChart
@@ -52,8 +49,13 @@ echo $products['acceptedcount'];
                 ?>
             ]);
             var options = {
-                title: 'Timeline of production',
                 height: 450,
+                hAxis: {
+                    format: 'HH:mm:ss',
+                },
+                timeline: {
+                    tooltipDateFormat: 'HH:mm:ss'
+                }
             };
             var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
             chart.draw(data, options);
@@ -84,8 +86,9 @@ echo $products['acceptedcount'];
                 vAxis: {
                     title: 'Temperature/Humidity',
                     viewWindow: {
-                        min: 20,
-                        max: 40
+                        //dynamic view window with buffer of two on the min / max values of temp and humidity
+                        min: <?php echo min($highlow) - 2;?> ,
+                        max: <?php echo max($highlow) + 2;?>
                     },
                 },
                 backgroundColor: 'white'
@@ -102,16 +105,17 @@ echo $products['acceptedcount'];
             var data = google.visualization.arrayToDataTable([
                 ['Status', 'Amount'],
                 <?php
-                echo "[ 'Accepted'" . "," . $products['acceptedcount'] . "]," .
-                    "[ 'Rejected'" . "," . $products['defectcount'] . "]";
+                
+                echo 
+                    "[ 'Accepted'" . "," . $products['acceptedcount'] . "]," .
+                    "[ 'Rejected'" . "," . $products['defectcount'] . "]," .
+                    "[ 'Not produced'" . "," . ($products['totalcount'] - $products['acceptedcount'] - $products['defectcount']) . "]";
                 ?>
 
             ]);
-
             var options = {
-
+                pieSliceText: 'value',
             };
-
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
             chart.draw(data, options);
@@ -120,12 +124,21 @@ echo $products['acceptedcount'];
 </head>
 
 <body>
-    <h2>Timeline for production</h2>
-    <div id="chart_div" style="width: 800px; height: 450px;"></div>
-    <h2>Production Info</h2>
-    <div id="line_div" style="width: 800px; height: 450px;"></div>
-    <h2>Productionstatus</h2>
-    <div id="piechart" style="width: 800px; height: 400px;"></div>
+    <div id="timeline-div">
+        <h2>Timeline for production</h2>
+        <div id="chart_div" style="width: 800px; height: 450px;"></div>
+    </div>
+    <div id="productioninfo-div">
+        <h2>Production Info</h2>
+        <p>Peak humidity: <?php echo $highlow['maxhumid'] ?> </p>
+        <p>Peak temprature: <?php echo $highlow['maxtemp'] ?> </p>
+        <div id="line_div" style="width: 800px; height: 450px;"></div>
+    </div>
+    <div id="piechart-div">
+        <h2>Productionstatus</h2>
+        <p>Total amount of products: <?php echo $products['totalcount']; ?> </p>
+        <div id="piechart" style="width: 800px; height: 400px;"></div>
+    </div>
 </body>
 
 </html>

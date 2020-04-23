@@ -5,6 +5,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/BatchService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/OeeService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/TimeInStateService.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/ProductionInfoService.php';
 
 class ManagerController extends Controller
 {
@@ -95,7 +96,6 @@ class ManagerController extends Controller
 
 		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
-		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 
 		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
@@ -103,6 +103,9 @@ class ManagerController extends Controller
 		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
 
 		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
+
+		$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
+
 
 		$viewbag['tempandhumid'] = $tempAndHumidity;
 		$viewbag['datetime'] = $dateTimeArray;
