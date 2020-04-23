@@ -94,7 +94,6 @@ class ManagerController extends Controller
 
 		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
-		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 
 		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
@@ -103,10 +102,7 @@ class ManagerController extends Controller
 
 		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
 
-		print_r($tempAndHumidity);
 		$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
-
-
 
 
 		$viewbag['tempandhumid'] = $tempAndHumidity;
