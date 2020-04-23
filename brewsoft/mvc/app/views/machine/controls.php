@@ -9,12 +9,14 @@
     <script src=""></script>
     <html lang="en">
 </header>
-
+<pre>
+<?php var_dump($viewbag); ?>
+</pre>
 <p>Machine buttons:</p>
 
 <form method="post">
     <div>
-        <input type="button" class="item" onclick="location.replace(/machineapi/startProduction)" value="Start Production">
+        <input type="button" class="item" onclick="window.location.replace('/brewsoft/mvc/public/machineapi/startProduction');" value="Start Production">
     </div>
     <div>
         <input type="button" class="item" onclick="location.replace(/machineapi/stopProduction)" value="Stop Production">

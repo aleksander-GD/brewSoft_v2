@@ -1,7 +1,7 @@
 <?php
 /*
  * TODO: Add error handling of cURL results, i.e. startProduction L89
- * TODO: $machineId from somewhere, maybe from the view? CHECK JAVA FOR HOW MACHINEID INPUT IS USED.
+ * TODO: $machineId from somewhere, maybe from the view?
  */
 class MachineApiController extends Controller {
 
