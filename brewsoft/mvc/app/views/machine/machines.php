@@ -1,13 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <body>
-    <title>Available Machines</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="">
-    <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-</head>
+<select name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>
+<?php
+  $machine = 0;
+  if (isset($_POST["machineID"])) {
+    $machine = $_POST["machineID"]-1  ;
+  }
+  $i=1;
+  $options = "";
+  foreach ($viewbag["availableMachines"] as $key => $value) {
+?>
+  <option value='<?php echo json_encode($value) ?>' <?php if (isset($_POST["machineID"]) && $_POST["machineID"] == $i) {echo "selected";} ?>>machine <?php echo $value['brewerymachineid'] ?></option>
+<?php
+    $i++;
+  }
+//  echo "<select name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>{$options}</select>";
+?>
+</select>
+  <input type="hidden" name="hostname" id="hostname" value="<?php echo $viewbag["availableMachines"][$machine]['hostname']; ?>">
+  <input type="hidden" name="port" id="port" value="<?php echo $viewbag["availableMachines"][$machine]['port']; ?>">
+  <input type="hidden" name="machineID" id="machineID" value="<?php echo $viewbag["availableMachines"][$machine]['brewerymachineid']; ?>">
+<!--
 
 <p>Available machines:</p>
 
@@ -52,5 +63,4 @@
         <?php
     }
     ?>
-</body>
-</html>
+-->

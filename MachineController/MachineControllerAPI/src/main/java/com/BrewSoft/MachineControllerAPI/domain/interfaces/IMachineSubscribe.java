@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 
 public interface IMachineSubscribe {
 
+    public String connectMachine();
+    
     public void subscribe();
 
     public void setConsumer(Consumer<String> consumer, String nodeName);

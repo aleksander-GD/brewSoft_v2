@@ -20,100 +20,138 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ControllerAPI {
-    private Machine machineObj = new Machine(1, "localhost", 4840);
+    private Machine machineObj;// = new Machine(1, "localhost", 4840);
     private Map<Integer, MachineController> machineControllerMap = new HashMap();
     private Map<Integer, MachineSubscriber> machineSubscriberMap = new HashMap(); // NEEDED FOR SHOWING THE "LIVE" DASHBOARD
-    private MachineSubscriber sub = new MachineSubscriber(machineObj);
-    private MachineController mc = new MachineController(machineObj, sub);
+    private MachineSubscriber sub;// = new MachineSubscriber(machineObj);
+    private MachineController mc;// = new MachineController(machineObj, sub);
+    private ChooseMachineDataHandler cmdh;// = new ChooseMachineDataHandler();
+    
+    public ControllerAPI() {
+        cmdh = new ChooseMachineDataHandler();
+        List<Machine> machineList = cmdh.getMachineList();
+        MachineSubscriber subscriber;
+        for (Machine machine : machineList) {
+            subscriber = new MachineSubscriber(machine);
+            this.machineSubscriberMap.put(machine.getMachineID(), subscriber);
+            this.machineControllerMap.put(machine.getMachineID(), new MachineController(machine, subscriber));
+        }
+    }
     
     @GetMapping("/machineStart")
-    public String mcStart(@RequestParam(value = "machineId") String machineId) {
+    public Map<String, String> mcStart(@RequestParam(value = "machineId") String machineId) {
         String returnText;
+        Map<String, String> rtm = new HashMap();
         Integer machineID;
         if(!machineId.isBlank()) {
             machineID = Integer.parseInt(machineId);
             if(machineControllerMap.containsKey(machineID)) {
                 mc = machineControllerMap.get(machineID);
-                returnText = mc.startProduction();
+                mc.connectMachine();
+                //returnText = mc.startProduction();
+                rtm.putAll(mc.startProduction());
             } else {
-                returnText = "Error, machineId not found!";
+                returnText = "MachineId not found!";
+                rtm.put("Error",returnText);
             }
         } else {
-            returnText = "Error, no machine chosen!";
+            returnText = "No machine chosen!";
+            rtm.put("Error",returnText);
         }
-        return returnText;
+        return rtm;
     }
     
     @GetMapping("/machineReset")
-    public String mcReset(@RequestParam(value = "machineId") String machineId) {
+    public Map<String, String> mcReset(@RequestParam(value = "machineId") String machineId) {
         String returnText;
+        Map<String, String> rtm = new HashMap();
         Integer machineID;
         if(!machineId.isBlank()) {
             machineID = Integer.parseInt(machineId);
             if(machineControllerMap.containsKey(machineID)) {
                 mc = machineControllerMap.get(machineID);
-                returnText = mc.resetMachine();
+                mc.connectMachine();
+                //returnText = mc.resetMachine();
+                rtm.putAll(mc.resetMachine());
+                //rtm.put("Success",returnText);
             } else {
-                returnText = "Error, machineId not found!";
+                returnText = "MachineId not found!";
+                rtm.put("Error",returnText);
             }
         } else {
-            returnText = "Error, no machine chosen!";
+            returnText = "No machine chosen!";
+            rtm.put("Error",returnText);
         }
-        return returnText;
+        return rtm;
     }
     
     @GetMapping("/machineClear")
-    public String mcClear(@RequestParam(value = "machineId") String machineId) {
+    public Map<String, String> mcClear(@RequestParam(value = "machineId") String machineId) {
         String returnText;
+        Map<String, String> rtm = new HashMap();
         Integer machineID;
         if(!machineId.isBlank()) {
             machineID = Integer.parseInt(machineId);
             if(machineControllerMap.containsKey(machineID)) {
                 mc = machineControllerMap.get(machineID);
-                returnText = mc.clearState();
+                mc.connectMachine();
+                //returnText = mc.clearState();
+                rtm.putAll(mc.clearState());
             } else {
-                returnText = "Error, machineId not found!";
+                returnText = "MachineId not found!";
+                rtm.put("Error",returnText);
             }
         } else {
-            returnText = "Error, no machine chosen!";
+            returnText = "No machine chosen!";
+            rtm.put("Error",returnText);
         }
-        return returnText;
+        return rtm;
     }
     
     @GetMapping("/machineAbort")
-    public String mcAbort(@RequestParam(value = "machineId") String machineId) {
+    public Map<String, String> mcAbort(@RequestParam(value = "machineId") String machineId) {
         String returnText;
+        Map<String, String> rtm = new HashMap();
         Integer machineID;
         if(!machineId.isBlank()) {
             machineID = Integer.parseInt(machineId);
             if(machineControllerMap.containsKey(machineID)) {
                 mc = machineControllerMap.get(machineID);
-                returnText = mc.abortProduction();
+                mc.connectMachine();
+                //returnText = mc.abortProduction();
+                rtm.putAll(mc.abortProduction());
             } else {
-                returnText = "Error, machineId not found!";
+                returnText = "MachineId not found!";
+                rtm.put("Error",returnText);
             }
         } else {
-            returnText = "Error, no machine chosen!";
+            returnText = "No machine chosen!";
+            rtm.put("Error",returnText);
         }
-        return returnText;
+        return rtm;
     }
     
     @GetMapping("/machineStop")
-    public String mcStop(@RequestParam(value = "machineId") String machineId) {
+    public Map<String, String> mcStop(@RequestParam(value = "machineId") String machineId) {
         String returnText;
+        Map<String, String> rtm = new HashMap();
         Integer machineID;
         if(!machineId.isBlank()) {
             machineID = Integer.parseInt(machineId);
             if(machineControllerMap.containsKey(machineID)) {
                 mc = machineControllerMap.get(machineID);
-                returnText = mc.stopProduction();
+                mc.connectMachine();
+                //returnText = mc.stopProduction();
+                rtm.putAll(mc.stopProduction());
             } else {
-                returnText = "Error, machineId not found!";
+                returnText = "MachineId not found!";
+                rtm.put("Error",returnText);
             }
         } else {
-            returnText = "Error, no machine chosen!";
+            returnText = "No machine chosen!";
+            rtm.put("Error",returnText);
         }
-        return returnText;
+        return rtm;
     }
     
     // Rewrite to get list of controls from class?
@@ -136,8 +174,7 @@ public class ControllerAPI {
      */
     @GetMapping("/availableMachines")
     public List<Machine> availableMachine() {
-        ChooseMachineDataHandler cmdh = new ChooseMachineDataHandler();
-        return cmdh.getMachineList();
+        return this.cmdh.getMachineList();
     }
     
     /**

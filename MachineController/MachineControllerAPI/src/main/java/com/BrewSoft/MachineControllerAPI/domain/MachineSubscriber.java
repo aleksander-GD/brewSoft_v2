@@ -92,9 +92,16 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public MachineSubscriber(Machine machineObj) {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
-        mconn.connect();
         consumerMap = new HashMap();
         this.machineObj = machineObj;
+    }
+
+    @Override
+    public String connectMachine() {
+        if (!this.mconn.getStatus()) {
+            this.mconn.connect();
+        }
+        return "Connected to machine: " + machineObj.getMachineID();
     }
 
     @Override
@@ -104,82 +111,87 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     @Override
     public void subscribe() {
-        List<MonitoredItemCreateRequest> requestList = new ArrayList();
-        requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(tempNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(humidityNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(vibrationNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(productProducedNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(defectCountNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(acceptableCountNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(stopReasonNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(stateCurrentNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(productsPrMinuteNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(barleyNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(hopsNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(maltNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(wheatNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(yeastNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(maintenanceCounterNode), MonitoringMode.Reporting, monitoringParameters()));
+        if (this.mconn.getStatus()) {
+            List<MonitoredItemCreateRequest> requestList = new ArrayList();
+            requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(tempNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(humidityNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(vibrationNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(productProducedNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(defectCountNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(acceptableCountNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(stopReasonNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(stateCurrentNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(productsPrMinuteNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(barleyNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(hopsNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(maltNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(wheatNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(yeastNode), MonitoringMode.Reporting, monitoringParameters()));
+            requestList.add(new MonitoredItemCreateRequest(readValueId(maintenanceCounterNode), MonitoringMode.Reporting, monitoringParameters()));
 
-        Consumer<DataValue> onBatchIdItem = (dataValue) -> consumerStarter(BATCHID_NODENAME, dataValue);
-        Consumer<DataValue> onTotalProductsItem = (dataValue) -> consumerStarter(TOTAL_PRODUCTS_NODENAME, dataValue);
-        Consumer<DataValue> onTempratureItem = (dataValue) -> consumerStarter(TEMPERATURE_NODENAME, dataValue);
-        Consumer<DataValue> onHumidityItem = (dataValue) -> consumerStarter(HUMIDITY_NODENAME, dataValue);
-        Consumer<DataValue> onVibrationItem = (dataValue) -> consumerStarter(VIBRATION_NODENAME, dataValue);
-        Consumer<DataValue> onProducedItem = (dataValue) -> consumerStarter(PRODUCED_PRODUCTS_NODENAME, dataValue);
-        Consumer<DataValue> onDefectItem = (dataValue) -> consumerStarter(DEFECT_PRODUCTS_NODENAME, dataValue);
-        Consumer<DataValue> onAcceptableItem = (dataValue) -> consumerStarter(ACCEPTABLE_PRODUCTS_NODENAME, dataValue);
-        Consumer<DataValue> onStopReasonItem = (dataValue) -> consumerStarter(STOP_REASON_NODENAME, dataValue);
-        Consumer<DataValue> onStateReadItem = (dataValue) -> consumerStarter(STATE_CURRENT_NODENAME, dataValue);
-        Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> consumerStarter(PRODUCTS_PR_MINUTE_NODENAME, dataValue);
+            Consumer<DataValue> onBatchIdItem = (dataValue) -> consumerStarter(BATCHID_NODENAME, dataValue);
+            Consumer<DataValue> onTotalProductsItem = (dataValue) -> consumerStarter(TOTAL_PRODUCTS_NODENAME, dataValue);
+            Consumer<DataValue> onTempratureItem = (dataValue) -> consumerStarter(TEMPERATURE_NODENAME, dataValue);
+            Consumer<DataValue> onHumidityItem = (dataValue) -> consumerStarter(HUMIDITY_NODENAME, dataValue);
+            Consumer<DataValue> onVibrationItem = (dataValue) -> consumerStarter(VIBRATION_NODENAME, dataValue);
+            Consumer<DataValue> onProducedItem = (dataValue) -> consumerStarter(PRODUCED_PRODUCTS_NODENAME, dataValue);
+            Consumer<DataValue> onDefectItem = (dataValue) -> consumerStarter(DEFECT_PRODUCTS_NODENAME, dataValue);
+            Consumer<DataValue> onAcceptableItem = (dataValue) -> consumerStarter(ACCEPTABLE_PRODUCTS_NODENAME, dataValue);
+            Consumer<DataValue> onStopReasonItem = (dataValue) -> consumerStarter(STOP_REASON_NODENAME, dataValue);
+            Consumer<DataValue> onStateReadItem = (dataValue) -> consumerStarter(STATE_CURRENT_NODENAME, dataValue);
+            Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> consumerStarter(PRODUCTS_PR_MINUTE_NODENAME, dataValue);
 
-        Consumer<DataValue> onBarleyReadItem = (dataValue) -> consumerStarter(BARLEY_NODENAME, dataValue);
-        Consumer<DataValue> onHopsReadItem = (dataValue) -> consumerStarter(HOPS_NODENAME, dataValue);
-        Consumer<DataValue> onMaltReadItem = (dataValue) -> consumerStarter(MALT_NODENAME, dataValue);
-        Consumer<DataValue> onWheatReadItem = (dataValue) -> consumerStarter(WHEAT_NODENAME, dataValue);
-        Consumer<DataValue> onYeastReadItem = (dataValue) -> consumerStarter(YEAST_NODENAME, dataValue);
+            Consumer<DataValue> onBarleyReadItem = (dataValue) -> consumerStarter(BARLEY_NODENAME, dataValue);
+            Consumer<DataValue> onHopsReadItem = (dataValue) -> consumerStarter(HOPS_NODENAME, dataValue);
+            Consumer<DataValue> onMaltReadItem = (dataValue) -> consumerStarter(MALT_NODENAME, dataValue);
+            Consumer<DataValue> onWheatReadItem = (dataValue) -> consumerStarter(WHEAT_NODENAME, dataValue);
+            Consumer<DataValue> onYeastReadItem = (dataValue) -> consumerStarter(YEAST_NODENAME, dataValue);
 
-        Consumer<DataValue> onMaintenanceCounterReadItem = (dataValue) -> consumerStarter(MAINTENANCE_COUNTER_NODENAME, dataValue);
+            Consumer<DataValue> onMaintenanceCounterReadItem = (dataValue) -> consumerStarter(MAINTENANCE_COUNTER_NODENAME, dataValue);
 
-        try {
-            UaSubscription subscription = mconn.getClient().getSubscriptionManager().createSubscription(1000.0).get();
-            List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, requestList).get();
+            try {
+                UaSubscription subscription = mconn.getClient().getSubscriptionManager().createSubscription(1000.0).get();
+                List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, requestList).get();
 
-            //Sets consumer on specific subscription.
-            items.get(0).setValueConsumer(onBatchIdItem);
-            items.get(1).setValueConsumer(onTotalProductsItem);
-            items.get(2).setValueConsumer(onTempratureItem);
-            items.get(3).setValueConsumer(onHumidityItem);
-            items.get(4).setValueConsumer(onVibrationItem);
-            items.get(5).setValueConsumer(onProducedItem);
-            items.get(6).setValueConsumer(onDefectItem);
-            items.get(7).setValueConsumer(onAcceptableItem);
-            items.get(8).setValueConsumer(onStopReasonItem);
-            items.get(9).setValueConsumer(onStateReadItem);
-            items.get(10).setValueConsumer(onProductsPrMinuteReadItem);
-            items.get(11).setValueConsumer(onBarleyReadItem);
-            items.get(12).setValueConsumer(onHopsReadItem);
-            items.get(13).setValueConsumer(onMaltReadItem);
-            items.get(14).setValueConsumer(onWheatReadItem);
-            items.get(15).setValueConsumer(onYeastReadItem);
-            items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
+                //Sets consumer on specific subscription.
+                items.get(0).setValueConsumer(onBatchIdItem);
+                items.get(1).setValueConsumer(onTotalProductsItem);
+                items.get(2).setValueConsumer(onTempratureItem);
+                items.get(3).setValueConsumer(onHumidityItem);
+                items.get(4).setValueConsumer(onVibrationItem);
+                items.get(5).setValueConsumer(onProducedItem);
+                items.get(6).setValueConsumer(onDefectItem);
+                items.get(7).setValueConsumer(onAcceptableItem);
+                items.get(8).setValueConsumer(onStopReasonItem);
+                items.get(9).setValueConsumer(onStateReadItem);
+                items.get(10).setValueConsumer(onProductsPrMinuteReadItem);
+                items.get(11).setValueConsumer(onBarleyReadItem);
+                items.get(12).setValueConsumer(onHopsReadItem);
+                items.get(13).setValueConsumer(onMaltReadItem);
+                items.get(14).setValueConsumer(onWheatReadItem);
+                items.get(15).setValueConsumer(onYeastReadItem);
+                items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
 
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } else {
+//            return "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort();
         }
-
     }
 
     @Override
-    public void setConsumer(Consumer<String> consumer, String nodeName) {
+    public void setConsumer(Consumer<String> consumer, String nodeName
+    ) {
         consumerMap.put(nodeName, consumer);
     }
-
     // TODO Insert machine ID
+
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
