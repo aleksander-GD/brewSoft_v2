@@ -49,7 +49,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
     public function getQueuedBatches()
     {
-        $sql = "SELECT * FROM productionlist WHERE status = 'queued' ORDER BY productionlistID DESC;";
+        $sql = "SELECT * FROM productionlist WHERE status = 'queued' ORDER BY deadline DESC;";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
