@@ -3,14 +3,15 @@
 
 class StopReason extends Database
 {
-    public function getStopReason(){
+    public function getStopReason($ID){
         
-        $sql = "SELECT * 
-                FROM stopreason;";
+        $sql = "SELECT reason 
+                FROM stopreason 
+                Where stopreasonid = $ID;";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
-        $results = $stmt->fetchall();
-        return $results;
+        $result = $stmt->fetch();
+        return $result['reason'];
     }
 
 }
