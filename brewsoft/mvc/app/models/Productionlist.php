@@ -46,7 +46,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
         return $result;
     }
 
-
     public function getQueuedBatches()
     {
         $sql = "SELECT * FROM productionlist WHERE status = 'queued' ORDER BY deadline DESC;";
@@ -56,21 +55,23 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
         return $results;
     }
 
+    public function getCompletedBatches()
+    {
+        $sql = "SELECT * FROM productionlist WHERE status = 'completed';";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        return $results;
+    }
+
     public function getLatestBatchNumber()
     {
-        $sql = "SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1";
+        $sql = "SELECT batchid FROM productionlist ORDER BY productionlistID DESC limit 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch();
         return $result["batchid"];
     }
 
-    Public function getProducts()
-    {
-        $sql = "SELECT productid, productname FROM ProductType";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $results = $stmt->fetchAll();
-        return $results;
-    }
+    
 }

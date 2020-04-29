@@ -1,15 +1,15 @@
 <!DOCTYPE html>
+<html>
 
-<header>
+<head>
     <title>Edit batch</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/editbatch.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="../../js/batch.js"></script>
-    <html lang="en">
 
-</header>
+</head>
 
 <body>
     <div class="editbatch-form-wrapper">
@@ -40,7 +40,7 @@
                 <br>
 
                 <input type="submit" class="editbutton" name="editbutton" value="Edit" onclick="submitEditBatch()"></input>
-                <input type="button" class="canceleditbutton" name="canceleditbutton" value="Cancel"></input>
+                <input type="button" class="canceleditbuttoneditbatch" name="canceleditbuttoneditbatch" value="Cancel"></input>
                 <hr>
                 <span id="editstatus"></span>
 
