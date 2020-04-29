@@ -27,12 +27,12 @@ $(document).ready(function() {
         }
     });
 
-    $('.canceleditbutton').on('click', function(e) {
+    $('.canceleditbuttoneditbatch').on('click', function(e) {
         event.preventDefault();
         window.location.replace('/brewsoft/mvc/public/manager/batchqueue')
 
     });
-    $('.canceleditbutton').on('click', function(e) {
+    $('.canceleditbuttonshowoee').on('click', function(e) {
         event.preventDefault();
         window.location.replace('/brewsoft/mvc/public/manager/completedBatches')
 

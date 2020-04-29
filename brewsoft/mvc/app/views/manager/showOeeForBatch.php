@@ -29,7 +29,7 @@
                 echo "<br>" . 'quality: ' . $viewbag['quality'] . '&#37';
             } ?> </p><br>
     </div>
-    <input type="button" class="canceleditbutton" name="canceleditbutton" value="Cancel"></input>
+    <input type="button" class="canceleditbuttonshowoee" name="canceleditbuttonshowoee" value="Cancel"></input>
     
     <script src="../../js/batch.js"></script>
 </body>

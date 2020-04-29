@@ -66,7 +66,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
     public function getLatestBatchNumber()
     {
-        $sql = "SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1";
+        $sql = "SELECT batchid FROM productionlist ORDER BY productionlistID DESC limit 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch();
