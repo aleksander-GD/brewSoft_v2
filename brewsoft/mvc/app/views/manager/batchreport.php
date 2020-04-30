@@ -4,9 +4,8 @@ $dateTime = $viewbag['datetime'];
 
 $tempAndHumid = $viewbag['tempandhumid'];
 $highlow = $viewbag['highlowtemphumid'];
-
-
 $products = $viewbag['products'];
+$sortedTimes = $viewbag['sortedTimes'];
 
 
 ?>
@@ -127,6 +126,15 @@ $products = $viewbag['products'];
     <div id="timeline-div">
         <h2>Timeline for production</h2>
         <div id="chart_div" style="width: 800px; height: 450px;"></div>
+    </div>
+    <div id="timeInState-div">
+        <h2>Total time spent in each state</h2>
+        <?php foreach ($sortedTimes as $time){
+            $timeObject = $time['timeinstate'];
+            $timeObject->format("%H:%I:%S");
+            echo "<p>" . $time['machinestate'] . ": " . $timeObject->format("%H:%I:%S") . "</p>";
+        }
+        ?>
     </div>
     <div id="productioninfo-div">
         <h2>Production Info</h2>
