@@ -92,7 +92,7 @@ $sortedTimes = $viewbag['sortedTimes'];
                 },
                 vAxis: {
                     title: 'Temperature/Humidity',
-                    
+
                     viewWindow: {
                         //dynamic view window with buffer of two on the min / max values of temp and humidity
                         min: <?php echo min($highlow) - 2; ?>,
@@ -132,6 +132,10 @@ $sortedTimes = $viewbag['sortedTimes'];
 </head>
 
 <body>
+    <div id="oee-div">
+        <h2>Batch OEE</h2>
+        <!-- Insert viewbag conten here pls -->
+    </div>
     <div id="timeline-div">
         <h2>Timeline for production</h2>
         <div id="chart_div" style="width: 800px; height: 450px;"></div>
