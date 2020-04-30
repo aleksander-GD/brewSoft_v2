@@ -114,6 +114,7 @@ class MachineApiController extends Controller {
       if(isset($result->Success)) {
         $viewbag["success"]["API"] = $result->Success;
       }
+      $viewbag["method"] = "stop";
     } catch (Exception $ex) {
     /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
@@ -196,6 +197,7 @@ class MachineApiController extends Controller {
       if(isset($result->Success)) {
         $viewbag["success"]["API"] = $result->Success;
       }
+      $viewbag["method"] = "abort";
     } catch (Exception $ex) {
     /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
       $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n",$ex->getMessage());
@@ -203,6 +205,15 @@ class MachineApiController extends Controller {
     return $viewbag;
     // new view?
     //$this->view("machine/controls", $viewbag);
+  }
+
+  public function saveStopReason() {
+    if($this->post()) {
+      echo "POST: <pre>";
+      var_dump($_POST);
+      echo "</pre>";
+      $this->model('manualstopreason')->saveStopReason();
+    }
   }
 
   public function machineControls() {

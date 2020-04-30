@@ -84,7 +84,7 @@ public class MachineController implements IMachineControl {
             sendCntrlCmd(new Variant(2));
             sendCmdRequest();
             //System.out.println(newBatch.getBatchID() + " : " + newBatch.getProductionListID() + " : " + newBatch.getTotalAmount());
-            returnTxt = "Machine started. If we're lucky!";
+            returnTxt = "Machine started.";
             rtm.put("Success", returnTxt);
         } else {
             returnTxt = "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort();
@@ -105,7 +105,7 @@ public class MachineController implements IMachineControl {
         if(this.mconn.getStatus()) {
             sendCntrlCmd(new Variant(1));
             sendCmdRequest();
-            rtm.put("Success", "Machine reset");
+            rtm.put("Success", "Machine reset.");
             return rtm;
         } else {
             rtm.put("Error", "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort());
@@ -123,10 +123,10 @@ public class MachineController implements IMachineControl {
                 subscriber.stoppedproduction(newBatch.getProductionListID());
                 sendCntrlCmd(new Variant(3));
                 sendCmdRequest();
-                returnTxt = "Machine stopped. If we're lucky!";
+                returnTxt = "Machine stopped.";
                 rtm.put("Success", returnTxt);
             } else {
-                returnTxt = "The machine has not been started yet, you dimwit!";
+                returnTxt = "The machine has not been started yet!";
                 rtm.put("Error", returnTxt);
             }
         } else {
@@ -149,7 +149,7 @@ public class MachineController implements IMachineControl {
                 returnTxt = "Aborted production.";
                 rtm.put("Success", returnTxt);
             } else {
-                returnTxt = "The machine has not been started yet, you dimwit!";
+                returnTxt = "The machine has not been started yet!";
                 rtm.put("Error", returnTxt);
             }
         } else {
@@ -165,7 +165,7 @@ public class MachineController implements IMachineControl {
         if(this.mconn.getStatus()) {
             sendCntrlCmd(new Variant(5));
             sendCmdRequest();
-            rtm.put("Success", "Machine has been cleared, whatever that means?!?");
+            rtm.put("Success", "Machine has been cleared.");
         } else {
             rtm.put("Error", "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort());
         }

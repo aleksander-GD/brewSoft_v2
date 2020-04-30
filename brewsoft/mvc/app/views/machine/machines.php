@@ -1,4 +1,4 @@
-<select name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>
+<select class="form-control" name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>
 <?php
   $machine = 0;
   if (isset($_POST["machineID"])) {

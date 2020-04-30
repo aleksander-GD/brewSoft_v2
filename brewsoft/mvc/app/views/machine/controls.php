@@ -5,58 +5,60 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="">
-    <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script type="text/javascript" src="../js/machineApi.js"></script>
 </head>
+<body>
 <pre>
 <?php //var_dump($viewbag); ?>
 </pre>
-<div>
-<?php
-if(!empty($viewbag["error"])) {
-  echo "Error: ";
-  foreach ($viewbag["error"] as $key => $value) {
-    echo "<span>".$value."</span>";
+<div class="container-fluid">
+  <div class="col-xl-12 col-sm-12 response">
+  <?php
+  if(!empty($viewbag["error"])) {
+    echo "Error: ";
+    foreach ($viewbag["error"] as $key => $value) {
+      echo "<span>".$value."</span>";
+    }
   }
-}
-?>
-<?php
-if(!empty($viewbag["success"])) {
-  echo "Success: ";
-  foreach ($viewbag["success"] as $key => $value) {
-    echo "<span>".$value."</span>";
+  ?>
+  <?php
+  if(!empty($viewbag["success"])) {
+    echo "Success: ";
+    foreach ($viewbag["success"] as $key => $value) {
+      echo "<span>".$value."</span>";
+    }
   }
-}
-?>
+  ?>
+  </div>
+  <?php
+    if(!empty($viewbag["method"])) {
+      if ($viewbag["method"] === "abort" || $viewbag["method"] === "stop") {
+        include '../app/views/partials/stopModal.php';
+      }
+    }
+  ?>
+  <div class="col-xl-12 col-sm-12">
+    <!-- Overvej AJAX til knapperne, især hvis dashboard skal sættes ind som partial eller omvendt -->
+    <form name="controlForm" id="controlForm" action="" method="post" onsubmit="">
+      <div class="form-row">
+        <div class="form-group col-auto">
+          <?php include '../app/views/machine/machines.php'; ?>
+        </div>
+        <div class="form-group col-auto">
+          <input type="hidden" value="" name="command" id="command">
+          <div class="btn-group">
+            <?php
+              $commands = "";
+              foreach ($viewbag["controls"]->commands as $key => $value) {
+                echo "<button  class='btn btn-secondary' type='submit' form='controlForm' onclick='changeCommand(this);' value='$value'>$value</button>";
+              }
+            ?>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
-<form name="controlForm" id="controlForm" action="" method="post" onsubmit="">
-<p>Machines:</p>
-<?php include '../app/views/machine/machines.php'; ?>
-<p>Machine controls:</p>
-<input type="hidden" value="" name="command" id="command">
-<?php
-  $commands = "";
-  foreach ($viewbag["controls"]->commands as $key => $value) {
-    echo "<button type='submit' form='controlForm' onclick='changeCommand(this);' value='$value'>$value</button>";
-  }
-?>
-</form>
-<!--form method="post">
-    <div>
-        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/startProduction')" value="Start Production">
-    </div>
-    <div>
-        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/stopProduction')" value="Stop Production">
-    </div>
-    <div>
-        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/abortMachine')" value="Abort Production">
-    </div>
-    <div>
-        <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/clearMachine')" value="Clear State">
-    </div>
-    <div>
-       <input type="button" class="item" onclick="location.replace('/brewsoft/mvc/public/machineapi/resetMachine')" value="Reset Machine">
-    </div>
-</form-->
 </body>
 </html>
