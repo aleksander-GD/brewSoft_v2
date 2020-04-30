@@ -27,7 +27,7 @@ $sortedTimes = $viewbag['sortedTimes'];
         google.charts.load('current', {
             'packages': ['corechart']
         });
-        
+
         //Callback timeline
         google.charts.setOnLoadCallback(drawTimeline);
         //Callback lineChart
@@ -49,6 +49,7 @@ $sortedTimes = $viewbag['sortedTimes'];
             ]);
             var options = {
                 height: 450,
+
                 hAxis: {
                     format: 'HH:mm:ss',
                 },
@@ -82,12 +83,20 @@ $sortedTimes = $viewbag['sortedTimes'];
                 hAxis: {
                     title: 'Entry points'
                 },
+                explorer: {
+                    actions: ['dragToZoom', 'rightClickToReset'],
+                    axis: 'horizontal',
+                    keepInBounds: true,
+                    maxZoomIn: 4.0
+
+                },
                 vAxis: {
                     title: 'Temperature/Humidity',
+                    
                     viewWindow: {
                         //dynamic view window with buffer of two on the min / max values of temp and humidity
-                        min: <?php echo min($highlow) - 2;?> ,
-                        max: <?php echo max($highlow) + 2;?>
+                        min: <?php echo min($highlow) - 2; ?>,
+                        max: <?php echo max($highlow) + 2; ?>
                     },
                 },
                 backgroundColor: 'white'
@@ -104,11 +113,11 @@ $sortedTimes = $viewbag['sortedTimes'];
             var data = google.visualization.arrayToDataTable([
                 ['Status', 'Amount'],
                 <?php
-                
-                echo 
+
+                echo
                     "[ 'Accepted'" . "," . $products['acceptedcount'] . "]," .
-                    "[ 'Rejected'" . "," . $products['defectcount'] . "]," .
-                    "[ 'Not produced'" . "," . ($products['totalcount'] - $products['acceptedcount'] - $products['defectcount']) . "]";
+                        "[ 'Rejected'" . "," . $products['defectcount'] . "]," .
+                        "[ 'Not produced'" . "," . ($products['totalcount'] - $products['acceptedcount'] - $products['defectcount']) . "]";
                 ?>
 
             ]);
@@ -129,7 +138,7 @@ $sortedTimes = $viewbag['sortedTimes'];
     </div>
     <div id="timeInState-div">
         <h2>Total time spent in each state</h2>
-        <?php foreach ($sortedTimes as $time){
+        <?php foreach ($sortedTimes as $time) {
             $timeObject = $time['timeinstate'];
             $timeObject->format("%H:%I:%S");
             echo "<p>" . $time['machinestate'] . ": " . $timeObject->format("%H:%I:%S") . "</p>";
