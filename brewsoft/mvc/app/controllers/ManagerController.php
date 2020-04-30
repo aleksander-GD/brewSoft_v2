@@ -77,7 +77,8 @@ class ManagerController extends Controller
 		$this->view('manager/planbatch', $viewbag);
 
 		if (isset($_POST['planbatch'])) {
-			$batchID = $this->BatchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
+			$latestBatchNumber = $this->model('productionlist')->getLatestBatchNumber();
+			$batchID = $this->batchService->createBatchNumber($latestBatchNumber);
 			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
 			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
 			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
