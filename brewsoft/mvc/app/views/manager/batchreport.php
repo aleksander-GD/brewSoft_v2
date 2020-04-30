@@ -134,7 +134,20 @@ $sortedTimes = $viewbag['sortedTimes'];
 <body>
     <div id="oee-div">
         <h2>Batch OEE</h2>
-        <!-- Insert viewbag conten here pls -->
+        <p for="OEE">
+            <?php
+            if (!empty($viewbag['oeeForBatch'])) {
+                echo 'OEE: ' . $viewbag['oeeForBatch'] . '&#37';
+            }
+            if (!empty($viewbag['availability'])) {
+                echo "<br>" . 'Availability: ' . $viewbag['availability'] . '&#37';
+            }
+            if (!empty($viewbag['performance'])) {
+                echo "<br>" . 'Performance: ' . $viewbag['performance'] . '&#37';
+            }
+            if (!empty($viewbag['quality'])) {
+                echo "<br>" . 'Quality: ' . $viewbag['quality'] . '&#37';
+            } ?> </p><br>
     </div>
     <div id="timeline-div">
         <h2>Timeline for production</h2>
