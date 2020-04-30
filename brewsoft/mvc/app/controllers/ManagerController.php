@@ -148,12 +148,13 @@ class ManagerController extends Controller
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
 
 		$timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
+		$sortedTimes = $this->timeInStateService->getSortedTimeInStates($timeDifference);
 
 		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionListid);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
 
-		$availability = $this->oeeService->calculateAvailability($batchResults, $timeDifference, $idealcycletime);
-		$performance = $this->oeeService->calculatePerformance($batchResults, $timeDifference,  $idealcycletime);
+		$availability = $this->oeeService->calculateAvailability($batchResults, $sortedTimes, $idealcycletime);
+		$performance = $this->oeeService->calculatePerformance($batchResults, $sortedTimes,  $idealcycletime);
 		$quality = $this->oeeService->calculateQuality($batchResults);
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
