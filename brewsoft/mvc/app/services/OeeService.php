@@ -1,6 +1,5 @@
 <?php
 
-require_once 'TimeInStateService.php';
 class OeeService
 {
     private $dateofcompletion;
@@ -14,7 +13,6 @@ class OeeService
     public function __construct()
     {
         $this->dateofcompletion = filter_input(INPUT_POST, "dateofcompletion", FILTER_SANITIZE_STRING);
-        $this->timeInStateService = new TimeInStateService();
         $this->plannedProductionTime = 28800;
     }
     public function getDateOfCompletion()
@@ -37,9 +35,9 @@ class OeeService
         return round($calculateOee, 2);
     }
 
-    public function calculateAvailability($batchResultArray, $timeDifference, $idealcycletime)
+    public function calculateAvailability($batchResultArray, $sortedTimes, $idealcycletime)
     {
-        $runtime = $this->calculateRuntime($timeDifference);
+        $runtime = $this->calculateRuntime($sortedTimes);
         foreach ($batchResultArray as $batchData) {
             if (is_numeric($batchData['totalcount'])) {
                 $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $idealcycletime;
@@ -51,9 +49,8 @@ class OeeService
 
         return $availability;
     }
-    private function calculateRuntime($timeDifference)
+    private function calculateRuntime($sortedTimes)
     {
-        $sortedTimes = $this->timeInStateService->getSortedTimeInStates($timeDifference);
 
         $startTime = 0;
         $endTime = 0;
@@ -83,9 +80,9 @@ class OeeService
         return $this->runtime;
     }
 
-    public function calculatePerformance($batchResultArray, $timeDifference, $idealcycletime)
+    public function calculatePerformance($batchResultArray, $sortedTimes, $idealcycletime)
     {
-        $runtime = $this->calculateRuntime($timeDifference);
+        $runtime = $this->calculateRuntime($sortedTimes);
         foreach ($batchResultArray as $batchData) {
             if (is_numeric($batchData['totalcount'])) {
                 $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $idealcycletime;
