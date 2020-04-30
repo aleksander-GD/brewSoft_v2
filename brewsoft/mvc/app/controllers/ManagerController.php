@@ -5,7 +5,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/BatchService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/OeeService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/TimeInStateService.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/ProductionInfoService.php';
+
 
 class ManagerController extends Controller
 {
@@ -19,7 +19,6 @@ class ManagerController extends Controller
 		$this->batchService = new BatchService();
 		$this->oeeService = new OeeService();
 		$this->timeInStateService = new TimeInStateService();
-		$this->productionInfoService = new ProductionInfoService();
 	}
 
 
@@ -108,8 +107,8 @@ class ManagerController extends Controller
 
 		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
 
-		$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
-
+		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
+		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
 
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['tempandhumid'] = $tempAndHumidity;
