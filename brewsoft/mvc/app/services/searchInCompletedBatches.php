@@ -33,6 +33,7 @@ $completedBatchResults = $completedBatchData;
 foreach ($completedBatchResults as $batch) {
 
     echo '<tr>';
+    echo "<td>" . $batch['productionlistid'] . "</td>";
     echo "<td>" . $batch['batchid'] . "</td>";
     echo "<td>" . $batch['brewerymachineid'] . "</td>";
     echo "<td>" . $batch['deadline'] . "</td>";

@@ -1,32 +1,44 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/TimeInState.php';
 class TimeInStateService
 {
 
-    protected $timeinstate;
-
-    public function __construct()
+    // Funktion som får de nødvendige tider og states. 
+    public function getTimestampArray($timeArray, $nextBatchFirstState)
     {
-        $this->timeinstate = new TimeInState;
-    }
-
-    public function getTimestampArray($timeArray, $nextBatchFirstState){
         $times = array_merge($timeArray, $nextBatchFirstState);
-        return $timeArray;
+        return $times;
     }
 
-    public function getTimeDifference($timeArray)
+    public function getDateTimeArray($timeArray, $completiondate)
     {
-        //$times = $timeArray;
         $times = $timeArray;
+        $count = 0;
+        foreach ($timeArray as $key => $value) {
+            $times[$key]['starttimeinstate'] = $completiondate['dateofcompletion'] . " " . $value['starttimeinstate'];
+            if ($count < sizeof($times) - 1) {
+                $times[$key]['endtimeinstate'] = $completiondate['dateofcompletion'] . " " . $times[$key + 1]['starttimeinstate'];
+            }
+            $count++;
+        }
+        return array_slice($times, 0, sizeof($times) - 1);
+    }
+
+
+
+
+    // Funktion som udregner tiden brugt i hver state
+    public function getTimeDifference($mergedArray)
+    {
+        $times = $mergedArray;
         $length = sizeof($times);
 
         $AllTimeInStatesList = array();
 
         $count = 0;
         foreach ($times as $time) {
-            if($count < $length-1) {
+            if ($count < $length - 1) {
                 $strStart = $time['starttimeinstate'];
                 $strEnd = $times[$count + 1]['starttimeinstate'];
                 $dteStart = new DateTime($strStart);
@@ -36,18 +48,6 @@ class TimeInStateService
 
                 $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
                 $count++;
-                /* } else if ($count == $length - 1) {
-
-                $strStart = $times[$count]['starttimeinstate'];
-                $strEnd = $nextBatchFirstState[0]['starttimeinstate'];
-                $dteStart = new DateTime($strStart);
-                $dteEnd = new DateTime($strEnd);
-                $dteDiff  = $dteStart->diff($dteEnd);
-                $dteDiff->format("%H:%I:%S");
-
-                $AllTimeInStatesList[$count] = ["machinestate" => $time['machinestate'], "timeinstate" => $dteDiff];
-                $count++;
-            } */
             }
         }
         return $AllTimeInStatesList;

@@ -3,25 +3,30 @@
 //require_once '..\core\Database.php';
 //require_once '..\services\BatchService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/BatchService.php';
-
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/OeeService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/services/TimeInStateService.php';
+
 
 class ManagerController extends Controller
 {
-	private $BatchService;
-    protected $timeInStateService;
+	private $batchService;
+	private $oeeService;
+	protected $timeInStateService;
+	protected $productionInfoService;
 
-	public function __construct(){
-		$this->BatchService = new BatchService();
-        $this->timeInStateService = new TimeInStateService();
+	public function __construct()
+	{
+		$this->batchService = new BatchService();
+		$this->oeeService = new OeeService();
+		$this->timeInStateService = new TimeInStateService();
 	}
 
-	
+
+
 
 	public function index($param)
 	{
 	}
-
 
 	public function batchQueue()
 	{
@@ -56,54 +61,124 @@ class ManagerController extends Controller
 		}
 	}
 
-    public function completedBatches()
-    {
-        $batches = $this->model('Finalbatchinformation')->getCompletedBatches();
+
+	public function completedBatches()
+	{
+
+		$batches = $this->model('Finalbatchinformation')->getCompletedBatches();
 		$viewbag['batches'] = $batches;
 		$this->view('manager/completedbatches', $viewbag);
-        
-
-    }
-	public function planBatch(){
-		$product = $this->model('Productionlist')->getProducts();
+	}
+	public function planBatch()
+	{
+		$product = $this->model('ProductType')->getProducts();
 		$viewbag['products'] = $product;
 		$this->view('manager/planbatch', $viewbag);
-		
-		if (isset($_POST['planbatch'])){
-			$batchID = $this->BatchService->createBatchNumber($this->BatchService->getlatestBatchNumber());
+
+		if (isset($_POST['planbatch'])) {
+			$latestBatchNumber = $this->model('productionlist')->getLatestBatchNumber();
+			$batchID = $this->batchService->createBatchNumber($latestBatchNumber);
 			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
 			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
 			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchqueue'); 
+			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
 	}
+
 
 	public function batchReport($productionlistID)
 	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
-		//print_r($timeArray);
 		$length = sizeof($timeArray) - 1;
+
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
+
 		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
-		$sorted = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
+		$sortedTimeInStateList = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 
-		$viewbag['alltimes'] = $allTimesInStateList;
-		$viewbag['sortedtimes'] = $sorted;
+		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
+		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
 
+		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
+
+		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
+
+		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
+		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
+
+
+
+		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
+		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
+
+		$availability = $this->oeeService->calculateAvailability($batchResults, $sortedTimeInStateList, $idealcycletime);
+		$performance = $this->oeeService->calculatePerformance($batchResults, $sortedTimeInStateList,  $idealcycletime);
+		$quality = $this->oeeService->calculateQuality($batchResults);
+
+		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
+		$viewbag['availability'] = $availability;
+		$viewbag['performance'] = $performance;
+		$viewbag['quality'] = $quality;
+		$viewbag['oeeForBatch'] = $oee;
+
+		$viewbag['sortedTimes'] = $sortedTimeInStateList;
+		$viewbag['tempandhumid'] = $tempAndHumidity;
+		$viewbag['datetime'] = $dateTimeArray;
+		$viewbag['products'] = $products;
 		$this->view('manager/batchreport', $viewbag);
+	}
 
+	public function displayOeeForDay()
+	{
+		if ($this->post()) {
 
-		foreach ($allTimesInStateList as $state) {
-			print "<pre>";
-			print_r($state);
-			print "</pre>";
-			//echo $state['machinestate'];
-			//echo $state["timeinstate"]->format("%H:%I:%S:%f");
+			if (isset($_POST['showOee'])) {
+				$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForDate($this->oeeService->getDateOfCompletion());
+				$productid = 0;
+				foreach ($batchResults as $batchData) {
+					$productid = $batchData['productid'];
+				}
+
+				$idealCycleTime = $this->model('ProductType')->getIdealCycleTimeForProductID($productid);
+				$viewbag['oeeResult'] = $this->oeeService->calculateOeeForOneDay($batchResults, $idealCycleTime);
+				//print_r($viewbag);
+
+				$this->view('manager/oee', $viewbag);
+			}
+		} else {
+			$this->view('manager/oee');
 		}
+	}
+
+	public function displayOeeForBatch($productionListid)
+	{
+		$timeArray = $this->model('TimeInState')->getTimeInStates($productionListid);
+
+		$completedDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionListid);
+
+		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completedDate);
+
+		$timeDifference = $this->timeInStateService->getTimeDifference($dateTimeArray);
+		$sortedTimes = $this->timeInStateService->getSortedTimeInStates($timeDifference);
+
+		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionListid);
+		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
+
+		$availability = $this->oeeService->calculateAvailability($batchResults, $sortedTimes, $idealcycletime);
+		$performance = $this->oeeService->calculatePerformance($batchResults, $sortedTimes,  $idealcycletime);
+		$quality = $this->oeeService->calculateQuality($batchResults);
+
+		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
+		$viewbag['availability'] = $availability;
+		$viewbag['performance'] = $performance;
+		$viewbag['quality'] = $quality;
+
+		$viewbag['oeeForBatch'] = $oee;
+		$this->view('manager/showOeeForBatch', $viewbag);
 	}
 }
