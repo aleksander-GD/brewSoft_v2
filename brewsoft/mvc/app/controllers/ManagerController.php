@@ -21,9 +21,6 @@ class ManagerController extends Controller
 		$this->timeInStateService = new TimeInStateService();
 	}
 
-
-
-
 	public function index($param)
 	{
 	}
@@ -60,7 +57,6 @@ class ManagerController extends Controller
 			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
 	}
-
 
 	public function completedBatches()
 	{

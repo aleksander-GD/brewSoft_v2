@@ -19,15 +19,13 @@ class Database extends DB_Config
 		try {
 			$this->conn = new PDO($dsn, $this->username, $this->password, $this->options);
 
-			if ($this->conn == null) {
+			/* if ($this->conn == null) {
 				echo 'no connection to database, pdoconnection is null';
 				return false;
-			}
-			
+			} */
 			return $this->conn;
 		} catch (PDOException $e) {
-			echo "Connection failed: " . $e->getMessage();
-			echo "ERROR";
+			return false;
 		}
 	}
 

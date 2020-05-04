@@ -4,23 +4,37 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
 class Finalbatchinformation extends Database
 {
+
     public function getCompletedBatches()
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $sql = "SELECT pl.batchid, fb.productionlistid, fb.brewerymachineid, fb.deadline, 
         fb.dateofcreation, fb.dateofcompletion, fb.productid, fb.totalcount, fb.defectcount, fb.acceptedcount 
                 FROM productionlist AS pl, finalbatchinformation as fb
                 WHERE pl.productionlistid = fb.productionlistid;";
+
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
         return $results;
     }
 
+    private function check_database_connection()
+    {
+        return $this->conn;
+    }
     /**
      * 
      */
     public function getAcceptedAndTotalCountForDate($dateofcompletion)
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $select_query = "SELECT fbi.productid, fbi.acceptedcount, fbi.totalcount ";
         $from_query = "FROM finalbatchinformation AS fbi ";
         $where_query = "WHERE fbi.dateofcompletion = :dateofcompletion ";
@@ -45,6 +59,10 @@ class Finalbatchinformation extends Database
 
     public function getAcceptedAndTotalCountForProdlistID($productionlistid)
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $select_query = "SELECT fbi.productid, fbi.acceptedcount, fbi.totalcount ";
         $from_query = "FROM finalbatchinformation AS fbi ";
         $where_query = "WHERE fbi.productionlistid = :productionlistid ";

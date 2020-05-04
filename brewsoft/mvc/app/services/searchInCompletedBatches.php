@@ -11,37 +11,42 @@ $model = new Finalbatchinformation();
 $completedBatchResults = $model->getCompletedBatches();
 
 $completedBatchData = array();
+if ($completedBatchResults != false) {
+    if ($searchParameter !== "" || !empty($searchParameter)) {
+        $searchParameter = strtolower($searchParameter);
+        $searchParameterLength = strlen($searchParameter);
+        foreach ($completedBatchResults as $batch) {
+            if (stristr($searchParameter, substr($batch['batchid'], 0, $searchParameterLength))) {
+                array_push($completedBatchData, $batch);
+            }
+            if (stristr($searchParameter, substr($batch['dateofcompletion'], 0, $searchParameterLength))) {
+                array_push($completedBatchData, $batch);
+            }
+        }
+    } else {
+        // get all batches if nothing is searched
+        $completedBatchData = $completedBatchResults;
+    }
 
-if ($searchParameter !== "" || !empty($searchParameter)) {
-    $searchParameter = strtolower($searchParameter);
-    $searchParameterLength = strlen($searchParameter);
+
+    $completedBatchResults = $completedBatchData;
+
+
     foreach ($completedBatchResults as $batch) {
-        if (stristr($searchParameter, substr($batch['batchid'], 0, $searchParameterLength))) {
-            array_push($completedBatchData, $batch);
-        }
-        if (stristr($searchParameter, substr($batch['dateofcompletion'], 0, $searchParameterLength))) {
-            array_push($completedBatchData, $batch);
-        }
+
+        echo '<tr>';
+        echo "<td>" . $batch['productionlistid'] . "</td>";
+        echo "<td>" . $batch['batchid'] . "</td>";
+        echo "<td>" . $batch['brewerymachineid'] . "</td>";
+        echo "<td>" . $batch['deadline'] . "</td>";
+        echo "<td>" . $batch['dateofcreation'] . "</td>";
+        echo "<td>" . $batch['dateofcompletion'] . "</td>";
+        echo "<td>" . $batch['productid'] . "</td>";
+        echo "<td>" . $batch['totalcount'] . "</td>";
+        echo "<td>" . $batch['defectcount'] . "</td>";
+        echo "<td>" . $batch['acceptedcount'] . "</td>";
+        echo '</tr>';
     }
 } else {
-    // get all batches if nothing is searched
-    $completedBatchData = $completedBatchResults;
-}
-
-$completedBatchResults = $completedBatchData;
-
-foreach ($completedBatchResults as $batch) {
-
-    echo '<tr>';
-    echo "<td>" . $batch['productionlistid'] . "</td>";
-    echo "<td>" . $batch['batchid'] . "</td>";
-    echo "<td>" . $batch['brewerymachineid'] . "</td>";
-    echo "<td>" . $batch['deadline'] . "</td>";
-    echo "<td>" . $batch['dateofcreation'] . "</td>";
-    echo "<td>" . $batch['dateofcompletion'] . "</td>";
-    echo "<td>" . $batch['productid'] . "</td>";
-    echo "<td>" . $batch['totalcount'] . "</td>";
-    echo "<td>" . $batch['defectcount'] . "</td>";
-    echo "<td>" . $batch['acceptedcount'] . "</td>";
-    echo '</tr>';
+    return false;
 }

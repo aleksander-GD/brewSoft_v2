@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
-    class ProductionList extends Database
+class ProductionList extends Database
 {
     public function insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status)
     {
@@ -27,6 +27,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
     public function editQueuedBatch($productID, $productAmount, $deadline, $speed, $productionListID)
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $sql = "UPDATE productionlist SET productid = :productid, productamount = :productamount ,deadline = :deadline, speed = :speed WHERE productionlistid = :productionlistid;";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':productid', $productID);
@@ -39,6 +43,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
     public function getQueuedBatchFromListID($productionlistID)
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $sql = "SELECT * FROM productionlist WHERE productionlistid =" . $productionlistID . ";";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -48,6 +56,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
 
     public function getQueuedBatches()
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $sql = "SELECT * FROM productionlist WHERE status = 'queued' ORDER BY deadline DESC;";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -73,5 +85,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/core/Database.php';
         return $result["batchid"];
     }
 
-    
+    private function check_database_connection()
+    {
+        return $this->conn;
+    }
 }

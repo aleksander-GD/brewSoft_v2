@@ -7,8 +7,6 @@ class DB_Config {
 	protected $password = 'did3+excises';
 	protected $dbname = 'si3_2019_group_2_db';
 
-	
-
 }
 	
 	
