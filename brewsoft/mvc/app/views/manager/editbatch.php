@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <title>Edit batch</title>
     <meta charset="utf-8" />
@@ -37,7 +38,7 @@
                 <br>
 
                 <input type="submit" class="editbutton" name="editbutton" value="Edit" onclick="submitEditBatch()"></input>
-                <input type="button" class="canceleditbutton" name="canceleditbutton" value="Cancel"></input>
+                <input type="button" class="canceleditbuttoneditbatch" name="canceleditbuttoneditbatch" value="Cancel"></input>
                 <hr>
                 <span id="editstatus"></span>
 

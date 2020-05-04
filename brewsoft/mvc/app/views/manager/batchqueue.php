@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <title>batch queue</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/batchqueue.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="../js/batch.js"></script>
 </head>
+
 <body>
     <div id="batch-table-wrapper">
         <div id="tableplace">
@@ -28,14 +29,11 @@
 
                 <tbody id="queuedBatchData"></tbody>
 
-
-
-
-
             </table>
         </div>
         <input type="button" name="editbatch" class="editbatch" value="edit batch" />
     </div>
+    <script src="../js/batch.js"></script>
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-require_once '..\models\Productionlist.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Productionlist.php';
 
 class BatchService
 {
@@ -29,7 +29,4 @@ class BatchService
             return $this->MIN_VALUE;
         }
     }
-
-
-
 }
