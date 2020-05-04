@@ -4,7 +4,6 @@
         <testsuite name="Application Test Suite">
             <directory suffix=".php">./</directory>
             <exclude>./ProductionListTest.php</exclude>
-            <exclude>./BatchServiceTest.php</exclude>
         </testsuite>
     </testsuites>
 </phpunit>
