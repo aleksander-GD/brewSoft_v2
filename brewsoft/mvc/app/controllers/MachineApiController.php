@@ -15,6 +15,7 @@ class MachineApiController extends Controller {
     $viewbag['availableMachines'] = $availMachines;
     $_SESSION["machineMax"] = count($availMachines);
 
+    print_r($availMachines);
     //echo "<pre>"; var_dump($viewbag); echo "</pre>";
     // Show the available machines
     //$this->view("machine/machines", $viewbag);
