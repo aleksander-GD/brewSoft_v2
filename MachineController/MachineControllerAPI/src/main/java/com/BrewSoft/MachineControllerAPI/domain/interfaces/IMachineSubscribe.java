@@ -1,6 +1,7 @@
 package com.BrewSoft.MachineControllerAPI.domain.interfaces;
 
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Batch;
+import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import java.util.function.Consumer;
 
 public interface IMachineSubscribe {
@@ -14,6 +15,8 @@ public interface IMachineSubscribe {
     public String stateTranslator(String state);
 
     public void setCurrentBatch(Batch currentBatch);
+    
+    public void setSubscriberDataHandler(IMachineSubscriberDataHandler msdh);
 
     public String stopReasonTranslator(String stopReason);
 

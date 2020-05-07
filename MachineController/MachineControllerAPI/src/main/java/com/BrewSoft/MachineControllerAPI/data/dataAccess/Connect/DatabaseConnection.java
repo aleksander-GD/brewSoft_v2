@@ -4,14 +4,12 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.QueueObject;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.DatabaseQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,56 +19,21 @@ public class DatabaseConnection {
     final private String user;
     final private String password;
     private Connection con;
-    Queue<QueueObject> queue;
-    private int t;
-    //
+    DatabaseQueue queue;
 
     public DatabaseConnection() {
         this.url = "jdbc:postgresql://tek-mmmi-db0a.tek.c.sdu.dk:5432/si3_2019_group_2_db";
         this.user = "si3_2019_group_2";
         this.password = "did3+excises";
-        this.queue = new LinkedList();
-        this.t = new Random().nextInt();
-        //dq = new DatabaseQueue();
+    }
+
+    public void setQueue(DatabaseQueue queue) {
+        this.queue = queue;
     }
 
     private Connection connect() throws SQLException, ClassNotFoundException {
         return DriverManager.getConnection(url, user, password);
 
-    }
-    
-    public int addToQueue(String fn, String sql, Object... values) {
-        QueueObject qo = new QueueObject(fn, sql, values);
-        queue.add(qo);
-        System.out.println("DC: "+t);
-        for (QueueObject queueObject : queue) {
-            //System.out.println(queueObject);
-        }
-        return queue.size();
-    }
-
-    public void runQueue() {
-        for (QueueObject queueObject : queue) {
-            try {
-                System.out.println("--------- RUNNING QUEUE ----------");
-                String sql = queueObject.getSql();
-                Method m = this.getClass().getDeclaredMethod(queueObject.getFunction(), String.class, Object[].class);
-                m.invoke(this, sql, queueObject.getValues());
-            } catch (NoSuchMethodException ex) {
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("METHOD NOT FOUND");
-            } catch (SecurityException ex) {
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("ILLEGAL ACCESS?");
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("ILLEGAL ARGUMENT?");
-            } catch (InvocationTargetException ex) {
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
     
     private PreparedStatement prepareStatement(String query, Object... values) {
@@ -83,9 +46,14 @@ public class DatabaseConnection {
             for (int i = 0; i < values.length; i++) {
                 statement.setObject(i + 1, values[i]);
             }
-
+            System.out.println("meta: " + statement.getParameterMetaData());
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            if(ex.getSQLState().equalsIgnoreCase("08001")) {
+                System.out.println("USING QUEUE AND NOT DATABASE?!?");
+                // retry connecting to DB automatically?
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -99,7 +67,12 @@ public class DatabaseConnection {
             statement.executeUpdate();
 
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            if(ex.getSQLState().equalsIgnoreCase("08001")) {
+                System.out.println("USING QUEUE AND NOT DATABASE?!?");
+                // retry connecting to DB automatically?
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             disconnect();
             return affectedRows;
@@ -130,7 +103,12 @@ public class DatabaseConnection {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            if(ex.getSQLState().equalsIgnoreCase("08001")) {
+                System.out.println("GETTING BATCH INFO WITHOUT DATABASE?!?");
+                // retry connecting to DB automatically?
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             disconnect();
             return set;
@@ -138,10 +116,12 @@ public class DatabaseConnection {
     }
 
     private void disconnect() {
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        if(con != null) {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

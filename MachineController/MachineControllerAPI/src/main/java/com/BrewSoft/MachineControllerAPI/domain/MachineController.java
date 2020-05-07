@@ -37,6 +37,7 @@ public class MachineController implements IMachineControl {
         this.mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
         this.subscriber = subscriber;
         this.msdh = new MachineSubscribeDataHandler();
+        subscriber.setSubscriberDataHandler(msdh);
         this.id = new Random().nextInt();
     }
 

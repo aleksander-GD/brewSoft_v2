@@ -1,8 +1,9 @@
 package com.BrewSoft.MachineControllerAPI.crossCutting.objects;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class TemporaryProductionBatch {
+public class TemporaryProductionBatch implements Serializable {
 
     private final int productionListId;
     private final float acceptedCount;

@@ -35,7 +35,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private MachineConnection mconn;
     private Map<String, Consumer<String>> consumerMap;
 
-    private final IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
+    private IMachineSubscriberDataHandler msdh;
 
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
@@ -94,6 +94,10 @@ public class MachineSubscriber implements IMachineSubscribe {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
         consumerMap = new HashMap();
         this.machineObj = machineObj;
+    }
+    
+    public void setSubscriberDataHandler(IMachineSubscriberDataHandler msdh) {
+        this.msdh = msdh;
     }
 
     @Override
@@ -216,6 +220,8 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendStopDuingProduction() {
         if (StopReasonID != 0) {
             msdh.insertStopsDuringProduction(batch.getProductionListID(), machineObj.getMachineID(), StopReasonID);
+        } else {
+            System.out.println("stopreasonid: " + StopReasonID);
         }
     }
 

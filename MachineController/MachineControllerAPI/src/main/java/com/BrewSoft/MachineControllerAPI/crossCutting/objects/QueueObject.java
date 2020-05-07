@@ -1,10 +1,8 @@
 package com.BrewSoft.MachineControllerAPI.crossCutting.objects;
 
-/**
- *
- * @author Mathias
- */
-public class QueueObject {
+import java.io.Serializable;
+
+public class QueueObject implements Serializable {
     private String sql;
     private String function;
     private Object[] values;
@@ -39,10 +37,10 @@ public class QueueObject {
         this.values = values;
     }
 
-    @Override
-    public String toString() {
-        return "QueueObject{\n" + "sql=" + sql + "\nfunction=" + function + "\nvalues=" + values.toString() + "\n}";
-    }
+//    @Override
+//    public String toString() {
+//        return "QueueObject{\n" + "sql=" + sql + "\nfunction=" + function + "\nvalues=" + values.toString() + "\n}";
+//    }
     
     
 }
