@@ -1,10 +1,6 @@
 package com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect;
 
-import com.BrewSoft.MachineControllerAPI.crossCutting.objects.QueueObject;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.DatabaseQueue;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -46,7 +42,6 @@ public class DatabaseConnection {
             for (int i = 0; i < values.length; i++) {
                 statement.setObject(i + 1, values[i]);
             }
-            System.out.println("meta: " + statement.getParameterMetaData());
         } catch (SQLException ex) {
             if(ex.getSQLState().equalsIgnoreCase("08001")) {
                 System.out.println("USING QUEUE AND NOT DATABASE?!?");

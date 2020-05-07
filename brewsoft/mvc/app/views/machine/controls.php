@@ -18,7 +18,7 @@
   if(!empty($viewbag["error"])) {
     echo "Error: ";
     foreach ($viewbag["error"] as $key => $value) {
-      echo "<span>".$value."</span>";
+      echo "<div>".$value."</div>";
     }
   }
   ?>
@@ -43,16 +43,23 @@
     <form name="controlForm" id="controlForm" action="" method="post" onsubmit="">
       <div class="form-row">
         <div class="form-group col-auto">
-          <?php include '../app/views/machine/machines.php'; ?>
+          <?php
+            if(!empty($viewbag["availableMachines"])) {
+              include '../app/views/machine/machines.php';
+            }
+          ?>
         </div>
         <div class="form-group col-auto">
           <input type="hidden" value="" name="command" id="command">
           <div class="btn-group">
             <?php
               $commands = "";
-              foreach ($viewbag["controls"]->commands as $key => $value) {
-                echo "<button  class='btn btn-secondary' type='submit' form='controlForm' onclick='changeCommand(this);' value='$value'>$value</button>";
+              if(!empty($viewbag["controls"])) {
+                foreach ($viewbag["controls"]->commands as $key => $value) {
+                  echo "<button  class='btn btn-secondary' type='submit' form='controlForm' onclick='changeCommand(this);' value='$value'>$value</button>";
+                }
               }
+
             ?>
           </div>
         </div>

@@ -18,3 +18,5 @@ MachineController/BrewSoft/pom.xml.backup
 MachineController/MachineControllerAPI/.mvn/wrapper/maven-wrapper.properties
 
 MachineController/MachineControllerAPI/src/main/resources/application.properties
+
+MachineController/MachineControllerAPI/queue.txt

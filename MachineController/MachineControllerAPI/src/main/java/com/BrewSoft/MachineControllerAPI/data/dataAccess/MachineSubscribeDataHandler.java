@@ -11,7 +11,6 @@ import java.sql.Date;
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler {
 
     public DatabaseConnection connection;
-    private int queueLength;
     private DatabaseQueue dq;
 
     public MachineSubscribeDataHandler() {
@@ -47,7 +46,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         String sql = "INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)";
         int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, stopReasonID);
         if(result == 0) {
-            this.queueLength = dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, stopReasonID);
+            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, stopReasonID);
         }
     }
 
@@ -64,7 +63,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
                 productID, totalCount, defectCount, acceptedCount);
         if(result == 0) {
-            this.queueLength = dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, Date.valueOf(deadline),
+            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, Date.valueOf(deadline),
                 Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
                 productID, totalCount, defectCount, acceptedCount);
         }
@@ -89,7 +88,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 defectCount,
                 acceptedCount);
         if(result == 0) {
-            this.queueLength = dq.addToQueue("queryUpdate", sql,
+            dq.addToQueue("queryUpdate", sql,
                 ProductionListID,
                 BreweryMachineID,
                 Date.valueOf(deadline),
@@ -142,7 +141,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         String sql = "UPDATE productionList SET status = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, productionListID);
         if(result == 0) {
-            this.queueLength = dq.addToQueue("queryUpdate", sql, newStatus, productionListID);
+            dq.addToQueue("queryUpdate", sql, newStatus, productionListID);
         }
     }
 
@@ -155,7 +154,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 tempBatch.getAcceptedCount(),
                 tempBatch.getDefectCount());
         if(result == 0) {
-            queueLength = dq.addToQueue("queryUpdate", sql,
+            dq.addToQueue("queryUpdate", sql,
                     tempBatch.getProductionListId(),
                     tempBatch.getAcceptedCount(),
                     tempBatch.getDefectCount());
