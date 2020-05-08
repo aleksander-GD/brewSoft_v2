@@ -11,11 +11,11 @@ import java.sql.Date;
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler {
 
     public DatabaseConnection connection;
-    private DatabaseQueue dq;
+    
 
     public MachineSubscribeDataHandler() {
         connection = new DatabaseConnection();
-        dq = new DatabaseQueue();
+        
     }
 
     public MachineSubscribeDataHandler(TestDatabase testDatabase) {
@@ -27,27 +27,21 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
             float humidity, float temperature) {
         String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)";
         int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, productionListID, BreweryMachineID, humidity, temperature);
-        }
+        
     }
 
     @Override
     public void insertTimesInStates(int ProductionListID, int BreweryMachineID, int MachinestateID) {
         String sql = "INSERT INTO timeInstate (productionListID, breweryMachineID, machineStateID) VALUES (?,?,?)";
         int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, MachinestateID);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, MachinestateID);
-        }
+        
     }
 
     @Override
     public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonID) {
         String sql = "INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)";
         int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, stopReasonID);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, stopReasonID);
-        }
+        
     }
 
     public void insertFinalBatchInformation(int ProductionListID,
@@ -62,11 +56,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline),
                 Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
                 productID, totalCount, defectCount, acceptedCount);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, Date.valueOf(deadline),
-                Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
-                productID, totalCount, defectCount, acceptedCount);
-        }
+        
         
     }
 
@@ -87,17 +77,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 totalCount,
                 defectCount,
                 acceptedCount);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql,
-                ProductionListID,
-                BreweryMachineID,
-                Date.valueOf(deadline),
-                Date.valueOf(dateOfCreation),
-                productID,
-                totalCount,
-                defectCount,
-                acceptedCount);
-        }
+        
     }
 
     @Override
@@ -140,9 +120,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     public void changeProductionListStatus(int productionListID, String newStatus) {
         String sql = "UPDATE productionList SET status = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, productionListID);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, newStatus, productionListID);
-        }
+        
     }
 
     @Override
@@ -153,12 +131,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 tempBatch.getProductionListId(),
                 tempBatch.getAcceptedCount(),
                 tempBatch.getDefectCount());
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql,
-                    tempBatch.getProductionListId(),
-                    tempBatch.getAcceptedCount(),
-                    tempBatch.getDefectCount());
-        }
+        
     }
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {

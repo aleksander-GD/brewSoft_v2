@@ -1,6 +1,5 @@
 package com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect;
 
-import com.BrewSoft.MachineControllerAPI.data.dataAccess.DatabaseQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,16 +14,11 @@ public class DatabaseConnection {
     final private String user;
     final private String password;
     private Connection con;
-    DatabaseQueue queue;
 
     public DatabaseConnection() {
         this.url = "jdbc:postgresql://tek-mmmi-db0a.tek.c.sdu.dk:5432/si3_2019_group_2_db";
         this.user = "si3_2019_group_2";
         this.password = "did3+excises";
-    }
-
-    public void setQueue(DatabaseQueue queue) {
-        this.queue = queue;
     }
 
     private Connection connect() throws SQLException, ClassNotFoundException {
