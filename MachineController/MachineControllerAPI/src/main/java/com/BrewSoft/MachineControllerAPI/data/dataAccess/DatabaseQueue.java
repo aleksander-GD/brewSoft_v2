@@ -11,125 +11,166 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Mathias
- */
 public class DatabaseQueue {
-    Queue<QueueObject> queue;
-    DatabaseConnection con;
-    
+
+    private DatabaseConnection con;
+    private boolean queueExist;
+    private boolean queueRunning;
+    private String filename;
+
     public DatabaseQueue() {
         this.con = new DatabaseConnection();
-        this.queue = new LinkedList();
-    }
-    
-    public int addToQueue(String fn, String sql, Object... values) {
-        QueueObject qo = new QueueObject(fn, sql, values);
-        queue.add(qo);
-        for (QueueObject queueObject : queue) {
-            //System.out.println(queueObject);
-        }   
-        this.saveToFile(queue);
-        return queue.size();
+        this.queueExist = false;
+        this.queueRunning = false;
+        this.filename = "queue.txt";
     }
 
-    private void saveToFile(Queue<QueueObject> queueList) {
+    public boolean isQueueExisting() {
+        File f = new File(this.filename);
+        if(f.isFile()) {
+            queueExist = true;
+        }
+        return queueExist;
+    }
+
+    public boolean isRunningQueue() {
+        return queueRunning;
+    }
+    
+    public void addToQueue(String fn, String sql, Object... values) {
+        QueueObject qo = new QueueObject(fn, sql, values);
+        for (Object value : values) {
+            System.out.println("val: "+ value);
+        }
+        System.out.println(qo);
+        /*
+        queue.add(qo);
+        for (QueueObject queueObject : queue) {
+            System.out.println(queueObject);
+        }*/
+        this.saveObjectToFile(qo);
+        this.queueExist = true;
+        //return queue.size();
+    }
+ /**
+  * PROBABLY NOT THE MOST EFFICIENT WAY OF DOING IT
+  * @param queueObject 
+  */
+    private void saveObjectToFile(QueueObject queueObject) {
+        Queue<QueueObject> fileQueue = readFile();
+        fileQueue.add(queueObject);
+        saveListToFile(fileQueue);
+    }
+
+    private void saveListToFile(Queue<QueueObject> queueList) {
         FileOutputStream f = null;
-        try {
-            f = new FileOutputStream(new File("queue.txt"));
-            ObjectOutputStream o = new ObjectOutputStream(f);
-            for (QueueObject qo : queueList) {
-                o.writeObject(qo);
-            }
-            o.close();
-            f.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        ObjectOutputStream o = null;
+        File fil = new File(this.filename);
+        fil.delete();
+        queueExist = false;
+        if (!queueList.isEmpty()) {
             try {
+                f = new FileOutputStream(fil);
+                o = new ObjectOutputStream(f);
+                for (QueueObject qo : queueList) {
+                    o.writeObject(qo);
+                }
+                o.close();
                 f.close();
+                queueExist = true;
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    if(f != null) {
+                        f.close();
+                    }
+                    if(o != null) {
+                        o.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
+    }
+
+    private Queue readFile() {
+        FileInputStream fi = null;
+        Queue<QueueObject> fileQueue = new LinkedList();
+        File fil = new File(this.filename);
+        if(fil.exists()) {
+            try {
+                fi = new FileInputStream(fil);
+                ObjectInputStream oi = new ObjectInputStream(fi);
+                boolean notEOF = true;
+                while (notEOF) {
+                    QueueObject qo = null;
+                    if (fi.available() != 0) {
+                        qo = (QueueObject) oi.readObject();
+                        fileQueue.add(qo);
+                    } else {
+                        notEOF = false;
+                    }
+                }
+                oi.close();
+                fi.close();
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    fi.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return fileQueue;
     }
     
     public void runQueue() {
-        try {
-            FileInputStream fi = new FileInputStream(new File("queue.txt"));
-            ObjectInputStream oi = new ObjectInputStream(fi);
-            boolean notEOF = true;
-            Queue<QueueObject> fileQueue = new LinkedList();
-            while(notEOF) {
-                if(fi.available() != 0) {
-                    fileQueue.add((QueueObject) oi.readObject());
-                } else {
-                    notEOF = false;
-                }
-            }
-            Queue<QueueObject> deleteQueue = new LinkedList();
-            for (QueueObject queueObject : fileQueue) {
-                try {
-                    String sql = queueObject.getSql();
-                    Method m = con.getClass().getDeclaredMethod(queueObject.getFunction(), String.class, Object[].class);
-                    m.invoke(con, sql, queueObject.getValues());
-                    System.out.println("sql: " + sql);
-                    deleteQueue.add(queueObject);
-                } catch(NoSuchMethodException ex) {
-                    System.out.println("METHOD NOT FOUND");
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-                    System.out.println("ILLEGAL ACCESS?");
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-                    System.out.println("ILLEGAL ARGUMENT?");
-                } catch (InvocationTargetException ex) {
-                    Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            fileQueue.removeAll(deleteQueue);
-            this.saveToFile(fileQueue);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            /*
-            for (QueueObject queueObject : queue) {
+        System.out.println("RUNNING QUEUE!");
+        queueRunning = true;
+        Queue<QueueObject> fileQueue = this.readFile();
+        Queue<QueueObject> deleteQueue = new LinkedList();
+        for (QueueObject queueObject : fileQueue) {
+            System.out.println("TEST: val is gone? " + Arrays.deepToString(queueObject.getValues()));
             try {
-            System.out.println("--------- RUNNING QUEUE ----------");
-            String sql = queueObject.getSql();
-            Method m = con.getClass().getDeclaredMethod(queueObject.getFunction(), String.class, Object[].class);
-            m.invoke(con, sql, queueObject.getValues());
+                Method m = con.getClass().getDeclaredMethod(queueObject.getFunction(), String.class, Object[].class);
+                for (Object value : queueObject.getValues()) {
+                    System.out.println("val: "+ value);
+                }
+                m.invoke(con, queueObject.getSql(), queueObject.getValues());
+                deleteQueue.add(queueObject);
             } catch (NoSuchMethodException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("METHOD NOT FOUND");
-            } catch (SecurityException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("SECURITY VIOLATED?");
+                System.out.println("METHOD NOT FOUND");
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("ILLEGAL ACCESS?");
+                System.out.println("ILLEGAL ACCESS?");
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("ILLEGAL ARGUMENT?");
+                System.out.println("ILLEGAL ARGUMENT?");
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvocationTargetException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Invocation Target?");
+                Logger.getLogger(DatabaseQueue.class.getName()).log(Level.SEVERE, null, ex);
             }
-            }
-            */
-        
+        }
+        fileQueue.removeAll(deleteQueue);
+        this.saveListToFile(fileQueue);
+        queueRunning = false;
     }
 }

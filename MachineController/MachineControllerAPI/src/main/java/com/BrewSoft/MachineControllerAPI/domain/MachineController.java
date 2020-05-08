@@ -104,16 +104,13 @@ public class MachineController implements IMachineControl {
         return rtm;
     }
     
-    // Not used?
-    private void changeSpeed(float machSpeed) {
-        NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
-        mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant((float) machSpeed)));
-    }
-
     @Override
     public Map<String, String> resetMachine() {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
+            if(msdh.hasQueue()) {
+                msdh.runQueue();
+            }
             sendCntrlCmd(new Variant(1));
             sendCmdRequest();
             rtm.put("Success", this.id + " Machine reset.");
