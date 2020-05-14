@@ -36,15 +36,23 @@ class HomeController extends Controller {
 
 	public function login() {
 		$this->view('home/login');
-		if (isset($_POST['username']) && isset($_POST['pwd'])) {
-			if ($this->model('user')->login($_POST['username'], $_POST['pwd'])) {
-				$_SESSION['logged_in'] = true;
-				$_SESSION['username'] = $username;
-				// get usertype
-				$_SESSION['usertype'] = $usertype;
-				
-
-			} else {
+		if (isset($_POST['username']) && isset($_POST['password'])) {
+			if ($this->model('User')->login($_POST['username'], $_POST['password'])) {
+				if ($_SESSION['usertype']=='Manager')
+				{
+					header('Location: /brewsoft/mvc/public/manager/index');		
+				}
+				if ($_SESSION['usertype']=='Worker')
+				{
+					header('Location: /brewsoft/mvc/public/brewworker/index');		
+				}
+				if ($_SESSION['usertype']=='Admin')
+				{
+					header('Location: /brewsoft/mvc/public/admin/index');		
+				}			
+			
+			} else 
+			{
 				echo 'please fill in the right information';
 			}
 		}

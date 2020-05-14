@@ -1,7 +1,8 @@
 <?php
 class User extends Database {
-    public function login($username, $password){
-		{
+    public function login($username, $password)
+    {
+		
             $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
             $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
             
@@ -13,15 +14,21 @@ class User extends Database {
 			foreach ($users as $user) {
 				$hashedPassword = $user['password'];
 				if ($user['username'] == $username && password_verify($password, $hashedPassword)) {
-					return true;
+                    $_SESSION['logged_in'] = true;
+                    $_SESSION['username'] = $username;
+                    $usertype = $this->getUsertype($username);
+                    $_SESSION['usertype'] = $usertype;
+                    return true;
 				} else {
 					return false;
 				}
-			}
-		}
+            }            
+           
+		
     }
 
-    public function createUser($username, $password, $usertype){
+    public function createUser($username, $password, $usertype)
+    {
         $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
         $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
         $usertype = filter_var($_POST['usertype'], FILTER_SANITIZE_STRING);
@@ -36,10 +43,21 @@ class User extends Database {
 		    $stmt->bindParam(':password', $hashed_pwd);
 		    $stmt->bindParam(':usertype', $usertype);
 		    $stmt->execute();	
-
-		    return $username;
         }
-	}
+    }
+    
+    private function getUsertype($username)
+    {
+            $sql = "SELECT usertype FROM users WHERE username = :username;";
+			$stmt = $this->conn->prepare($sql);
+			$stmt->bindParam(':username', $username);
+			$stmt->execute();
+            $usertype = $stmt->fetchAll();
+            foreach ($usertype as $user) {
+                $usertype = $user['usertype'];
+            }
+            return $usertype;
+    }
 
     private function regexCheck($username, $password)
         {
