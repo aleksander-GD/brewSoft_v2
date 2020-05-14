@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <input type="submit" name="login" id="login" class="btn btn-primary" value="login" />
-                <a href="/aldus17/mvc/public/home/register" class="btn btn-primary" role="button" aria-pressed="true">Register</a>
+                <a href="/brewSoft/mvc/public/home/register" class="btn btn-primary" role="button" aria-pressed="true">Register</a>
             </div>
         </form>
     </div>

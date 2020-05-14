@@ -23,6 +23,7 @@
                 <option value="Admin">Admin</option>
             </select><br>
             <button type="submit" name="Signup">Signup</button>
+            <a href="/brewSoft/mvc/public/home/login" class="btn btn-primary" role="button" aria-pressed="true">Login page</a>
     </div>
 
     <?php include '../app/views/partials/foot.php'; ?>
