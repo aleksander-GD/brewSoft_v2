@@ -99,6 +99,37 @@ password VARCHAR(255),
 usertype VARCHAR(255)
 );
 
+CREATE TABLE ingredientsUpdate(
+    ingredientsid serial,
+    barley INT,
+    hops INT,
+    malt INT,
+    wheat INT,
+    yeast INT,
+    BreweryMachineID INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (ingredientsid),
+);
+
+CREATE TABLE machinedata(
+    machinedataid serial,
+    brewerymachineid INT,
+    maintenace FLOAT,
+    state INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (machinedataid)
+);
+
+CREATE TABLE produceddata(
+    produceddataid serial,
+    ProductionListID INT,
+    produced INT,
+    acceptable INT,
+    defect INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (produceddataid),
+);
+
 insert into user(username,password,usertype) VALUES('manager','manager','wanager');
 insert into user(username,password,usertype) VALUES('worker','worker','worker');
 
@@ -173,3 +204,21 @@ ADD CONSTRAINT timeInState_breweryMachine FOREIGN KEY (BreweryMachineID) REFEREN
 
 ALTER TABLE TimeInState
 ADD CONSTRAINT timeInState_machineState FOREIGN KEY (MachineStateID) REFERENCES MachineState;
+
+ALTER TABLE ProductionInfo
+ADD vibration float;
+
+ALTER TABLE ingredientsUpdate
+ADD CONSTRAINT ingredientsUpdate_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
+
+ALTER TABLE machinedata
+ADD CONSTRAINT machinedata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
+
+ALTER TABLE produceddata
+ADD CONSTRAINT produceddata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
+
+ALTER TABLE ProductionList
+ADD machineid INT;
+
+ALTER TABLE ProductionList
+ADD CONSTRAINT productionlist_machineid FOREIGN KEY (BreweryMachineID) REFERENCES BreweryMachine;

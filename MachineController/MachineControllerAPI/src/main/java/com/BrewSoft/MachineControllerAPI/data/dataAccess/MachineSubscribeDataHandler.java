@@ -24,9 +24,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertProductionInfo(int productionListID, int BreweryMachineID,
-            float humidity, float temperature) {
-        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature);
+            float humidity, float temperature, float vibration) {
+        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, vibration) VALUES (?,?,?,?,?)";
+        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, vibration);
         
     }
 
@@ -117,9 +117,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     @Override
-    public void changeProductionListStatus(int productionListID, String newStatus) {
-        String sql = "UPDATE productionList SET status = ? WHERE productionListID = ?";
-        int result = connection.queryUpdate(sql, newStatus, productionListID);
+    public void changeProductionListStatus(int productionListID, String newStatus, int machineID) {
+        String sql = "UPDATE productionList SET status = ? AND macineid = ? WHERE productionListID = ?";
+        int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
         
     }
 

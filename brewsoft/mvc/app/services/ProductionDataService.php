@@ -2,19 +2,24 @@
   require_once '../models/ProductionData.php';
 
   $productionlistID = 0;
+  $machineID = 0;
 
   class ProductionDataService
   { 
     public function __construct(){
     }
     
-    public function getIngredients() {
+    public function getIngredients()
+    {
+      $model = new ProductionData();
+      $ingredientsData = $model->ingredientsUpdate($this->$machineID);
+
       $ingredients = array(
-        "barley"=>100,
-        "hops"=>100,
-        "malt"=>100,
-        "wheat"=>100,
-        "yeast"=>100
+        "barley"=>$ingredientsData['barley'],
+        "hops"=>$ingredientsData['hops'],
+        "malt"=>$ingredientsData['malt'],
+        "wheat"=>$ingredientsData['wheat'],
+        "yeast"=>$ingredientsData['yeast']
       );
 
       echo json_encode($ingredients);
@@ -24,6 +29,9 @@
     {
       $model = new ProductionData();
       $startproduction = $modul->StartProduction();
+
+      $this->$productionlistID = $startproduction['productionlistid'];
+      $this->machineID = $startproduction['machineid'];
 
       $productionData = array(
         "productType"=>$startproduction['productid'],
@@ -37,10 +45,13 @@
 
     public function getProducedData()
     {
+      $model = new ProductionData();
+      $getproducedData = $model->ProducedData($this->$productionlistID);
+
       $producedData = array(
-        "produced"=>500,
-        "acceptableCount"=>400,
-        "defectCount"=>100
+        "produced"=>$getproducedData['produced'],
+        "acceptableCount"=>$getproducedData['acceptable'],
+        "defectCount"=>$getproducedData['defect']
       );
 
       echo json_encode($producedData);
@@ -49,15 +60,16 @@
     public function getMachineData()
     {
       $model = new ProductionData();
-      $machineDataRecived = $model->MachineData(1);
+      $machineDataRecived = $model->MachineData($this->$productionlistID, $this->$machineID);
+      $stopreason = $model->ProductionStop($this->$productionlistID, $this->$machineID);
 
       $machineData = array(
         "temperature"=>$machineDataRecived['temperature'],
         "humidity"=>$machineDataRecived['humidity'],
-        "vibration"=>100,
-        "stopReason"=>1,
-        "maintenance"=>50,
-        "state"=>1
+        "vibration"=>$machineDataRecived['vibration'],
+        "stopReason"=>$stopreason['stopreasonid'],
+        "maintenance"=>$machineDataRecived['maintenace'],
+        "state"=>$machineDataRecived['state']
       );
 
       echo json_encode($machineData);
