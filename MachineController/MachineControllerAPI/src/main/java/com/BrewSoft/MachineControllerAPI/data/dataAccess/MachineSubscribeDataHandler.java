@@ -30,11 +30,11 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     @Override
     public void insertProductionInfo(int productionListID, int BreweryMachineID,
             float humidity, float temperature) {
-
-        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature);
+        Timestamp ts = getTimestamp();
+        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, timestamp) VALUES (?,?,?,?,?)";
+        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, ts);
         if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, productionListID, BreweryMachineID, humidity, temperature);
+            dq.addToQueue("queryUpdate", sql, productionListID, BreweryMachineID, humidity, temperature, ts);
         } else {
             if(dq.isQueueExisting() && !dq.isRunningQueue()) {
                 dq.runQueue();
@@ -42,20 +42,31 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         }
     }
 
-    @Override
-    public void insertTimesInStates(int ProductionListID, int BreweryMachineID, int MachinestateID) {
+    private Timestamp getTimestamp() {
         ZoneId zoneId = ZoneId.of("Europe/Copenhagen");
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:MM:SS");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:SS");
         ZonedDateTime zdt = ZonedDateTime.now(zoneId);
         Timestamp ts = Timestamp.from(zdt.toInstant());
-        String cur_time = zdt.format(dtf);
-        System.out.println("time: " + cur_time);
+        return ts;
+    }
+    
+    private Timestamp getDatestamp() {
+        ZoneId zoneId = ZoneId.of("Europe/Copenhagen");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("YYYY:MM:DD");
+        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        Timestamp ts = Timestamp.from(zdt.toInstant());
+        return ts;
+    }
+    
+    @Override
+    public void insertTimesInStates(int ProductionListID, int BreweryMachineID, int MachinestateID) {
+        Timestamp ts = getTimestamp();
         
         String sql = "INSERT INTO timeInstate (productionListID, breweryMachineID, machineStateID, StartTimeInState) VALUES (?,?,?,?)";
         int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, MachinestateID, ts);
         System.out.println("Res states: "+result);
         if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, MachinestateID, cur_time);
+            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, MachinestateID, ts);
         } else {
             if(dq.isQueueExisting() && !dq.isRunningQueue()) {
                 dq.runQueue();
@@ -209,18 +220,21 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertStoppedProductionToTempTable(TemporaryProductionBatch tempBatch) {
-        String sql = "INSERT INTO temporaryproduction (productionlistid, acceptedcount,defectcount) VALUES (?,?,?)";
+        Timestamp ts = getDatestamp();
+        String sql = "INSERT INTO temporaryproduction (productionlistid, acceptedcount,defectcount,dateforstop) VALUES (?,?,?,?)";
         
         int result = connection.queryUpdate(sql,
                 tempBatch.getProductionListId(),
                 tempBatch.getAcceptedCount(),
-                tempBatch.getDefectCount());
+                tempBatch.getDefectCount(),
+                ts);
         System.out.println("Res temp: "+result);
         if(result == 0) {
             dq.addToQueue("queryUpdate", sql,
                     tempBatch.getProductionListId(),
                     tempBatch.getAcceptedCount(),
-                    tempBatch.getDefectCount());
+                    tempBatch.getDefectCount(),
+                    ts);
         } else {
             System.out.println("temp " +dq.isQueueExisting() + " : " + dq.isRunningQueue());
             if(dq.isQueueExisting() && !dq.isRunningQueue()) {

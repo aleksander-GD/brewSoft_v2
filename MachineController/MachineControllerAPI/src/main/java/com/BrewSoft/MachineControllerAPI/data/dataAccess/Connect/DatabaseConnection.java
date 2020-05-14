@@ -60,7 +60,7 @@ public class DatabaseConnection {
                 }
                 // retry connecting to DB automatically?
             } else {
-                System.out.println("USING QUEUE AND NOT DATABASE?!? logger");
+                System.out.println("SQL exception - logging");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (ClassNotFoundException ex) {
@@ -81,7 +81,7 @@ public class DatabaseConnection {
                 System.out.println("USING QUEUE AND NOT DATABASE?!?");
                 // retry connecting to DB automatically?
             } else {
-                System.out.println("USING QUEUE AND NOT DATABASE?!? logger");
+                System.out.println("SQL exception - logging");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
@@ -118,7 +118,7 @@ public class DatabaseConnection {
                 System.out.println("GETTING BATCH INFO WITHOUT DATABASE?!?");
                 // retry connecting to DB automatically?
             } else {
-                System.out.println("USING QUEUE AND NOT DATABASE?!? logger");
+                System.out.println("SQL exception - logging");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
