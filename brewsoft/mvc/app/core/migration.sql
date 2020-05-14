@@ -92,15 +92,12 @@ CREATE TABLE temporaryproduction (
     FOREIGN KEY (productionlistid) REFERENCES productionlist(productionlistid)
 );
 
-create table user(
+create table users(
 userid serial Primary key,
 username VARCHAR(255),
 password VARCHAR(255),
 usertype VARCHAR(255)
 );
-
-insert into user(username,password,usertype) VALUES('manager','manager','wanager');
-insert into user(username,password,usertype) VALUES('worker','worker','worker');
 
 insert into brewerymachine (Hostname, Port) values ('192.168.0.122',4840);
 insert into brewerymachine (Hostname, Port) values ('127.0.0.1', 4840);
