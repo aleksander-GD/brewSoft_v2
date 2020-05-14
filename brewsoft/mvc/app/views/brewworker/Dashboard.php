@@ -15,7 +15,7 @@
       <button onclick="startProduction()">Start</button>
       <button>Reset</button>
       <button>Clear</button>
-      <button>Stop</button>
+      <button onclick="stopProduction()">Stop</button>
       <button>Abort</button>
     </div>
     
