@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="../../css/editbatch.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="../../js/batch.js"></script>
-
 </head>
-
 <body>
     <div class="editbatch-form-wrapper">
         <form method="POST" id="editform">
