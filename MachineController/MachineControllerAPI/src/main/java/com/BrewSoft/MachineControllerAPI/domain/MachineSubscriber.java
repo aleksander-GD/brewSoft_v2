@@ -197,8 +197,8 @@ public class MachineSubscriber implements IMachineSubscribe {
     // TODO Insert machine ID
 
     public void sendProductionData() {
-        float checkHumidity = 0;
-        float checkTemperatur = 0;
+        float checkHumidity = -1;
+        float checkTemperatur = -1;
         if (checkHumidity != humidityValue || checkTemperatur != temperaturValue) {
             checkHumidity = humidityValue;
             checkTemperatur = temperaturValue;
