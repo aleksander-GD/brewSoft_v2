@@ -360,18 +360,19 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private void generateRandomProdValues() {
         Random random = new Random();
-        int value = random.nextInt(1000);
-        if (value <= 1) {
-            humidityValue = (float) Math.random() * (21 - 17) + 17;
-        } else if (value > 1 && value < 2) {
-            temperaturValue = (float) Math.random() * (26 - 20) + 20;
-        } else if (value > 2 && value < 3) {
-            humidityValue = (float) Math.random() * (38 - 34) + 34;
-        } else if (value > 3 && value < 4) {
-            temperaturValue = (float) Math.random() * (38 - 33) + 33;
+        int value = random.nextInt(2000);
+        System.out.println("Random value:" + value);
+        if (value > 1 && value < 5) {
+            humidityValue = (float) Math.random() * (21 - 17) + 17; // low humid alarm
+        } else if (value > 5 && value < 10) {
+            temperaturValue = (float) Math.random() * (26 - 20) + 20;   // low temp alarm
+        } else if (value > 10 && value < 15) {
+            humidityValue = (float) Math.random() * (38 - 34) + 34;     // high humid alarm
+        } else if (value > 15 && value < 20) {
+            temperaturValue = (float) Math.random() * (38 - 33) + 33;   // high temp alarm
         } else {
-            temperaturValue = (float) Math.random() * (30 - 28) + 28;
-            humidityValue = (float) Math.random() * (30 - 25) + 25;
+            temperaturValue = (float) Math.random() * (30 - 27) + 27;  // Normal values
+            humidityValue = (float) Math.random() * (30 - 27) + 27;
         }
     }
 }
