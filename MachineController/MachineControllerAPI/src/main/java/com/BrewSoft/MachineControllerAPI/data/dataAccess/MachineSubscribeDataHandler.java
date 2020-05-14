@@ -7,18 +7,24 @@ import com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect.SimpleSet;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect.TestDatabase;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler {
 
     public DatabaseConnection connection;
-
+    private DatabaseQueue dq;
+    
     public MachineSubscribeDataHandler() {
         connection = new DatabaseConnection();
-
+        dq = new DatabaseQueue();
     }
 
     public MachineSubscribeDataHandler(TestDatabase testDatabase) {
         connection = testDatabase;
+        dq = new DatabaseQueue();
     }
 
     @Override
@@ -60,6 +66,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonID) {
+        
         String sql = "INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)";
         int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, stopReasonID);
 
@@ -68,6 +75,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     public void insertFinalBatchInformation(int ProductionListID,
             int BreweryMachineID, String deadline, String dateOfCreation,
             String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount) {
+        
         String sql = "INSERT INTO finalBatchInformation "
                 + "(ProductionListID, BreweryMachineID, deadline, "
                 + "dateOfCreation, dateOfCompletion, productID, totalCount, "
@@ -84,6 +92,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID,
             String deadline, String dateOfCreation, int productID, float totalCount,
             int defectCount, int acceptedCount) {
+        
         String sql = "INSERT INTO finalBatchInformation "
                 + "(ProductionListID, BreweryMachineID, deadline, dateOfCreation, "
                 + "productID, totalCount, defectCount, acceptedCount) "
@@ -99,9 +108,26 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 acceptedCount);
 
     }
+    
+    @Override
+    public boolean hasQueue(){
+        return dq.isQueueExisting();
+    }
+    
+    /**
+     * HOW TO RUN THIS AUTOMATICALLY WHEN CONNECTION IS BACK??
+     */
+    @Override
+    public void runQueue() {
+        dq.runQueue();
+    }
 
     @Override
     public Batch getNextBatch() {
+        System.out.println(dq.isQueueExisting() + " : " + dq.isRunningQueue());
+        if(dq.isQueueExisting() && !dq.isRunningQueue()) {
+            dq.runQueue();
+        }
         Batch batch = null;
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1");
 
@@ -138,6 +164,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void changeProductionListStatus(int productionListID, String newStatus) {
+        
         String sql = "UPDATE productionList SET status = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, productionListID);
 

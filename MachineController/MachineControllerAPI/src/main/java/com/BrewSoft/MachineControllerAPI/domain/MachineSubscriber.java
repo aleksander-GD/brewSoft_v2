@@ -3,9 +3,6 @@ package com.BrewSoft.MachineControllerAPI.domain;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Batch;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductionBatch;
-import com.BrewSoft.MachineControllerAPI.data.dataAccess.BatchDataHandler;
-import com.BrewSoft.MachineControllerAPI.data.dataAccess.MachineSubscribeDataHandler;
-import com.BrewSoft.MachineControllerAPI.data.interfaces.IBatchDataHandler;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
 import java.util.ArrayList;
@@ -33,7 +30,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private static final AtomicLong ATOMICLOMG = new AtomicLong(1L);
     private MachineConnection mconn;
-    private Map<String, Consumer<String>> consumerMap;
+    private Map<String, String> consumerMap;
 
     private IMachineSubscriberDataHandler msdh;
 
@@ -96,6 +93,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         this.machineObj = machineObj;
     }
     
+    @Override
     public void setSubscriberDataHandler(IMachineSubscriberDataHandler msdh) {
         this.msdh = msdh;
     }
@@ -189,13 +187,6 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
     }
 
-    @Override
-    public void setConsumer(Consumer<String> consumer, String nodeName
-    ) {
-        consumerMap.put(nodeName, consumer);
-    }
-    // TODO Insert machine ID
-
     public void sendProductionData() {
         float checkHumidity = -1;
         float checkTemperatur = -1;
@@ -206,17 +197,14 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
     }
 
-    // TODO Insert machine ID and Production List ID
     public void sendTimeInState() {
         int checkCurrentState = -1;
-
         if (checkCurrentState != currentStateValue) {
             checkCurrentState = currentStateValue;
             msdh.insertTimesInStates(batch.getProductionListID(), machineObj.getMachineID(), currentStateValue);
         }
     }
 
-    // TODO Insert machine ID and Production List ID
     public void sendStopDuingProduction() {
         if (StopReasonID != 0) {
             msdh.insertStopsDuringProduction(batch.getProductionListID(), machineObj.getMachineID(), StopReasonID);
@@ -225,7 +213,6 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
     }
 
-    // TODO Insert machine ID and Production List ID
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
             msdh.changeProductionListStatus(batch.getProductionListID(), "Completed");
@@ -251,8 +238,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     private void consumerStarter(String nodename, DataValue dataValue) {
-        consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
-
+        //System.out.println("node: " + nodename);
         switch (nodename) {
             case BATCHID_NODENAME:
                 this.batchIDValue = Float.parseFloat(dataValue.getValue().getValue().toString());
@@ -262,7 +248,9 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case TEMPERATURE_NODENAME:
                 this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                System.out.println("temp");
             case HUMIDITY_NODENAME:
+                System.out.println("humid");
                 if (nodename.equals(HUMIDITY_NODENAME)) {
                     this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 }
@@ -315,34 +303,10 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
     }
 
+    @Override
     public void stoppedproduction(int productionlistid) {
         TemporaryProductionBatch tpb = new TemporaryProductionBatch(productionlistid, acceptableCountValue, defectCountValue, totalProductValue);
         msdh.insertStoppedProductionToTempTable(tpb);
-    }
-
-    public String getCurrentProductType() {
-        IBatchDataHandler bdh = new BatchDataHandler();
-        return bdh.getBeerTypes().get(this.batch.getType()).getTypeName();
-    }
-
-    // TODO Get data from database.
-    @Override
-    public String stopReasonTranslator(String stopReason) {
-        switch (stopReason) {
-            case UNDEFINED:
-                return "";
-            case EMPTY_INVENTORY:
-                return "Empty inventory";
-            case MAINTENANCE:
-                return "Maintenance";
-            case MANUAL_STOP:
-                return "Manual Stop";
-            case MOTOR_POWER_LOSS:
-                return "Motor power loss";
-            case MANUAL_ABORT:
-                return "Manual abort";
-        }
-        return "Unknown stop code " + stopReason;
     }
 
     @Override
