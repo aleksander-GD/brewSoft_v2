@@ -1,49 +1,22 @@
 .idea/
 .vscode/
-MachineController/MachineControllerAPI/target/classes/.netbeans_automatic_build
 
-MachineController/MachineControllerAPI/target/classes/application.properties
+*.jar
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/crossCutting/objects/Batch.class
+MachineController/BrewSoft/target/maven-archiver/pom.properties
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/crossCutting/objects/BeerTypes.class
+*.lst
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/crossCutting/objects/Machine.class
+MachineController/BrewSoft/target/maven-status/maven-compiler-plugin/compile/default-compile/
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/crossCutting/objects/TemporaryProductionBatch.class
+*.class
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/dataAccess/BatchDataHandler.class
+MachineController/BrewSoft/nb-configuration.xml
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/dataAccess/ChooseMachineDataHandler.class
+MachineController/BrewSoft/pom.xml.backup
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/dataAccess/Connect/DatabaseConnection.class
+MachineController/MachineControllerAPI/.mvn/wrapper/maven-wrapper.properties
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/dataAccess/Connect/SimpleSet.class
+MachineController/MachineControllerAPI/src/main/resources/application.properties
 
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/dataAccess/Connect/TestDatabase.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/dataAccess/DatabaseQueue.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/dataAccess/MachineSubscribeDataHandler.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/interfaces/IBatchDataHandler.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/interfaces/IChooseMachineDataHandler.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/data/interfaces/IMachineSubscriberDataHandler.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/domain/ControllerAPI.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/domain/interfaces/IMachineControl.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/domain/interfaces/IMachineSubscribe.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/domain/MachineConnection.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/domain/MachineController.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/domain/MachineSubscriber.class
-
-MachineController/MachineControllerAPI/target/classes/com/BrewSoft/MachineControllerAPI/MachineControllerApiApplication.class
-
-MachineController/MachineControllerAPI/target/test-classes/.netbeans_automatic_build
+MachineController/MachineControllerAPI/queue.txt

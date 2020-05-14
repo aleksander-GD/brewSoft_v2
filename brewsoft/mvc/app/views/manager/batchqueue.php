@@ -36,7 +36,4 @@
     <script src="../js/batch.js"></script>
 
 </body>
-
-
-
 </html>
