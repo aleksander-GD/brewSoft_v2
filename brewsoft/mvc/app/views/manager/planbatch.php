@@ -13,7 +13,7 @@
             <br>
             Please enter the correct values!
             </br>
-            <form method="POST" action="/brewsoft/mvc/public/manager/planbatch">
+            <form method="POST" action="/brewsoft/mvc/public/manager/planBatch">
                 <label for="producttype"> Choose product type: </label><br>
                 <select name="products" id="products">
 

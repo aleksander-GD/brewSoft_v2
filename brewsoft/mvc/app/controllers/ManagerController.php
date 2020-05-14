@@ -28,7 +28,7 @@ class ManagerController extends Controller
 		if (isset($_SESSION['username']) && isset($_SESSION['logged_in'])) {
 			$viewbag['logged_in'] = true;
 
-			$this->view('manager/planbatch', $viewbag);
+			header('Location: /brewsoft/mvc/public/manager/planBatch');
 		} else {
 			$this->view('partials/restricted', $viewbag);
 		}
@@ -48,6 +48,8 @@ class ManagerController extends Controller
 		$batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
 		//the selected batch is sent to the view.
 		$viewbag['batch'] = $batch;
+		$product = $this->model('ProductType')->getProducts();
+		$viewbag['products'] = $product;
 
 		//redirect to editbatch page
 		$this->view('manager/editbatch', $viewbag);
@@ -77,6 +79,7 @@ class ManagerController extends Controller
 	}
 	public function planBatch()
 	{
+		ob_start();
 		$product = $this->model('ProductType')->getProducts();
 		$viewbag['products'] = $product;
 		$this->view('manager/planbatch', $viewbag);
@@ -90,7 +93,9 @@ class ManagerController extends Controller
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchqueue');
+			//$this->view('manager/batchqueue');
+			header('Location: /brewsoft/mvc/public/manager/batchQueue');
+			
 		}
 	}
 
@@ -189,6 +194,7 @@ class ManagerController extends Controller
 	public function logout()
 	{
 		session_destroy();
+		ob_flush();
 		header('Location: /brewSoft/mvc/public/home/login');
 	}
 }

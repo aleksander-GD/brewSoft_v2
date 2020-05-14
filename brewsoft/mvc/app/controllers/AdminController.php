@@ -18,6 +18,7 @@ class AdminController extends Controller
     public function logout()
     {
         session_destroy();
+        ob_flush();
         header('Location: /brewSoft/mvc/public/home/login');
     }
 }

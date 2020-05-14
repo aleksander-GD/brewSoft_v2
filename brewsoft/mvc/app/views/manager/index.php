@@ -15,4 +15,3 @@
     <?php endif; ?>
     <?php include '../app/views/partials/foot.php'; ?>
 
-</html>

@@ -9,6 +9,8 @@ class MachineApiController extends Controller
   public function index()
   {
     $this->machineControls();
+    /* $this->chooseMachine();
+    $this->view('machine/machines'); */
   }
 
   public function availableMachines()
