@@ -305,6 +305,9 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case PRODUCED_PRODUCTS_NODENAME:
                 this.productionCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                if(machineObj.getHostname().equals(this.SOFTWARESIM)){
+                    this.generateRandomAmount();
+                }
                 this.completedBatch();
                 break;
             default:
@@ -374,5 +377,12 @@ public class MachineSubscriber implements IMachineSubscribe {
             temperaturValue = (float) Math.random() * (30 - 27) + 27;  // Normal values
             humidityValue = (float) Math.random() * (30 - 27) + 27;
         }
+    }
+
+    private void generateRandomAmount() {
+        totalProductValue = this.productionCountValue;
+        Random random = new Random();
+        acceptableCountValue = random.nextInt(this.productionCountValue + 1);
+        defectCountValue = (int) totalProductValue - acceptableCountValue;
     }
 }
