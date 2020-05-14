@@ -33,4 +33,8 @@ class Database extends DB_Config
 	{
 		$this->conn = null;
 	}
+
+	public function getConnection() {
+		return $this->conn;
+	}
 }

@@ -72,14 +72,12 @@ class ManagerController extends Controller
 		$this->view('manager/planbatch', $viewbag);
 
 		if (isset($_POST['planbatch'])) {
-			$latestBatchNumber = $this->model('productionlist')->getLatestBatchNumber();
-			$batchID = $this->batchService->createBatchNumber($latestBatchNumber);
 			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
 			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
 			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
-			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
+			$this->model('Productionlist')->insertBatchToQueue($productID, $productAmount, $deadline, $speed, $status);
 			header('Location: /brewsoft/mvc/public/manager/batchqueue');
 		}
 	}
@@ -106,8 +104,6 @@ class ManagerController extends Controller
 
 		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
 		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
-
-
 
 		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];

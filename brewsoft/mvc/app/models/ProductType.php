@@ -6,6 +6,10 @@ class ProductType extends Database
 {
     public function getProducts()
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $sql = "SELECT productid, productname FROM ProductType";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -15,6 +19,10 @@ class ProductType extends Database
 
     public function getIdealCycleTimeForProductID($productid)
     {
+        if ($this->check_database_connection() == null || $this->check_database_connection() == false) {
+            return false;
+            exit();
+        }
         $select_query = "SELECT idealcycletime ";
         $from_query = "FROM producttype ";
         $where_query = "WHERE productid = :productid; ";
@@ -32,5 +40,10 @@ class ProductType extends Database
             $resultObject[] = $convertedResults;
         }
         return $resultObject;
+    }
+
+    private function check_database_connection()
+    {
+        return $this->conn;
     }
 }
