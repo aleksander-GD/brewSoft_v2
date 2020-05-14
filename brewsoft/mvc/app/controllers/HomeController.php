@@ -3,6 +3,11 @@
 class HomeController extends Controller
 {
 
+	public function index()
+	{
+		$this->view('home/login');
+	}
+
 	public function login()
 	{
 		$this->view('home/login');
@@ -30,8 +35,13 @@ class HomeController extends Controller
 			if ($this->model('User')->createUser($_POST['username'], $_POST['password'], $_POST['usertype'])) {
 				header('Location: /brewsoft/mvc/public/home/login');
 			} else {
-				echo 'what a pleb';
+				echo 'error at register user';
 			}
 		}
+	}
+
+	public function restricted()
+	{
+		$this->view('partials/restricted');
 	}
 }

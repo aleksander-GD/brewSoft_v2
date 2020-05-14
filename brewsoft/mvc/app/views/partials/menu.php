@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -52,8 +53,6 @@
                     </span>
                 </div>
             </nav>
-
-            <?php include_once 'foot.php'; ?>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['usertype']) && $_SESSION['usertype'] == 'Manager') : ?>
@@ -66,22 +65,22 @@
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav mx-auto ">
                         <li class="nav-item active">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/planBatch"><i class="fa fa-home" aria-hidden="true"></i>Plan batch <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/planBatch"><i class="fa fa-calendar-alt" aria-hidden="true"></i>Plan batch <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/batchQueue"><i class="fa fa-cloud-upload" aria-hidden="true"></i>batch queue</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/batchQueue"><i class="fas fa-th-list" aria-hidden="true"></i>batch queue</a>
                         </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="/brewsoft/mvc/public/manager/batchReport"><i class="fa fa-picture-o" aria-hidden="true"></i>batch report</a>
                         </li> -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/completedBatches"><i class="fa fa-picture-o" aria-hidden="true"></i>completed batches</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/completedBatches"><i class="fas fa-clipboard-list" aria-hidden="true"></i>completed batches</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/displayOeeForDay"><i class="fa fa-users" aria-hidden="true"></i>Display Oee for day</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/displayOeeForDay"><i class="far fa-chart-bar" aria-hidden="true"></i>Display Oee for day</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/productionview"><i class="fa fa-users" aria-hidden="true"></i>productionview</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/productionview"><i class="fas fa-boxes" aria-hidden="true"></i>productionview</a>
                         </li>
                     </ul>
                     <span class="navbar-text">
@@ -96,7 +95,6 @@
                 </div>
             </nav>
 
-            <?php include_once 'foot.php'; ?>
             <script src="../js/menuBarUtility.js"></script>
             <!-- <script src="https://use.fontawesome.com/b6edc4dbf9.js"></script> -->
             <script src="https://kit.fontawesome.com/dc1c1b77e7.js" crossorigin="anonymous"></script>
@@ -136,7 +134,7 @@
                     </span>
                 </div>
             </nav>
-            <?php include_once 'foot.php'; ?>
+
         <?php endif; ?>
     <?php else : ?>
 

@@ -46,6 +46,6 @@
         </form>
     </div>
 
-</body>
+    <?php include '../app/views/partials/foot.php'; ?>
 
 </html>

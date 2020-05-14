@@ -1,6 +1,11 @@
-<?php include '../app/views/partials/menu.php'; ?>
+<!DOCTYPE html>
+<html>
 
-Hello there, <?=$viewbag['username']?>
+<head>
+    <title>Index</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 
-
-<?php include '../app/views/partials/foot.php'; ?>
+<body>
+    <?php include '../app/views/partials/foot.php'; ?>

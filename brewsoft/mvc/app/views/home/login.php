@@ -1,8 +1,5 @@
-<head>
-    <title>Login</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-</head>
+<!DOCTYPE html>
+<html>
 
 <body>
     <div class="wrapper">
@@ -21,4 +18,4 @@
             </div>
         </form>
     </div>
-</body>
+    <?php include '../app/views/partials/foot.php'; ?>

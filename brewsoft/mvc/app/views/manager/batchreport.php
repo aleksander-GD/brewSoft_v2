@@ -12,7 +12,8 @@ $sortedTimes = $viewbag['sortedTimes'];
 
 <html>
 <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) : ?>
-    <?php include_once '../app/views/partials/menu.php'; ?>
+
+
     <head>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
@@ -133,6 +134,7 @@ $sortedTimes = $viewbag['sortedTimes'];
     </head>
 
     <body>
+
         <div id="oee-div">
             <h2>Batch OEE</h2>
             <p for="OEE">
@@ -174,11 +176,8 @@ $sortedTimes = $viewbag['sortedTimes'];
             <p>Total amount of products: <?php echo $products['totalcount']; ?> </p>
             <div id="piechart" style="width: 800px; height: 400px;"></div>
         </div>
-    </body>
-<?php else : ?>
 
-    <?php include_once '../app/views/partials/restricted.php'; ?>
+    <?php else : ?>
 
-<?php endif; ?>
-
-</html>
+    <?php endif; ?>
+    <?php include '../app/views/partials/foot.php'; ?>

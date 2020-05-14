@@ -28,8 +28,7 @@
             } ?> </p><br>
     </div>
     <input type="button" class="canceleditbuttonshowoee" name="canceleditbuttonshowoee" value="Cancel"></input>
-    
-    <script src="../../js/batch.js"></script>
-</body>
 
-</html>
+    <script src="../../js/batch.js"></script>
+    <?php include '../app/views/partials/foot.php'; ?>
+

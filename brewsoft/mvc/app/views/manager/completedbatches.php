@@ -42,13 +42,7 @@
             <!-- Instead insert button that redirects to batch report dashboard -->
             <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
         </div>
+        
     <?php else : ?>
-
-        <?php include_once '../app/views/partials/restricted.php'; ?>
-
     <?php endif; ?>
-</body>
-
-
-
-</html>
+    <?php include '../app/views/partials/foot.php'; ?>

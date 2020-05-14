@@ -28,10 +28,6 @@
 
         </div>
     <?php else : ?>
-
-        <?php include_once '../app/views/partials/restricted.php'; ?>
-
     <?php endif; ?>
-</body>
+    <?php include '../app/views/partials/foot.php'; ?>
 
-</html>
