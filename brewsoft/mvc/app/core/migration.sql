@@ -61,7 +61,15 @@ Create table StopDuringProduction(
 StopDuringProductionID serial Primary key,
 ProductionListID int,
 BreweryMachineID int,
-StopReasonID int
+StopReasonID int,
+TimeStamp time DEFAULT current_time
+);
+
+create table manualStopReasen(
+    manualStopReasenid serial primary key,
+    StopDuringProductionID int,
+    Reason VARCHAR(255),
+    userid int
 );
 
 create table StopReason(
@@ -82,6 +90,13 @@ CREATE TABLE temporaryproduction (
     dateforstop date DEFAULT current_date,
     PRIMARY KEY (temporaryproductionid),
     FOREIGN KEY (productionlistid) REFERENCES productionlist(productionlistid)
+);
+
+create table users(
+userid serial Primary key,
+username VARCHAR(255),
+password VARCHAR(255),
+usertype VARCHAR(255)
 );
 
 insert into brewerymachine (Hostname, Port) values ('192.168.0.122',4840);
