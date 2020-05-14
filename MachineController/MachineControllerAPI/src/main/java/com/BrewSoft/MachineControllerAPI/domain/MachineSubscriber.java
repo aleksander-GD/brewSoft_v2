@@ -192,24 +192,6 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
-        // Software simulator values
-//        if (machineObj.getHostname().equals("127.0.0.1")) {
-//            Random percentage = new Random();
-//            int value = percentage.nextInt(100);
-//            if (value <= 1) {
-//                humidityValue = (float) Math.random() * (21 - 17) + 17;
-//            } else if (value > 1 && value < 2) {
-//                temperaturValue = (float) Math.random() * (26 - 20) + 20;
-//            } else if (value > 2 && value < 3) {
-//                humidityValue = (float) Math.random() * (38 - 34) + 34;
-//            } else if (value > 3 && value < 4) {
-//                temperaturValue = (float) Math.random() * (38 - 33) + 33;
-//            } else {
-//                temperaturValue = (float) Math.random() * (33 - 26) + 26;
-//                humidityValue = (float) Math.random() * (34 - 21) + 21;
-//            }
-//        }
-        //
         if (checkHumidity != humidityValue || checkTemperatur != temperaturValue) {
             checkHumidity = humidityValue;
             checkTemperatur = temperaturValue;
