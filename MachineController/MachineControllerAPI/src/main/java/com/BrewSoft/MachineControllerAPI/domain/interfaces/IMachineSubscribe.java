@@ -2,15 +2,12 @@ package com.BrewSoft.MachineControllerAPI.domain.interfaces;
 
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Batch;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
-import java.util.function.Consumer;
 
 public interface IMachineSubscribe {
 
     public String connectMachine();
     
     public void subscribe();
-
-    public void setConsumer(Consumer<String> consumer, String nodeName);
 
     public String stateTranslator(String state);
 

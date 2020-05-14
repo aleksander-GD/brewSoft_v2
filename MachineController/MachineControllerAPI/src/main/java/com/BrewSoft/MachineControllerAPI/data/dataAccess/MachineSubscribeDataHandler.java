@@ -7,6 +7,10 @@ import com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect.SimpleSet;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect.TestDatabase;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler {
 
@@ -40,12 +44,18 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertTimesInStates(int ProductionListID, int BreweryMachineID, int MachinestateID) {
+        ZoneId zoneId = ZoneId.of("Europe/Copenhagen");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:MM:SS");
+        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        Timestamp ts = Timestamp.from(zdt.toInstant());
+        String cur_time = zdt.format(dtf);
+        System.out.println("time: " + cur_time);
         
-        String sql = "INSERT INTO timeInstate (productionListID, breweryMachineID, machineStateID) VALUES (?,?,?)";
-        int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, MachinestateID);
+        String sql = "INSERT INTO timeInstate (productionListID, breweryMachineID, machineStateID, StartTimeInState) VALUES (?,?,?,?)";
+        int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, MachinestateID, ts);
         System.out.println("Res states: "+result);
         if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, MachinestateID);
+            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, MachinestateID, cur_time);
         } else {
             if(dq.isQueueExisting() && !dq.isRunningQueue()) {
                 dq.runQueue();

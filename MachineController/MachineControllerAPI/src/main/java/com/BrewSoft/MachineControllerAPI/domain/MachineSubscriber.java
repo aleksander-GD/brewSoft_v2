@@ -3,8 +3,6 @@ package com.BrewSoft.MachineControllerAPI.domain;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Batch;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductionBatch;
-import com.BrewSoft.MachineControllerAPI.data.dataAccess.BatchDataHandler;
-import com.BrewSoft.MachineControllerAPI.data.interfaces.IBatchDataHandler;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private static final AtomicLong ATOMICLOMG = new AtomicLong(1L);
     private MachineConnection mconn;
-    private Map<String, Consumer<String>> consumerMap;
+    private Map<String, String> consumerMap;
 
     private IMachineSubscriberDataHandler msdh;
 
@@ -189,11 +187,6 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
     }
 
-    @Override
-    public void setConsumer(Consumer<String> consumer, String nodeName) {
-        consumerMap.put(nodeName, consumer);
-    }
-
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
@@ -206,7 +199,6 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public void sendTimeInState() {
         int checkCurrentState = -1;
-
         if (checkCurrentState != currentStateValue) {
             checkCurrentState = currentStateValue;
             msdh.insertTimesInStates(batch.getProductionListID(), machineObj.getMachineID(), currentStateValue);
@@ -246,8 +238,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     private void consumerStarter(String nodename, DataValue dataValue) {
-        consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
-
+        //System.out.println("node: " + nodename);
         switch (nodename) {
             case BATCHID_NODENAME:
                 this.batchIDValue = Float.parseFloat(dataValue.getValue().getValue().toString());
@@ -257,7 +248,9 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case TEMPERATURE_NODENAME:
                 this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                System.out.println("temp");
             case HUMIDITY_NODENAME:
+                System.out.println("humid");
                 if (nodename.equals(HUMIDITY_NODENAME)) {
                     this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 }
