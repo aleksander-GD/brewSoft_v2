@@ -4,12 +4,12 @@ $(document).ready(function() {
     var productionlistIDValueCompleteBatch;
     var batchIDValueCompleteBatch
 
-    $('.showOeeForBatch').on('click', function(e) {
+    $('.generateBatchReport').on('click', function(e) {
         event.preventDefault();
         productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
         batchIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(1)").html();
         if (productionlistIDValueCompleteBatch != null) {
-            window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
+            window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
 
         } else {
             window.location = 'completedBatches';

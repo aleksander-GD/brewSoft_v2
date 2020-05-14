@@ -7,6 +7,8 @@ class MachineApiController extends Controller {
 
   public function index() {
     $this->machineControls();
+
+    if ()
   }
 
   public function availableMachines() {
