@@ -1,0 +1,8 @@
+ - Start ARsim, when it is started press restart button on UI.
+ - Log on VPN with cisco vpn client (any.sdu.dk).
+ - open java project in the folder brewSoft_v2/MachineController.
+ - build and clean, to be safe.
+ - Run project using "MachineControllerApiApplication.java".
+ - navigate to brewSoft_v2 folder.
+ - start php server from that folder.
+ - Start with choosing the machine then the controls should work.
