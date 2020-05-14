@@ -42,16 +42,17 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
         // if info outside safe ranges, get productioninfoID and insert alarm into alarm table.
         if (humidity <= humidityMin || humidity >= humidityMax || temperature <= temperatureMin || temperature >= temperatureMax) {
-            String getSql = "SELECT productioninfoid FROM productioninfo ORDER BY productioninfoid DESC limit 1;";
+            String getSql = "SELECT * FROM productioninfo ORDER BY productioninfoid DESC limit 1;";
             SimpleSet set = connection.query(getSql);
-            int productionInfoID = -1;
+            int productionInfoID = 0;
             for (int i = 0; i < set.getRows(); i++) {
                 productionInfoID = Integer.valueOf(String.valueOf(set.get(i, "productioninfoid")));
             }
             String alarmSql = "INSERT INTO alarmlog(productioninfoid, alarm) VALUES (?,?);";
             if (humidity <= humidityMin || humidity >= humidityMax) {
                 int humidInsert = connection.queryUpdate(alarmSql, productionInfoID, humidityAlarm);
-            } else if (temperature <= temperatureMin || temperature >= temperatureMax){
+            } 
+            if(temperature <= temperatureMin || temperature >= temperatureMax){
                 int tempInsert = connection.queryUpdate(alarmSql, productionInfoID, temperatureAlarm);
             }
         }

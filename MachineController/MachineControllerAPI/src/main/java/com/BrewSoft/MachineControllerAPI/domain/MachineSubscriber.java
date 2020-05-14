@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -188,8 +189,24 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     public void sendProductionData() {
-        float checkHumidity = -1;
-        float checkTemperatur = -1;
+        float checkHumidity = 0;
+        float checkTemperatur = 0;
+        if(machineObj.getHostname().equals("127.0.0.1")){
+            Random percentage = new Random();
+            int value = percentage.nextInt(100);
+            if(value <= 1){
+                humidityValue = (float) Math.random() * (21 - 17) + 17;
+            } else if (value > 1 && value < 2) {
+                temperaturValue = (float) Math.random() * (26 - 20) + 20;
+            } else if (value > 2 && value < 3) {
+                humidityValue = (float) Math.random() * (38 - 34) + 34;
+            } else if (value > 3 && value < 4) {
+                temperaturValue = (float) Math.random() * (38 - 33) + 33;
+            } else {
+                temperaturValue = (float) Math.random() * (33 - 26) + 26;
+                humidityValue = (float) Math.random() * (34 - 21) + 26;
+            }
+        }
         if (checkHumidity != humidityValue || checkTemperatur != temperaturValue) {
             checkHumidity = humidityValue;
             checkTemperatur = temperaturValue;
