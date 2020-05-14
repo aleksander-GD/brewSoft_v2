@@ -87,13 +87,14 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private Batch batch;
     private Machine machineObj;
+    private final String SOFTWARESIM = "127.0.0.1";
 
     public MachineSubscriber(Machine machineObj) {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
         consumerMap = new HashMap();
         this.machineObj = machineObj;
     }
-    
+
     @Override
     public void setSubscriberDataHandler(IMachineSubscriberDataHandler msdh) {
         this.msdh = msdh;
@@ -191,22 +192,24 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
-        if(machineObj.getHostname().equals("127.0.0.1")){
-            Random percentage = new Random();
-            int value = percentage.nextInt(100);
-            if(value <= 1){
-                humidityValue = (float) Math.random() * (21 - 17) + 17;
-            } else if (value > 1 && value < 2) {
-                temperaturValue = (float) Math.random() * (26 - 20) + 20;
-            } else if (value > 2 && value < 3) {
-                humidityValue = (float) Math.random() * (38 - 34) + 34;
-            } else if (value > 3 && value < 4) {
-                temperaturValue = (float) Math.random() * (38 - 33) + 33;
-            } else {
-                temperaturValue = (float) Math.random() * (33 - 26) + 26;
-                humidityValue = (float) Math.random() * (34 - 21) + 26;
-            }
-        }
+        // Software simulator values
+//        if (machineObj.getHostname().equals("127.0.0.1")) {
+//            Random percentage = new Random();
+//            int value = percentage.nextInt(100);
+//            if (value <= 1) {
+//                humidityValue = (float) Math.random() * (21 - 17) + 17;
+//            } else if (value > 1 && value < 2) {
+//                temperaturValue = (float) Math.random() * (26 - 20) + 20;
+//            } else if (value > 2 && value < 3) {
+//                humidityValue = (float) Math.random() * (38 - 34) + 34;
+//            } else if (value > 3 && value < 4) {
+//                temperaturValue = (float) Math.random() * (38 - 33) + 33;
+//            } else {
+//                temperaturValue = (float) Math.random() * (33 - 26) + 26;
+//                humidityValue = (float) Math.random() * (34 - 21) + 21;
+//            }
+//        }
+        //
         if (checkHumidity != humidityValue || checkTemperatur != temperaturValue) {
             checkHumidity = humidityValue;
             checkTemperatur = temperaturValue;
@@ -296,6 +299,12 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
                 this.maintenanceValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                // To simulate values on software simulator
+                if (machineObj.getHostname().equals(SOFTWARESIM)) {
+                    this.generateRandomProdValues();
+                    this.sendProductionData();
+                }
+                // End of software simulator values
                 break;
             case BARLEY_NODENAME:
                 this.barleyValue = Float.parseFloat(dataValue.getValue().getValue().toString());
@@ -365,5 +374,22 @@ public class MachineSubscriber implements IMachineSubscribe {
                 return "Activating";
         }
         return "Unknown State code: " + state;
+    }
+
+    private void generateRandomProdValues() {
+        Random random = new Random();
+        int value = random.nextInt(1000);
+        if (value <= 1) {
+            humidityValue = (float) Math.random() * (21 - 17) + 17;
+        } else if (value > 1 && value < 2) {
+            temperaturValue = (float) Math.random() * (26 - 20) + 20;
+        } else if (value > 2 && value < 3) {
+            humidityValue = (float) Math.random() * (38 - 34) + 34;
+        } else if (value > 3 && value < 4) {
+            temperaturValue = (float) Math.random() * (38 - 33) + 33;
+        } else {
+            temperaturValue = (float) Math.random() * (30 - 28) + 28;
+            humidityValue = (float) Math.random() * (30 - 25) + 25;
+        }
     }
 }
