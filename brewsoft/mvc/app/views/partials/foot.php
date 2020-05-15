@@ -4,6 +4,8 @@
 <script src="https://kit.fontawesome.com/dc1c1b77e7.js" crossorigin="anonymous"></script>
 <script src="../js/menuBarUtility.js"></script>
 <script src="../js/batch.js"></script>
+<script src="../../js/menuBarUtility.js"></script>
+<script src="../../js/batch.js"></script>
 </body>
 
 </html>
