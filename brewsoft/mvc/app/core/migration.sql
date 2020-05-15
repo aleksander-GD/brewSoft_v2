@@ -68,7 +68,7 @@ TimeStamp time DEFAULT current_time
 create table manualStopReasen(
     manualStopReasenid serial primary key,
     StopDuringProductionID int,
-    Reason VARCHAR(255),
+    Reason TEXT,
     userid int
 );
 

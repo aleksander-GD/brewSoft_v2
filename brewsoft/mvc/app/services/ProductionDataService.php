@@ -1,18 +1,21 @@
 <?php
   require_once '../models/ProductionData.php';
 
-  $productionlistID = 0;
-  $machineID = 0;
-
   class ProductionDataService
   { 
+
+    private $productionlistID = 0;
+    private $machineID = 0;
+
+    private $model;
+
     public function __construct(){
+      $this->model = new ProductionData();
     }
     
     public function getIngredients()
     {
-      $model = new ProductionData();
-      $ingredientsData = $model->ingredientsUpdate($this->$machineID);
+      $ingredientsData = $model->ingredientsUpdate($this->machineID);
 
       $ingredients = array(
         "barley"=>$ingredientsData['barley'],
@@ -27,10 +30,9 @@
 
     public function getProductionData()
     {
-      $model = new ProductionData();
       $startproduction = $modul->StartProduction();
 
-      $this->$productionlistID = $startproduction['productionlistid'];
+      $this->productionlistID = $startproduction['productionlistid'];
       $this->machineID = $startproduction['machineid'];
 
       $productionData = array(
@@ -45,8 +47,7 @@
 
     public function getProducedData()
     {
-      $model = new ProductionData();
-      $getproducedData = $model->ProducedData($this->$productionlistID);
+      $getproducedData = $model->ProducedData($this->productionlistID);
 
       $producedData = array(
         "produced"=>$getproducedData['produced'],
@@ -59,9 +60,8 @@
 
     public function getMachineData()
     {
-      $model = new ProductionData();
-      $machineDataRecived = $model->MachineData($this->$productionlistID, $this->$machineID);
-      $stopreason = $model->ProductionStop($this->$productionlistID, $this->$machineID);
+      $machineDataRecived = $model->MachineData($this->productionlistID, $this->machineID);
+      $stopreason = $model->ProductionStop($this->productionlistID, $this->machineID);
 
       $machineData = array(
         "temperature"=>$machineDataRecived['temperature'],
