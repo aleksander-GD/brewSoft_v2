@@ -12,38 +12,37 @@
 </head>
 
 <body>
+    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) : ?>
+        <?php include_once '../app/views/partials/menu.php'; ?>
 
+        <div id="batch-table-wrapper">
+            <div id="tableplace">
+                <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getCompletedBatches(this.value);" onkeyup="getCompletedBatches(this.value);">
+                <table id="table">
+                    <thead>
+                        <tr>
+                            <th>Productionlist ID</th>
+                            <th>Batch ID</th>
+                            <th>Brewerymachine ID</th>
+                            <th>Deadline</th>
+                            <th>Date of creation</th>
+                            <th>Date of completion</th>
+                            <th>Product ID</th>
+                            <th>Total count</th>
+                            <th>Defect count</th>
+                            <th>Accepted count</th>
+                        </tr>
+                    </thead>
 
-    <div id="batch-table-wrapper">
-        <div id="tableplace">
-            <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getCompletedBatches(this.value);" onkeyup="getCompletedBatches(this.value);">
-            <table id="table">
-                <thead>
-                    <tr>
-                        <th>Productionlist ID</th>
-                        <th>Batch ID</th>
-                        <th>Brewerymachine ID</th>
-                        <th>Deadline</th>
-                        <th>Date of creation</th>
-                        <th>Date of completion</th>
-                        <th>Product ID</th>
-                        <th>Total count</th>
-                        <th>Defect count</th>
-                        <th>Accepted count</th>
-                    </tr>
-                </thead>
+                    <tbody id="completedBatchData"></tbody>
 
-                <tbody id="completedBatchData"></tbody>
-
-            </table>
+                </table>
+            </div>
+            <input type="button" name="generateBatchReport" class="generateBatchReport" value="Generate Batch report" />
+            <!-- Instead insert button that redirects to batch report dashboard -->
+            <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
         </div>
-        <input type="button" name="showOeeForBatch" class="showOeeForBatch" value="Show Oee for batch" />
-        <!-- Instead insert button that redirects to batch report dashboard -->
-        <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
-    </div>
-
-</body>
-
-
-
-</html>
+        
+    <?php else : ?>
+    <?php endif; ?>
+    <?php include '../app/views/partials/foot.php'; ?>

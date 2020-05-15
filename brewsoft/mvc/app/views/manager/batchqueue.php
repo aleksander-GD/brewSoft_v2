@@ -27,13 +27,13 @@
                     </tr>
                 </thead>
 
-                <tbody id="queuedBatchData"></tbody>
+                    <tbody id="queuedBatchData"></tbody>
 
-            </table>
+                </table>
+            </div>
+            <input type="button" name="editbatch" class="editbatch" value="edit batch" />
         </div>
-        <input type="button" name="editbatch" class="editbatch" value="edit batch" />
-    </div>
-    <script src="../js/batch.js"></script>
+        <script src="../js/batch.js"></script>
 
 </body>
 </html>

@@ -34,4 +34,6 @@
     <script src="../../js/batch.js"></script>
 </body>
 
-</html>
+    <script src="../../js/batch.js"></script>
+    <?php include '../app/views/partials/foot.php'; ?>
+

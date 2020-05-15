@@ -14,17 +14,14 @@
             <label for="dateofcompletion"> Pick a date: </label><br>
             <input type="date" id="dateofcompletion" name="dateofcompletion"><br>
 
-            <input type="submit" name="showOee" id="showOee" value="pick" />
-        </form>
+            <div>
+                <p for="OEE"> <?php if (!empty($viewbag['oeeResult'])) {
+                                    echo $viewbag['oeeResult'] . '&#37';
+                                } ?> </p><br>
+            </div>
 
-        <div>
-            <p for="OEE"> <?php if (!empty($viewbag['oeeResult'])) {
-                                echo $viewbag['oeeResult'] . '&#37';
-                            } ?> </p><br>
         </div>
+    <?php else : ?>
+    <?php endif; ?>
+    <?php include '../app/views/partials/foot.php'; ?>
 
-    </div>
-
-</body>
-
-</html>

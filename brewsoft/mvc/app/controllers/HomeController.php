@@ -9,13 +9,25 @@ class HomeController extends Controller {
 		$user = $this->model('User')->getAll();
 		
 	}
-	
-	public function other ($param1 = 'first parameter', $param2 = 'second parameter') {
-		$user = $this->model('User');
-		$user->name = $param1;
-		$viewbag['username'] = $user->name;
-		//$viewbag['pictures'] = $this->model('pictures')->getUserPictures($user);
-		$this->view('home/index', $viewbag);
+
+	public function login()
+	{
+		$this->view('home/login');
+		if (isset($_POST['username']) && isset($_POST['password'])) {
+			if ($this->model('User')->login($_POST['username'], $_POST['password'])) {
+				if ($_SESSION['usertype'] == 'Manager') {
+					header('Location: /brewsoft/mvc/public/manager/index');
+				}
+				if ($_SESSION['usertype'] == 'Worker') {
+					header('Location: /brewsoft/mvc/public/MachineApi/index');
+				}
+				if ($_SESSION['usertype'] == 'Admin') {
+					header('Location: /brewsoft/mvc/public/admin/index');
+				}
+			} else {
+				echo 'please fill in the right information';
+			}
+		}
 	}
 	
 	public function restricted () {
