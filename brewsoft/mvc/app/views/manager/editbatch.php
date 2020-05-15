@@ -9,7 +9,6 @@
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="../../js/batch.js"></script>
 </head>
-
 <body>
     <div class="editbatch-form-wrapper">
         <form method="POST" id="editform">
@@ -22,18 +21,9 @@
                 <br>
                 <hr>
 
-                <!-- <label for="productID" id="productid-label">Product ID: </label>
+                <label for="productID" id="productid-label">Product ID: </label>
                 <input type="text" name="productID" id="productID" value="<?php echo $viewbag['batch'][0]['productid'] ?>">
-                <br> -->
-                <label for="productID"> Choose product type: </label><br>
-                <select name="productID" id="productID">
-
-                    <?php foreach ($viewbag['products'] as $prod) { ?>
-                        <option value="<?php echo $prod['productid']; ?>"><?php echo $prod['productname'];     ?></option>
-                    <?php } ?>
-
-
-                </select><br>
+                <br>
 
                 <label for="productAmount" id="productAmount-label">Product amount: </label>
                 <input type="text" name="productAmount" id="productAmount" value="<?php echo $viewbag['batch'][0]['productamount'] ?>">
@@ -56,4 +46,6 @@
         </form>
     </div>
 
-    <?php include '../app/views/partials/foot.php'; ?>
+</body>
+
+</html>
