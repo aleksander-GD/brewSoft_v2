@@ -7,6 +7,7 @@ class MachineApiController extends Controller {
 
   public function index() {
     $this->machineControls();
+    $this->view('brewworker/dashboard');
   }
 
   public function availableMachines() {

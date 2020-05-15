@@ -225,7 +225,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
-            msdh.changeProductionListStatus(batch.getProductionListID(), "Completed");
+            msdh.changeProductionListStatus(batch.getProductionListID(), "Completed", this.machineObj.getMachineID());
             msdh.insertFinalBatchInformation(batch.getProductionListID(), machineObj.getMachineID(), batch.getDeadline(),
                     batch.getDateofCreation(), batch.getType(),
                     totalProductValue, defectCountValue, acceptableCountValue);

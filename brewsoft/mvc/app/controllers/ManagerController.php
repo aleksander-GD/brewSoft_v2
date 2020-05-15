@@ -21,9 +21,6 @@ class ManagerController extends Controller
 		$this->timeInStateService = new TimeInStateService();
 	}
 
-
-
-
 	public function index($param)
 	{
 		$this->planBatch();
@@ -183,6 +180,10 @@ class ManagerController extends Controller
 
 		$viewbag['oeeForBatch'] = $oee;
 		$this->view('manager/showOeeForBatch', $viewbag);
+	}
+	public function dashboardManager()
+	{
+		$this->view('brewworker/dashboard');
 	}
 	public function logout()
 	{

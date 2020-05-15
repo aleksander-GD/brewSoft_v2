@@ -6,7 +6,7 @@ class manualstopreason extends Database {
     $stmt = $this->conn->prepare($sql);
     $stmt->bindParam(':stopreason', $stopReason);
     $stmt->execute();
-    $lastInsertId = $stmt->lastInsertId();
+    $lastInsertId = $stmt->lastInsertID();
   }
 
   public function getStopReasonsForProduction($productionListID) {
