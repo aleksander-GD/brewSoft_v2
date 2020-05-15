@@ -8,7 +8,6 @@ import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineControl;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,8 +28,6 @@ public class MachineController implements IMachineControl {
 
     private IMachineSubscribe subscriber;
     private Machine machineObj;
-    
-    private int id;
 
     public MachineController(Machine machineObj, IMachineSubscribe subscriber) {
         this.machineObj = machineObj;
@@ -38,7 +35,6 @@ public class MachineController implements IMachineControl {
         this.subscriber = subscriber;
         this.msdh = new MachineSubscribeDataHandler();
         subscriber.setSubscriberDataHandler(msdh);
-        this.id = new Random().nextInt();
     }
 
     @Override
@@ -77,7 +73,7 @@ public class MachineController implements IMachineControl {
                     NodeId quantityNode = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
                     mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant((float) newBatch.getTotalAmount()))).get();
 
-                    // Set the speed of production, table for speeds in projektoplæg.pdf
+                    // Set the speed of production, table for speeds in projektoplÃ¦g.pdf
                     // Need to calculate the "right" speeds, maybe in mathlab
                     NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
                     mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant(newBatch.getSpeedforProduction())));
@@ -94,7 +90,7 @@ public class MachineController implements IMachineControl {
                 sendCntrlCmd(new Variant(2));
                 sendCmdRequest();
                 //System.out.println(newBatch.getBatchID() + " : " + newBatch.getProductionListID() + " : " + newBatch.getTotalAmount());
-                returnTxt = this.id + " Machine started.";
+                returnTxt = "Machine started.";
                 rtm.put("Success", returnTxt);
             } else {
                 returnTxt = "No batch in queue.";
@@ -117,7 +113,7 @@ public class MachineController implements IMachineControl {
             String res = sendCntrlCmd(new Variant(1));
             if(res.equals("")) {
                 sendCmdRequest();
-                rtm.put("Success", this.id + " Machine reset.");
+                rtm.put("Success", "Machine reset.");
             } else {
                 rtm.put("Error", res);
             }
@@ -135,10 +131,11 @@ public class MachineController implements IMachineControl {
             if (newBatch != null) {
                 String res = sendCntrlCmd(new Variant(3));
                 if(res.equals("")) {
-                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", newBatch.getBatchID());
+                    System.out.println("Stop production");
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", machineObj.getMachineID());
                     subscriber.stoppedproduction(newBatch.getProductionListID());
                     sendCmdRequest();
-                    returnTxt = this.id + " Machine stopped.";
+                    returnTxt = "Machine stopped.";
                     rtm.put("Success", returnTxt);
                 } else {
                     rtm.put("Error", res);
@@ -162,7 +159,7 @@ public class MachineController implements IMachineControl {
             if (newBatch != null) {
                 String res = sendCntrlCmd(new Variant(4));
                 if(res.equals("")) {
-                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", newBatch.getBatchID());
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", machineObj.getMachineID());
                     sendCmdRequest();
                     subscriber.stoppedproduction(newBatch.getProductionListID());
                     returnTxt = "Aborted production.";

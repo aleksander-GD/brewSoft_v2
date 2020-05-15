@@ -36,6 +36,7 @@ public class DatabaseConnection {
             for (int i = 0; i < values.length; i++) {
                 statement.setObject(i + 1, values[i]);
             }
+            System.out.println("statement: "+statement);
         } catch (SQLException ex) {
             if(ex.getSQLState().equalsIgnoreCase("08001")) {
                 /**
@@ -70,7 +71,6 @@ public class DatabaseConnection {
     }
 
     public int queryUpdate(String query, Object... values) {
-        System.out.println("sql: " + query);
         int affectedRows = 0;
         try (PreparedStatement statement = prepareStatement(query, values)) {
 

@@ -14,12 +14,9 @@
 
 
     ?>
-</head>
-
-<?php include_once '../app/views/partials/menu.php'; ?>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-    //Timeline 
+    //Timeline
     google.charts.load('current', {
         'packages': ['timeline']
     });
@@ -65,7 +62,7 @@
         chart.draw(data, options);
     }
     //Timeline end
-    //Line 
+    //Line
     function drawLineChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('number', 'X');
@@ -136,7 +133,7 @@
 </head>
 
 <body>
-
+<?php include_once '../app/views/partials/menu.php'; ?>
     <div id="oee-div">
         <h2>Batch OEE</h2>
         <p for="OEE">

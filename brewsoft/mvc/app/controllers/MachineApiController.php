@@ -286,6 +286,7 @@ class MachineApiController extends Controller
     }
     // Show available commands
     $this->view("machine/controls", $viewbag);
+    $this->view("brewworker/Dashboard");
   }
   public function logout()
 	{

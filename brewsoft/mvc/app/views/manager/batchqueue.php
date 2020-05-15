@@ -5,7 +5,7 @@
     <title>batch queue</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/batchqueue.css">
+    <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchqueue.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 </head>
 
@@ -34,6 +34,6 @@
         </div>
         <input type="button" name="editbatch" class="editbatch" value="edit batch" />
     </div>
-    <script src="../js/batch.js"></script>
+    <script src="<?php echo DOC_ROOT; ?>/js/batch.js"></script>
 
     <?php include '../app/views/partials/foot.php'; ?>

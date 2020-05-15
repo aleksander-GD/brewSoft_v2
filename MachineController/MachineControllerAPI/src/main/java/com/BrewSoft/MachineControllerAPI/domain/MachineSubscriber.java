@@ -121,7 +121,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     @Override
     public void subscribe() {
-        if (this.mconn.getStatus()) {
+        if (this.mconn.getStatus() && this.batch != null) {
             List<MonitoredItemCreateRequest> requestList = new ArrayList();
             requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
             requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
@@ -225,6 +225,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
+            System.out.println("Completed - " + productionCountValue + " : " + batch.getTotalAmount());
             msdh.changeProductionListStatus(batch.getProductionListID(), "Completed", machineObj.getMachineID());
             msdh.insertFinalBatchInformation(batch.getProductionListID(), machineObj.getMachineID(), batch.getDeadline(),
                     batch.getDateofCreation(), batch.getType(),
