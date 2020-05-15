@@ -7,8 +7,6 @@ function updateIngredients() {
     success: function(data){
 
       var response = JSON.parse(data);
-
-      console.log(response);
       
       document.getElementById("barley-update").value = response.barley;
       document.getElementById("hops-update").value = response.hops;
@@ -29,8 +27,6 @@ function updateProductionData() {
 
       var response = JSON.parse(data);
 
-      console.log(response);
-      
       document.getElementById("product-type-update").value = response.productType;
       document.getElementById("batch-id-update").value = response.batchID;
       document.getElementById("to-be-produced-update").value = response.toBeProduced;
@@ -50,8 +46,6 @@ function updateproducedData()
 
       var response = JSON.parse(data);
 
-      console.log(response);
-      
       document.getElementById("produced-update").value = response.produced;
       document.getElementById("acceptable-products-update").value = response.acceptableCount;
       document.getElementById("defect-products-update").value = response.defectCount;
@@ -68,12 +62,8 @@ function updateMachineData()
     async: true,
     success: function(data){
 
-      console.log(data);
-
       var response = JSON.parse(data);
 
-      console.log(response);
-      
       document.getElementById("temperature-update").value = response.temperature;
       document.getElementById("humidity-update").value = response.humidity;
       document.getElementById("vibration-update").value = response.vibration;

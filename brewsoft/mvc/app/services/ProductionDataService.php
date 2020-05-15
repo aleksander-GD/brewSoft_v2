@@ -30,16 +30,16 @@
 
     public function getProductionData()
     {
-      $startproduction = $modul->StartProduction();
+      $productionstart = $modul->StartProduction();
 
-      $this->productionlistID = $startproduction['productionlistid'];
-      $this->machineID = $startproduction['machineid'];
+      $this->productionlistID = $productionstart['productionlistid'];
+      $this->machineID = $productionstart['machineid'];
 
       $productionData = array(
-        "productType"=>$startproduction['productid'],
-        "batchID"=>$startproduction['batchid'],
-        "toBeProduced"=>$startproduction['productamount'],
-        "productsPerMinut"=>$startproduction['speed']
+        "productType"=>$productionstart['productid'],
+        "batchID"=>$productionstart['batchid'],
+        "toBeProduced"=>$productionstart['productamount'],
+        "productsPerMinut"=>$productionstart['speed']
       );
 
       echo json_encode($productionData);

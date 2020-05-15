@@ -63,7 +63,7 @@ public class MachineController implements IMachineControl {
             newBatch = msdh.getNextBatch();
             if(newBatch != null) {
                 subscriber.setCurrentBatch(newBatch);
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), machineObj.getMachineID(), "In Production");
+                msdh.changeProductionListStatus(newBatch.getProductionListID(), "In Production", machineObj.getMachineID());
                 try {
                     // Set parameter[0], batchid > 65536
                     NodeId batchIDNode = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
