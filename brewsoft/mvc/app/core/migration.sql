@@ -68,7 +68,7 @@ TimeStamp time DEFAULT current_time
 create table manualStopReasen(
     manualStopReasenid serial primary key,
     StopDuringProductionID int,
-    Reason VARCHAR(255),
+    Reason TEXT,
     userid int
 );
 
@@ -92,12 +92,54 @@ CREATE TABLE temporaryproduction (
     FOREIGN KEY (productionlistid) REFERENCES productionlist(productionlistid)
 );
 
-create table users(
+CREATE TABLE alarmlog (
+    alarmid SERIAL PRIMARY KEY,
+    productioninfoid INT,
+    alarm VARCHAR(50),
+    timestamp TIME DEFAULT current_time,
+    FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
+);
+
+create table user(
 userid serial Primary key,
 username VARCHAR(255),
 password VARCHAR(255),
 usertype VARCHAR(255)
 );
+
+CREATE TABLE ingredientsUpdate(
+    ingredientsid serial,
+    barley INT,
+    hops INT,
+    malt INT,
+    wheat INT,
+    yeast INT,
+    BreweryMachineID INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (ingredientsid),
+);
+
+CREATE TABLE machinedata(
+    machinedataid serial,
+    brewerymachineid INT,
+    maintenace FLOAT,
+    state INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (machinedataid)
+);
+
+CREATE TABLE produceddata(
+    produceddataid serial,
+    ProductionListID INT,
+    produced INT,
+    acceptable INT,
+    defect INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (produceddataid),
+);
+
+insert into user(username,password,usertype) VALUES('manager','manager','wanager');
+insert into user(username,password,usertype) VALUES('worker','worker','worker');
 
 insert into brewerymachine (Hostname, Port) values ('192.168.0.122',4840);
 insert into brewerymachine (Hostname, Port) values ('127.0.0.1', 4840);
@@ -170,3 +212,21 @@ ADD CONSTRAINT timeInState_breweryMachine FOREIGN KEY (BreweryMachineID) REFEREN
 
 ALTER TABLE TimeInState
 ADD CONSTRAINT timeInState_machineState FOREIGN KEY (MachineStateID) REFERENCES MachineState;
+
+ALTER TABLE ProductionInfo
+ADD vibration float;
+
+ALTER TABLE ingredientsUpdate
+ADD CONSTRAINT ingredientsUpdate_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
+
+ALTER TABLE machinedata
+ADD CONSTRAINT machinedata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
+
+ALTER TABLE produceddata
+ADD CONSTRAINT produceddata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
+
+ALTER TABLE ProductionList
+ADD machineid INT;
+
+ALTER TABLE ProductionList
+ADD CONSTRAINT productionlist_machineid FOREIGN KEY (BreweryMachineID) REFERENCES BreweryMachine;

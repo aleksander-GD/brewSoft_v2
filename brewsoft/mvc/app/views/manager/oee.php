@@ -6,9 +6,6 @@
 </head>
 
 <body>
-
-    <?php include_once '../app/views/partials/menu.php'; ?>
-
     <div>
         <br>
         OEE
@@ -28,4 +25,6 @@
 
     </div>
 
-    <?php include '../app/views/partials/foot.php'; ?>
+</body>
+
+</html>

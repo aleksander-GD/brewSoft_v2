@@ -132,7 +132,6 @@ $sortedTimes = $viewbag['sortedTimes'];
 </head>
 
 <body>
-
     <div id="oee-div">
         <h2>Batch OEE</h2>
         <p for="OEE">
@@ -174,5 +173,6 @@ $sortedTimes = $viewbag['sortedTimes'];
         <p>Total amount of products: <?php echo $products['totalcount']; ?> </p>
         <div id="piechart" style="width: 800px; height: 400px;"></div>
     </div>
+</body>
 
-    <?php include '../app/views/partials/foot.php'; ?>
+</html>
