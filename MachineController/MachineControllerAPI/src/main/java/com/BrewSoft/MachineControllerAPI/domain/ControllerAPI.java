@@ -50,6 +50,9 @@ public class ControllerAPI {
                 mc.connectMachine();
                 //returnText = mc.startProduction();
                 rtm.putAll(mc.startProduction());
+                sub = machineSubscriberMap.get(machineID);
+                sub.connectMachine();
+                sub.subscribe();
             } else {
                 returnText = "MachineId not found!";
                 rtm.put("Error",returnText);

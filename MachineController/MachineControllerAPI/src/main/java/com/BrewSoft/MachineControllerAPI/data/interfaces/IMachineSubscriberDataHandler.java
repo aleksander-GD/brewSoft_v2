@@ -20,5 +20,9 @@ public interface IMachineSubscriberDataHandler {
     public void changeProductionListStatus(int productionListID, String newStatus, int machineID);
 
     public Batch getNextBatch();
+    
+    public boolean hasQueue();
+    
+    public void runQueue();
 
 }

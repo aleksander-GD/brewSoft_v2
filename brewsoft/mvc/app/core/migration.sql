@@ -92,6 +92,14 @@ CREATE TABLE temporaryproduction (
     FOREIGN KEY (productionlistid) REFERENCES productionlist(productionlistid)
 );
 
+CREATE TABLE alarmlog (
+    alarmid SERIAL PRIMARY KEY,
+    productioninfoid INT,
+    alarm VARCHAR(50),
+    timestamp TIME DEFAULT current_time,
+    FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
+);
+
 create table user(
 userid serial Primary key,
 username VARCHAR(255),
