@@ -7,27 +7,55 @@ import com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect.SimpleSet;
 import com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect.TestDatabase;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler {
 
     public DatabaseConnection connection;
+    private DatabaseQueue dq;
     
-
     public MachineSubscribeDataHandler() {
         connection = new DatabaseConnection();
-        
+        dq = new DatabaseQueue();
     }
 
     public MachineSubscribeDataHandler(TestDatabase testDatabase) {
         connection = testDatabase;
+        dq = new DatabaseQueue();
     }
 
     @Override
     public void insertProductionInfo(int productionListID, int BreweryMachineID,
-            float humidity, float temperature) {
-        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature);
-        
+            float humidity, float temperature, float vibration) {
+        float humidityMin = 21.0f;
+        float humidityMax = 34.0f;
+        float temperatureMin = 26.0f;
+        float temperatureMax = 33.0f;
+        String humidityAlarm = "Humidity alarm!";
+        String temperatureAlarm = "Temperature alarm!";
+
+        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, vibration) VALUES (?,?,?,?,?)";
+        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, vibration);
+
+        // if info outside safe ranges, get productioninfoID and insert alarm into alarm table.
+        if (humidity <= humidityMin || humidity >= humidityMax || temperature <= temperatureMin || temperature >= temperatureMax) {
+            String getSql = "SELECT * FROM productioninfo ORDER BY productioninfoid DESC limit 1;";
+            SimpleSet set = connection.query(getSql);
+            int productionInfoID = 0;
+            for (int i = 0; i < set.getRows(); i++) {
+                productionInfoID = Integer.valueOf(String.valueOf(set.get(i, "productioninfoid")));
+            }
+            String alarmSql = "INSERT INTO alarmlog(productioninfoid, alarm) VALUES (?,?);";
+            if (humidity <= humidityMin || humidity >= humidityMax) {
+                int humidInsert = connection.queryUpdate(alarmSql, productionInfoID, humidityAlarm);
+            } 
+            if(temperature <= temperatureMin || temperature >= temperatureMax){
+                int tempInsert = connection.queryUpdate(alarmSql, productionInfoID, temperatureAlarm);
+            }
+        }
     }
 
     private Timestamp getTimestamp() {
@@ -64,14 +92,16 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonID) {
+        
         String sql = "INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)";
         int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, stopReasonID);
-        
+
     }
 
     public void insertFinalBatchInformation(int ProductionListID,
             int BreweryMachineID, String deadline, String dateOfCreation,
             String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount) {
+        
         String sql = "INSERT INTO finalBatchInformation "
                 + "(ProductionListID, BreweryMachineID, deadline, "
                 + "dateOfCreation, dateOfCompletion, productID, totalCount, "
@@ -81,14 +111,14 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline),
                 Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
                 productID, totalCount, defectCount, acceptedCount);
-        
-        
+
     }
 
     @Override
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID,
             String deadline, String dateOfCreation, int productID, float totalCount,
             int defectCount, int acceptedCount) {
+        
         String sql = "INSERT INTO finalBatchInformation "
                 + "(ProductionListID, BreweryMachineID, deadline, dateOfCreation, "
                 + "productID, totalCount, defectCount, acceptedCount) "
@@ -102,11 +132,28 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 totalCount,
                 defectCount,
                 acceptedCount);
-        
+
+    }
+    
+    @Override
+    public boolean hasQueue(){
+        return dq.isQueueExisting();
+    }
+    
+    /**
+     * HOW TO RUN THIS AUTOMATICALLY WHEN CONNECTION IS BACK??
+     */
+    @Override
+    public void runQueue() {
+        dq.runQueue();
     }
 
     @Override
     public Batch getNextBatch() {
+        System.out.println(dq.isQueueExisting() + " : " + dq.isRunningQueue());
+        if(dq.isQueueExisting() && !dq.isRunningQueue()) {
+            dq.runQueue();
+        }
         Batch batch = null;
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1");
 
@@ -142,10 +189,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     @Override
-    public void changeProductionListStatus(int productionListID, String newStatus) {
-        String sql = "UPDATE productionList SET status = ? WHERE productionListID = ?";
-        int result = connection.queryUpdate(sql, newStatus, productionListID);
-        
+    public void changeProductionListStatus(int productionListID, String newStatus, int machineID) {
+        String sql = "UPDATE productionList SET status = ? AND machineid = ? WHERE productionListID = ?";
+        int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
     }
 
     @Override
@@ -175,7 +221,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {
         TemporaryProductionBatch tpb = null;
-        
+
         SimpleSet set = connection.query("SELECT tp.*, pl.productamount "
                 + "FROM temporaryproduction AS tp, productionlist AS pl "
                 + "WHERE tp.productionlistid = ?", productionlistid);
