@@ -198,10 +198,12 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
-        if (checkHumidity != humidityValue || checkTemperatur != temperaturValue) {
+        float checkvibration = 0;
+        if (checkHumidity != humidityValue || checkTemperatur != temperaturValue || checkvibration != vibrationValue) {
             checkHumidity = humidityValue;
             checkTemperatur = temperaturValue;
-            msdh.insertProductionInfo(batch.getProductionListID(), machineObj.getMachineID(), humidityValue, temperaturValue);
+            checkvibration = vibrationValue;
+            msdh.insertProductionInfo(batch.getProductionListID(), machineObj.getMachineID(), humidityValue, temperaturValue, vibrationValue);
         }
     }
 

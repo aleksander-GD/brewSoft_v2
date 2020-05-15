@@ -29,7 +29,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertProductionInfo(int productionListID, int BreweryMachineID,
-            float humidity, float temperature) {
+            float humidity, float temperature, float vibration) {
         float humidityMin = 21.0f;
         float humidityMax = 34.0f;
         float temperatureMin = 26.0f;
@@ -37,8 +37,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         String humidityAlarm = "Humidity alarm!";
         String temperatureAlarm = "Temperature alarm!";
 
-        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature);
+        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, vibration) VALUES (?,?,?,?,?)";
+        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, vibration);
 
         // if info outside safe ranges, get productioninfoID and insert alarm into alarm table.
         if (humidity <= humidityMin || humidity >= humidityMax || temperature <= temperatureMin || temperature >= temperatureMax) {
@@ -164,11 +164,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     @Override
-    public void changeProductionListStatus(int productionListID, String newStatus) {
-        
-        String sql = "UPDATE productionList SET status = ? WHERE productionListID = ?";
-        int result = connection.queryUpdate(sql, newStatus, productionListID);
-
+    public void changeProductionListStatus(int productionListID, String newStatus, int machineID) {
+        String sql = "UPDATE productionList SET status = ? AND machineid = ? WHERE productionListID = ?";
+        int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
     }
 
     @Override
