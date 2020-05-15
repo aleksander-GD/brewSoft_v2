@@ -370,8 +370,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private void generateRandomProdValues() {
         Random random = new Random();
         int value = random.nextInt(2000);
-       
-        System.out.println("Random value:" + value);
+      
         if (value > 1 && value < 5) {
             humidityValue = Math.round((float) (Math.random() * (21 - 17) + 17) * 100.0 / 100.0); // low humid alarm
         } else if (value > 5 && value < 10) {
@@ -399,11 +398,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         } else {
             acceptableCountValue += prodDiff;
         }
-        System.out.println("defects: " + this.defectCountValue);
-        System.out.println("accepted: " + this.acceptableCountValue);
-        //totalProductValue = this.productionCountValue;
-        //Random random = new Random();
-        //acceptableCountValue = random.nextInt(this.productionCountValue + 1);
-        //defectCountValue = (int) totalProductValue - acceptableCountValue;
+        //System.out.println("defects: " + this.defectCountValue);
+        //System.out.println("accepted: " + this.acceptableCountValue);
     }
 }
