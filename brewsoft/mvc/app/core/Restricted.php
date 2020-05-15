@@ -1,16 +1,19 @@
 <?php
 
-function restricted ($controller, $method) {
+function restricted($controller, $method)
+{
 
-	$restricted_urls = array(	'HomeController' => array('restricted', 'logout'),
-								'ApiController' => array(),
-								'ManagerController' => array(),
-                'MachineApiController' => array()
-							);
+	$restricted_urls = array(
+		'HomeController' => array('logout'),
+		'ApiController' => array(),
+		'ManagerController' => array('index', 'batchQueue', 'planBatch', 'editBatch', 'completedBatches', 'displayOeeForBatch', 'displayOeeForDay', 'batchReport', 'logout'),
+		'MachineApiController' => array('logout'),
+		'AdminController' => array('index', 'logout')
+	);
 
-	if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+	if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
 		return false;
-	} else if( isset($controller) && in_array($method, $restricted_urls[$controller])) {
+	} else if (isset($controller) && in_array($method, $restricted_urls[$controller])) {
 		return true;
 	} else {
 		return false;

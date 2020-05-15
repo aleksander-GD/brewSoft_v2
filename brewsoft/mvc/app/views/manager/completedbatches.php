@@ -13,6 +13,7 @@
 
 <body>
 
+    <?php include_once '../app/views/partials/menu.php'; ?>
 
     <div id="batch-table-wrapper">
         <div id="tableplace">
@@ -37,13 +38,9 @@
 
             </table>
         </div>
-        <input type="button" name="showOeeForBatch" class="showOeeForBatch" value="Show Oee for batch" />
+        <input type="button" name="generateBatchReport" class="generateBatchReport" value="Generate Batch report" />
         <!-- Instead insert button that redirects to batch report dashboard -->
         <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
     </div>
 
-</body>
-
-
-
-</html>
+    <?php include '../app/views/partials/foot.php'; ?>

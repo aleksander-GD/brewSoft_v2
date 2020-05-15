@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <?php include_once '../app/views/partials/menu.php'; ?>
     <div id="batch-table-wrapper">
         <div id="tableplace">
             <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getQueuedBatches(this.value);" onkeyup="getQueuedBatches(this.value);">
@@ -35,5 +36,4 @@
     </div>
     <script src="../js/batch.js"></script>
 
-</body>
-</html>
+    <?php include '../app/views/partials/foot.php'; ?>
