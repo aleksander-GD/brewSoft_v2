@@ -5,8 +5,7 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductio
 
 public interface IMachineSubscriberDataHandler {
 
-    public void insertProductionInfo(int productionListID, int BreweryMachineID,
-            float humidity, float temperature, float vibration);
+    public void insertProductionInfo(int productionListID, int BreweryMachineID, float humidity, float temperature);
 
     public void insertTimesInStates(int ProductionListID, int BreweryMachineID, int MachinestatesID);
 
@@ -17,12 +16,8 @@ public interface IMachineSubscriberDataHandler {
 
     public void insertStoppedProductionToTempTable(TemporaryProductionBatch tempBatch);
 
-    public void changeProductionListStatus(int productionListID, String newStatus, int machineID);
+    public void changeProductionListStatus(int productionListID, String newStatus);
 
     public Batch getNextBatch();
-    
-    public boolean hasQueue();
-    
-    public void runQueue();
 
 }

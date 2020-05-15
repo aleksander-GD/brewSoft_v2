@@ -63,7 +63,7 @@ public class MachineController implements IMachineControl {
             newBatch = msdh.getNextBatch();
             if(newBatch != null) {
                 subscriber.setCurrentBatch(newBatch);
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), "In Production", machineObj.getMachineID());
+                msdh.changeProductionListStatus(newBatch.getProductionListID(), "In Production");
                 try {
                     // Set parameter[0], batchid > 65536
                     NodeId batchIDNode = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
@@ -107,6 +107,12 @@ public class MachineController implements IMachineControl {
         return rtm;
     }
     
+    // Not used?
+    private void changeSpeed(float machSpeed) {
+        NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
+        mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant((float) machSpeed)));
+    }
+
     @Override
     public Map<String, String> resetMachine() {
         Map<String, String> rtm = new HashMap();

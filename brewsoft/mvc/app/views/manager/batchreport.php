@@ -1,137 +1,142 @@
-<?php
-
-$dateTime = $viewbag['datetime'];
-
-$tempAndHumid = $viewbag['tempandhumid'];
-$highlow = $viewbag['highlowtemphumid'];
-$products = $viewbag['products'];
-$sortedTimes = $viewbag['sortedTimes'];
-
-
-?>
-
+<!DOCTYPE html>
 <html>
 
 <head>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        //Timeline 
-        google.charts.load('current', {
-            'packages': ['timeline']
-        });
-        //Line
-        google.charts.load('current', {
-            'packages': ['corechart', 'line']
-        });
-        //Line
-        google.charts.load('current', {
-            'packages': ['corechart']
-        });
 
-        //Callback timeline
-        google.charts.setOnLoadCallback(drawTimeline);
-        //Callback lineChart
-        google.charts.setOnLoadCallback(drawLineChart);
-        //Callback PieChart
-        google.charts.setOnLoadCallback(drawPieChart);
+    <?php
 
-        //timeline
-        function drawTimeline() {
-            var data = google.visualization.arrayToDataTable([
-                ['State', 'Start Time', 'End Time'],
-                <?php
-                foreach ($dateTime as $result) {
-                    echo "['" . $result['machinestate'] . "'," .
-                        "new Date('" . $result['starttimeinstate'] . "'), " .
-                        "new Date('" . $result['endtimeinstate'] . "') " . "],";
-                }
-                ?>
-            ]);
-            var options = {
-                height: 450,
+    $dateTime = $viewbag['datetime'];
 
-                hAxis: {
-                    format: 'HH:mm:ss',
+    $tempAndHumid = $viewbag['tempandhumid'];
+    $highlow = $viewbag['highlowtemphumid'];
+    $products = $viewbag['products'];
+    $sortedTimes = $viewbag['sortedTimes'];
+
+
+    ?>
+</head>
+
+<?php include_once '../app/views/partials/menu.php'; ?>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    //Timeline 
+    google.charts.load('current', {
+        'packages': ['timeline']
+    });
+    //Line
+    google.charts.load('current', {
+        'packages': ['corechart', 'line']
+    });
+    //Line
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+
+    //Callback timeline
+    google.charts.setOnLoadCallback(drawTimeline);
+    //Callback lineChart
+    google.charts.setOnLoadCallback(drawLineChart);
+    //Callback PieChart
+    google.charts.setOnLoadCallback(drawPieChart);
+
+    //timeline
+    function drawTimeline() {
+        var data = google.visualization.arrayToDataTable([
+            ['State', 'Start Time', 'End Time'],
+            <?php
+            foreach ($dateTime as $result) {
+                echo "['" . $result['machinestate'] . "'," .
+                    "new Date('" . $result['starttimeinstate'] . "'), " .
+                    "new Date('" . $result['endtimeinstate'] . "') " . "],";
+            }
+            ?>
+        ]);
+        var options = {
+            height: 450,
+
+            hAxis: {
+                format: 'HH:mm:ss',
+            },
+            timeline: {
+                tooltipDateFormat: 'HH:mm:ss'
+            }
+        };
+        var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+    //Timeline end
+    //Line 
+    function drawLineChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'X');
+        data.addColumn('number', 'Temperature');
+        data.addColumn('number', 'Humidity');
+
+        data.addRows([
+            <?php
+            $count = 0;
+            foreach ($tempAndHumid as $temp) {
+                echo "[" . $count . "," . $temp['temperature'] . "," . $temp['humidity'] . "],";
+                $count++;
+            }
+            ?>
+        ]);
+
+        var options = {
+            height: 450,
+            hAxis: {
+                title: 'Entry points'
+            },
+            explorer: {
+                actions: ['dragToZoom', 'rightClickToReset'],
+                axis: 'horizontal',
+                keepInBounds: true,
+                maxZoomIn: 4.0
+
+            },
+            vAxis: {
+                title: 'Temperature/Humidity',
+
+                viewWindow: {
+                    //dynamic view window with buffer of two on the min / max values of temp and humidity
+                    min: <?php echo min($highlow) - 2; ?>,
+                    max: <?php echo max($highlow) + 2; ?>
                 },
-                timeline: {
-                    tooltipDateFormat: 'HH:mm:ss'
-                }
-            };
-            var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-        //Timeline end
-        //Line 
-        function drawLineChart() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('number', 'X');
-            data.addColumn('number', 'Temperature');
-            data.addColumn('number', 'Humidity');
+            },
+            backgroundColor: 'white'
+        };
 
-            data.addRows([
-                <?php
-                $count = 0;
-                foreach ($tempAndHumid as $temp) {
-                    echo "[" . $count . "," . $temp['temperature'] . "," . $temp['humidity'] . "],";
-                    $count++;
-                }
-                ?>
-            ]);
+        var chart = new google.visualization.LineChart(document.getElementById('line_div'));
+        chart.draw(data, options);
+    }
+    //Line end
 
-            var options = {
-                height: 450,
-                hAxis: {
-                    title: 'Entry points'
-                },
-                explorer: {
-                    actions: ['dragToZoom', 'rightClickToReset'],
-                    axis: 'horizontal',
-                    keepInBounds: true,
-                    maxZoomIn: 4.0
+    //Pie Chart
+    function drawPieChart() {
 
-                },
-                vAxis: {
-                    title: 'Temperature/Humidity',
+        var data = google.visualization.arrayToDataTable([
+            ['Status', 'Amount'],
+            <?php
 
-                    viewWindow: {
-                        //dynamic view window with buffer of two on the min / max values of temp and humidity
-                        min: <?php echo min($highlow) - 2; ?>,
-                        max: <?php echo max($highlow) + 2; ?>
-                    },
-                },
-                backgroundColor: 'white'
-            };
+            echo
+                "[ 'Accepted'" . "," . $products['acceptedcount'] . "]," .
+                    "[ 'Rejected'" . "," . $products['defectcount'] . "]," .
+                    "[ 'Not produced'" . "," . ($products['totalcount'] - $products['acceptedcount'] - $products['defectcount']) . "]";
+            ?>
 
-            var chart = new google.visualization.LineChart(document.getElementById('line_div'));
-            chart.draw(data, options);
-        }
-        //Line end
+        ]);
+        var options = {
+            pieSliceText: 'value',
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
-        //Pie Chart
-        function drawPieChart() {
-
-            var data = google.visualization.arrayToDataTable([
-                ['Status', 'Amount'],
-                <?php
-
-                echo
-                    "[ 'Accepted'" . "," . $products['acceptedcount'] . "]," .
-                        "[ 'Rejected'" . "," . $products['defectcount'] . "]," .
-                        "[ 'Not produced'" . "," . ($products['totalcount'] - $products['acceptedcount'] - $products['defectcount']) . "]";
-                ?>
-
-            ]);
-            var options = {
-                pieSliceText: 'value',
-            };
-            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-            chart.draw(data, options);
-        }
-    </script>
+        chart.draw(data, options);
+    }
+</script>
 </head>
 
 <body>
+
     <div id="oee-div">
         <h2>Batch OEE</h2>
         <p for="OEE">
@@ -173,6 +178,5 @@ $sortedTimes = $viewbag['sortedTimes'];
         <p>Total amount of products: <?php echo $products['totalcount']; ?> </p>
         <div id="piechart" style="width: 800px; height: 400px;"></div>
     </div>
-</body>
 
-</html>
+    <?php include '../app/views/partials/foot.php'; ?>

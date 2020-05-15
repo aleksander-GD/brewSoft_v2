@@ -38,26 +38,7 @@ public class DatabaseConnection {
             }
         } catch (SQLException ex) {
             if(ex.getSQLState().equalsIgnoreCase("08001")) {
-                /**
-                 * HUGE GAMBLE, NO IDEA ABOUT "smells"
-                 */
-                boolean connected = false;
                 System.out.println("USING QUEUE AND NOT DATABASE?!?");
-                while(!connected) {
-                    try {
-                        connect();
-                        connected = true;
-                    } catch (SQLException ex1) {
-                        if(ex.getSQLState().equalsIgnoreCase("08001")) {
-                            System.out.println("Still not connected to database");
-                            // Return value perhaps?
-                        } else {
-                            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex1);
-                        }
-                    } catch (ClassNotFoundException ex1) {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex1);
-                    }
-                }
                 // retry connecting to DB automatically?
             } else {
                 System.out.println("SQL exception - logging");
@@ -70,11 +51,10 @@ public class DatabaseConnection {
     }
 
     public int queryUpdate(String query, Object... values) {
-        System.out.println("sql: " + query);
         int affectedRows = 0;
         try (PreparedStatement statement = prepareStatement(query, values)) {
 
-            affectedRows = statement.executeUpdate();
+            statement.executeUpdate();
 
         } catch (SQLException ex) {
             if(ex.getSQLState().equalsIgnoreCase("08001")) {

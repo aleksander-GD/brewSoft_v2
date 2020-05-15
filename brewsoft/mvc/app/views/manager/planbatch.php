@@ -7,11 +7,13 @@
 </head>
 
 <body>
+
+    <?php include_once '../app/views/partials/menu.php'; ?>
     <div>
         <br>
         Please enter the correct values!
         </br>
-        <form method="POST" action="/brewsoft/mvc/public/manager/planbatch">
+        <form method="POST" action="/brewsoft/mvc/public/manager/planBatch">
             <label for="producttype"> Choose product type: </label><br>
             <select name="products" id="products">
 
@@ -35,6 +37,4 @@
         </form>
     </div>
 
-</body>
-
-</html>
+    <?php include '../app/views/partials/foot.php'; ?>
