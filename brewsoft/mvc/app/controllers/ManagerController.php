@@ -21,11 +21,9 @@ class ManagerController extends Controller
 		$this->timeInStateService = new TimeInStateService();
 	}
 
-
-
-
-	public function index($param)
+	public function index()
 	{
+		$this->planBatch();
 	}
 
 	public function batchQueue()
@@ -42,6 +40,8 @@ class ManagerController extends Controller
 		$batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
 		//the selected batch is sent to the view.
 		$viewbag['batch'] = $batch;
+		$product = $this->model('ProductType')->getProducts();
+		$viewbag['products'] = $product;
 
 		//redirect to editbatch page
 		$this->view('manager/editbatch', $viewbag);
@@ -71,6 +71,7 @@ class ManagerController extends Controller
 	}
 	public function planBatch()
 	{
+		ob_start();
 		$product = $this->model('ProductType')->getProducts();
 		$viewbag['products'] = $product;
 		$this->view('manager/planbatch', $viewbag);
@@ -84,7 +85,9 @@ class ManagerController extends Controller
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchqueue');
+			//$this->view('manager/batchqueue');
+			header('Location: /brewsoft/mvc/public/manager/batchQueue');
+			
 		}
 	}
 
@@ -111,8 +114,6 @@ class ManagerController extends Controller
 		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
 		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
 
-
-
 		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
 
@@ -127,9 +128,9 @@ class ManagerController extends Controller
 		$viewbag['oeeForBatch'] = $oee;
 
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
-		$viewbag['tempandhumid'] = $tempAndHumidity;
 		$viewbag['datetime'] = $dateTimeArray;
 		$viewbag['products'] = $products;
+		$viewbag['tempandhumid'] = $tempAndHumidity;
 		$this->view('manager/batchreport', $viewbag);
 	}
 
@@ -180,5 +181,12 @@ class ManagerController extends Controller
 
 		$viewbag['oeeForBatch'] = $oee;
 		$this->view('manager/showOeeForBatch', $viewbag);
+	}
+
+	public function logout()
+	{
+		session_destroy();
+		ob_flush();
+		header('Location: /brewSoft/mvc/public/home/login');
 	}
 }
