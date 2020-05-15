@@ -30,7 +30,7 @@
 
     public function getProductionData()
     {
-      $productionstart = $modul->StartProduction();
+      $productionstart = $model->StartProduction();
 
       $this->productionlistID = $productionstart['productionlistid'];
       $this->machineID = $productionstart['machineid'];
