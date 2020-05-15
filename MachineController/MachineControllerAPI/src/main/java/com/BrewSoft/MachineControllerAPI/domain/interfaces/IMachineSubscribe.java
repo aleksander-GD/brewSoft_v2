@@ -2,6 +2,7 @@ package com.BrewSoft.MachineControllerAPI.domain.interfaces;
 
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Batch;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
+import java.util.function.Consumer;
 
 public interface IMachineSubscribe {
 
@@ -9,14 +10,20 @@ public interface IMachineSubscribe {
     
     public void subscribe();
 
+    public void setConsumer(Consumer<String> consumer, String nodeName);
+
     public String stateTranslator(String state);
 
     public void setCurrentBatch(Batch currentBatch);
     
     public void setSubscriberDataHandler(IMachineSubscriberDataHandler msdh);
 
+    public String stopReasonTranslator(String stopReason);
+
     public void stoppedproduction(int productionlistid);
     
+    public String getCurrentProductType();
+
     // Node names production materials.
     public final static String BARLEY_NODENAME = "Barley";
     public final static String HOPS_NODENAME = "Hops";
