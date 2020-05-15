@@ -1,10 +1,5 @@
 <?php
-if(!empty($viewbag["error"])) {
-  echo "Error: ";
-  foreach ($viewbag["error"] as $key => $value) {
-    echo "<span>".$value."</span>";
-  }
-} else {
+if(empty($viewbag["error"]["databaseconnection"])) {
 ?>
 <select class="form-control" name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>
 <?php

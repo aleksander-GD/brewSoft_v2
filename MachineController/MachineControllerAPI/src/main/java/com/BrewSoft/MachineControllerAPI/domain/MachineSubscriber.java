@@ -33,7 +33,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private Map<String, String> consumerMap;
 
     private IMachineSubscriberDataHandler msdh;
-
+    
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
     private final NodeId totalProductsNode = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
@@ -175,7 +175,7 @@ public class MachineSubscriber implements IMachineSubscribe {
                 items.get(14).setValueConsumer(onWheatReadItem);
                 items.get(15).setValueConsumer(onYeastReadItem);
                 items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
-
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {

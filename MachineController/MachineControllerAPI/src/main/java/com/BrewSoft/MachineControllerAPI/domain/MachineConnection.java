@@ -70,26 +70,29 @@ public class MachineConnection {
                         original.getSecurityLevel());
 
                 this.cfg.setEndpoint(endpoint);
-
+                
                 this.client = OpcUaClient.create(this.cfg.build());
                 this.client.connect().get();
-
+                
             } catch (UaException ex) {
+                System.out.println("UA Exception");
                 Logger.getLogger(MachineConnection.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
+                System.out.println("interrupt");
                 Logger.getLogger(MachineConnection.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
+                System.out.println("execute");
                 Logger.getLogger(MachineConnection.class.getName()).log(Level.SEVERE, null, ex);
             } catch (URISyntaxException ex) {
+                System.out.println("URI");
                 Logger.getLogger(MachineConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.status = true;
         } else {
             // SERVER NOT AVAILABLE
+            this.status = false;
         }
     }
-
-    
 
     public OpcUaClient getClient() {
         return this.client;

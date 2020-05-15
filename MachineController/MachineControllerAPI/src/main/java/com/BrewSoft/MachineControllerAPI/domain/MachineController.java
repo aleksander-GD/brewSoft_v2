@@ -84,7 +84,10 @@ public class MachineController implements IMachineControl {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {
-                    Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("MC execute " + ex.getMessage() +" : "+ ex.getCause());
+                    returnTxt = "Connection between controller and machine lost. Check the java program and machine are both running.";
+                    rtm.put("error", returnTxt);
+                    //Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 // Start the production
@@ -111,14 +114,17 @@ public class MachineController implements IMachineControl {
             if(msdh.hasQueue()) {
                 msdh.runQueue();
             }
-            sendCntrlCmd(new Variant(1));
-            sendCmdRequest();
-            rtm.put("Success", this.id + " Machine reset.");
-            return rtm;
+            String res = sendCntrlCmd(new Variant(1));
+            if(res.equals("")) {
+                sendCmdRequest();
+                rtm.put("Success", this.id + " Machine reset.");
+            } else {
+                rtm.put("Error", res);
+            }
         } else {
             rtm.put("Error", "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort());
-            return rtm;
         }
+        return rtm;
     }
 
     @Override
@@ -127,12 +133,16 @@ public class MachineController implements IMachineControl {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
             if (newBatch != null) {
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
-                subscriber.stoppedproduction(newBatch.getProductionListID());
-                sendCntrlCmd(new Variant(3));
-                sendCmdRequest();
-                returnTxt = this.id + " Machine stopped.";
-                rtm.put("Success", returnTxt);
+                String res = sendCntrlCmd(new Variant(3));
+                if(res.equals("")) {
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
+                    subscriber.stoppedproduction(newBatch.getProductionListID());
+                    sendCmdRequest();
+                    returnTxt = this.id + " Machine stopped.";
+                    rtm.put("Success", returnTxt);
+                } else {
+                    rtm.put("Error", res);
+                }
             } else {
                 returnTxt = "The machine has not been started yet!";
                 rtm.put("Error", returnTxt);
@@ -150,12 +160,16 @@ public class MachineController implements IMachineControl {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
             if (newBatch != null) {
-                sendCntrlCmd(new Variant(4));
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
-                sendCmdRequest();
-                subscriber.stoppedproduction(newBatch.getProductionListID());
-                returnTxt = "Aborted production.";
-                rtm.put("Success", returnTxt);
+                String res = sendCntrlCmd(new Variant(4));
+                if(res.equals("")) {
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
+                    sendCmdRequest();
+                    subscriber.stoppedproduction(newBatch.getProductionListID());
+                    returnTxt = "Aborted production.";
+                    rtm.put("Success", returnTxt);
+                } else {
+                    rtm.put("Error", res);
+                }
             } else {
                 returnTxt = "The machine has not been started yet!";
                 rtm.put("Error", returnTxt);
@@ -171,23 +185,31 @@ public class MachineController implements IMachineControl {
     public Map<String, String> clearState() {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
-            sendCntrlCmd(new Variant(5));
-            sendCmdRequest();
-            rtm.put("Success", "Machine has been cleared.");
+            String res = sendCntrlCmd(new Variant(5));
+            if(res.equals("")) {
+                sendCmdRequest();
+                rtm.put("Success", "Machine has been cleared.");
+            } else {
+                rtm.put("Error", res);
+            }
         } else {
             rtm.put("Error", "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort());
         }
         return rtm;
     }
 
-    private void sendCntrlCmd(Variant variantNo) {
+    private String sendCntrlCmd(Variant variantNo) {
+        String returnTxt = "";
         try {
             mconn.getClient().writeValue(cntrlCmdNodeId, DataValue.valueOnly(variantNo)).get();
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
+            returnTxt = "Connection between controller and machine lost. Check the java program and machine are both running.";
+            //rtm.put("error", returnTxt);
+            //Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return returnTxt;
     }
 
     private void sendCmdRequest() {
@@ -196,7 +218,9 @@ public class MachineController implements IMachineControl {
         } catch (ExecutionException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
+            //returnTxt = "Connection between controller and machine lost. Check the java program and machine are both running.";
+            //rtm.put("error", returnTxt);
+            //Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
