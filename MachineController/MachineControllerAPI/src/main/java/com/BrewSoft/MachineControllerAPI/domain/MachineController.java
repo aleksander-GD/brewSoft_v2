@@ -135,7 +135,7 @@ public class MachineController implements IMachineControl {
             if (newBatch != null) {
                 String res = sendCntrlCmd(new Variant(3));
                 if(res.equals("")) {
-                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", newBatch.getBatchID());
                     subscriber.stoppedproduction(newBatch.getProductionListID());
                     sendCmdRequest();
                     returnTxt = this.id + " Machine stopped.";
@@ -162,7 +162,7 @@ public class MachineController implements IMachineControl {
             if (newBatch != null) {
                 String res = sendCntrlCmd(new Variant(4));
                 if(res.equals("")) {
-                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", newBatch.getBatchID());
                     sendCmdRequest();
                     subscriber.stoppedproduction(newBatch.getProductionListID());
                     returnTxt = "Aborted production.";
