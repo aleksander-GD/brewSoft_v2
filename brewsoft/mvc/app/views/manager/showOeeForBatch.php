@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/oeeforbatch.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    
-
 </head>
 
 <body>
@@ -30,8 +28,6 @@
             } ?> </p><br>
     </div>
     <input type="button" class="canceleditbuttonshowoee" name="canceleditbuttonshowoee" value="Cancel"></input>
-    
-    <script src="../../js/batch.js"></script>
-</body>
 
-</html>
+    <script src="../../js/batch.js"></script>
+    <?php include '../app/views/partials/foot.php'; ?>

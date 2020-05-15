@@ -7,6 +7,7 @@ $(document).ready(function() {
     var productionlistIDValueCompleteBatch;
     var batchIDValueCompleteBatch;
 
+    $('.generateBatchReport').on('click', function(e) {
     var productID;
     var productAmount;
     var deadline;
@@ -24,6 +25,8 @@ $(document).ready(function() {
         event.preventDefault();
         productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
         batchIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(1)").html();
+        if (productionlistIDValueCompleteBatch != null) {
+            window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
         console.log(check_database_alive_call());
         if (check_database_alive_call()) {
             if (productionlistIDValueCompleteBatch != null) {
