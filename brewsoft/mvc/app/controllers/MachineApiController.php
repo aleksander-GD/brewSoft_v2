@@ -287,4 +287,9 @@ class MachineApiController extends Controller
     // Show available commands
     $this->view("machine/controls", $viewbag);
   }
+  public function logout()
+	{
+		session_destroy();
+		header('Location: /brewSoft/mvc/public/home/login');
+	}
 }

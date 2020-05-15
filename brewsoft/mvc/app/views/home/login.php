@@ -25,6 +25,7 @@
                 <input type="submit" name="login" id="login" class="btn btn-primary" value="login" />
                 <a href="/brewSoft/mvc/public/home/register" class="btn btn-primary" role="button" aria-pressed="true">Register</a>
             </div>
+           
         </form>
     </div>
     <?php include '../app/views/partials/foot.php'; ?>
