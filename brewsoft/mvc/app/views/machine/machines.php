@@ -1,4 +1,4 @@
-<?php include_once '../app/views/partials/menu.php'; ?>
+
 <?php
 if (!empty($viewbag["error"])) {
   echo "Error: ";
@@ -31,5 +31,3 @@ if (!empty($viewbag["error"])) {
   <input type="hidden" name="machineID" id="machineID" value="<?php echo $viewbag["availableMachines"][$machine]['brewerymachineid']; ?>">
 <?php
 } ?>
-
-<?php include '../app/views/partials/foot.php'; ?>
