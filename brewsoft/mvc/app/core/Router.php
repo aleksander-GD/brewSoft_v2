@@ -32,7 +32,7 @@ class Router {
 		
 		require_once 'Restricted.php';
 		if(restricted(get_class($this->controller), $this->method)) {
-			header('Location: /brewsoft/mvc/public/home/restricted');
+			echo 'Access Denied';
 		} else {
 			call_user_func_array([$this->controller, $this->method], $this->params);
 		}

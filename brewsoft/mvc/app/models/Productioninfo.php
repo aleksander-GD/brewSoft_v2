@@ -74,11 +74,7 @@ class Productioninfo extends Database
         $maxhumid = $this->getHighestHumid($productionlistID);
         $minhumid = $this->getlowestHumid($productionlistID);
 
-        if (!empty($maxtemp) && !empty($mintemp) && !empty($maxhumid) && !empty($minhumid)) {
-            $highLowTempArray = ['maxtemp' => $maxtemp[0]['temperature'], 'maxhumid' => $maxhumid[0]['humidity'], 'mintemp' => $mintemp[0]['temperature'], 'minhumid' => $minhumid[0]['humidity']];
-            return $highLowTempArray;
-        } else {
-            $highLowTempArray = ['maxtemp' => 0, 'maxhumid' => 0, 'mintemp' => 0, 'minhumid' => 0];
-        }
+        $highLowTempArray = ['maxtemp' => $maxtemp[0]['temperature'], 'maxhumid' => $maxhumid[0]['humidity'], 'mintemp' => $mintemp[0]['temperature'], 'minhumid' => $minhumid[0]['humidity']];
+        return $highLowTempArray;
     }
 }
