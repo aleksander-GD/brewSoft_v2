@@ -84,6 +84,14 @@ CREATE TABLE temporaryproduction (
     FOREIGN KEY (productionlistid) REFERENCES productionlist(productionlistid)
 );
 
+CREATE TABLE alarmlog (
+    alarmid SERIAL PRIMARY KEY,
+    productioninfoid INT,
+    alarm VARCHAR(50),
+    timestamp TIME DEFAULT current_time,
+    FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
+) 
+
 insert into brewerymachine (Hostname, Port) values ('192.168.0.122',4840);
 insert into brewerymachine (Hostname, Port) values ('127.0.0.1', 4840);
 
