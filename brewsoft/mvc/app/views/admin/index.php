@@ -7,13 +7,5 @@
 </header>
 
 <body>
-
-    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) : ?>
-        <?php include_once '../app/views/partials/menu.php'; ?>
-    <?php else : ?>
-        <?php include_once '../app/views/partials/restricted.php'; ?>
-
-    <?php endif; ?>
+    <?php include_once '../app/views/partials/menu.php'; ?>
     <?php include '../app/views/partials/foot.php'; ?>
-
-    </html>

@@ -8,10 +8,7 @@
 
 <body>
 
-    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) : ?>
-        <?php include_once '../app/views/partials/menu.php'; ?>
-    <?php else : ?>
-    
-    <?php endif; ?>
-    <?php include '../app/views/partials/foot.php'; ?>
 
+    <?php include_once '../app/views/partials/menu.php'; ?>
+
+    <?php include '../app/views/partials/foot.php'; ?>

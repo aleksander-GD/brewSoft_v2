@@ -1,7 +1,7 @@
 <?php
 class User extends Database
 {
-    public function login($username, $password)
+    public function login()
     {
 
         $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
@@ -17,8 +17,7 @@ class User extends Database
             if (password_verify($password, $hashedPassword)) {
                 $_SESSION['logged_in'] = true;
                 $_SESSION['username'] = $username;
-                $usertype = $this->getUsertype($username);
-                $_SESSION['usertype'] = $usertype;
+                $_SESSION['usertype'] = $user['usertype'];
                 return true;
             } else {
                 return false;
@@ -42,19 +41,6 @@ class User extends Database
             $stmt->bindParam(':usertype', $usertype);
             $stmt->execute();
         }
-    }
-
-    private function getUsertype($username)
-    {
-        $sql = "SELECT usertype FROM users WHERE username = :username;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        $usertype = $stmt->fetchAll();
-        foreach ($usertype as $user) {
-            $usertype = $user['usertype'];
-        }
-        return $usertype;
     }
 
     private function regexCheck($username, $password)

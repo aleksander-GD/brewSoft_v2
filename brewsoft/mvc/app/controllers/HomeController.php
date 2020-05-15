@@ -12,7 +12,7 @@ class HomeController extends Controller
 	{
 		$this->view('home/login');
 		if (isset($_POST['username']) && isset($_POST['password'])) {
-			if ($this->model('User')->login($_POST['username'], $_POST['password'])) {
+			if ($this->model('User')->login()) {
 				if ($_SESSION['usertype'] == 'Manager') {
 					header('Location: /brewsoft/mvc/public/manager/index');
 				}
