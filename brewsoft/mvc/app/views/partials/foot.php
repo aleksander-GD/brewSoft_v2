@@ -4,5 +4,4 @@
 <script src="https://kit.fontawesome.com/dc1c1b77e7.js" crossorigin="anonymous"></script>
 <script src="<?php echo DOC_ROOT; ?>/js/menuBarUtility.js"></script>
 </body>
-
 </html>

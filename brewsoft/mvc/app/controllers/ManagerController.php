@@ -42,7 +42,6 @@ class ManagerController extends Controller
 		$viewbag['batch'] = $batch;
 		$product = $this->model('ProductType')->getProducts();
 		$viewbag['products'] = $product;
-
 		//redirect to editbatch page
 		$this->view('manager/editbatch', $viewbag);
 
@@ -57,7 +56,7 @@ class ManagerController extends Controller
 
 			//redirect to batchqueue 
 			//$this->view('manager/batchqueue');
-			header('Location: /brewsoft/mvc/public/manager/batchqueue');
+			header('Location: /brewsoft/mvc/public/manager/batchQueue');
 		}
 	}
 
@@ -85,9 +84,7 @@ class ManagerController extends Controller
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
 			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
-			//$this->view('manager/batchqueue');
 			header('Location: /brewsoft/mvc/public/manager/batchQueue');
-			
 		}
 	}
 
