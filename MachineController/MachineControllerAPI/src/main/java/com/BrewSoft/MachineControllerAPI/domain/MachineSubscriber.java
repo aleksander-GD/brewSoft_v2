@@ -5,6 +5,9 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductionBatch;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +90,10 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private Batch batch;
     private Machine machineObj;
+    
+    //Software sim value faker system.
     private final String SOFTWARESIM = "127.0.0.1";
+    private int tempProducts = 0;
 
     public MachineSubscriber(Machine machineObj) {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
@@ -306,7 +312,7 @@ public class MachineSubscriber implements IMachineSubscribe {
             case PRODUCED_PRODUCTS_NODENAME:
                 this.productionCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 if(machineObj.getHostname().equals(this.SOFTWARESIM)){
-                    this.generateRandomAmount();
+                    this.generateRandomAmountProduced();
                 }
                 this.completedBatch();
                 break;
@@ -364,25 +370,40 @@ public class MachineSubscriber implements IMachineSubscribe {
     private void generateRandomProdValues() {
         Random random = new Random();
         int value = random.nextInt(2000);
+       
         System.out.println("Random value:" + value);
         if (value > 1 && value < 5) {
-            humidityValue = (float) Math.random() * (21 - 17) + 17; // low humid alarm
+            humidityValue = Math.round((float) (Math.random() * (21 - 17) + 17) * 100.0 / 100.0); // low humid alarm
         } else if (value > 5 && value < 10) {
-            temperaturValue = (float) Math.random() * (26 - 20) + 20;   // low temp alarm
+            temperaturValue = Math.round((float) (Math.random() * (26 - 20) + 20) * 100.0 / 100.0);   // low temp alarm
         } else if (value > 10 && value < 15) {
-            humidityValue = (float) Math.random() * (38 - 34) + 34;     // high humid alarm
+            humidityValue = Math.round((float) (Math.random() * (38 - 34) + 34) * 100.0 / 100.0);     // high humid alarm
         } else if (value > 15 && value < 20) {
-            temperaturValue = (float) Math.random() * (38 - 33) + 33;   // high temp alarm
+            temperaturValue = Math.round((float) (Math.random() * (38 - 33) + 33) * 100.0 / 100.0);   // high temp alarm
         } else {
-            temperaturValue = (float) Math.random() * (30 - 27) + 27;  // Normal values
-            humidityValue = (float) Math.random() * (30 - 27) + 27;
+            temperaturValue = Math.round((float) (Math.random() * (30 - 27) + 27) * 100.0 / 100.0);  // Normal values
+            humidityValue = Math.round((float) (Math.random() * (30 - 27) + 27) * 100.0 / 100.0);
         }
     }
-
-    private void generateRandomAmount() {
-        totalProductValue = this.productionCountValue;
+    
+    
+    
+    
+    private void generateRandomAmountProduced() {
+        int prodDiff = this.productionCountValue - tempProducts;
+        tempProducts = this.productionCountValue;
         Random random = new Random();
-        acceptableCountValue = random.nextInt(this.productionCountValue + 1);
-        defectCountValue = (int) totalProductValue - acceptableCountValue;
+        int randomValue = random.nextInt(10);
+        if(randomValue < 3){
+            defectCountValue += prodDiff;
+        } else {
+            acceptableCountValue += prodDiff;
+        }
+        System.out.println("defects: " + this.defectCountValue);
+        System.out.println("accepted: " + this.acceptableCountValue);
+        //totalProductValue = this.productionCountValue;
+        //Random random = new Random();
+        //acceptableCountValue = random.nextInt(this.productionCountValue + 1);
+        //defectCountValue = (int) totalProductValue - acceptableCountValue;
     }
 }
