@@ -29,15 +29,31 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertProductionInfo(int productionListID, int BreweryMachineID,
-            float humidity, float temperature) {
-        Timestamp ts = getTimestamp();
-        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, timestamp) VALUES (?,?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, ts);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, productionListID, BreweryMachineID, humidity, temperature, ts);
-        } else {
-            if(dq.isQueueExisting() && !dq.isRunningQueue()) {
-                dq.runQueue();
+            float humidity, float temperature, float vibration) {
+        float humidityMin = 21.0f;
+        float humidityMax = 34.0f;
+        float temperatureMin = 26.0f;
+        float temperatureMax = 33.0f;
+        String humidityAlarm = "Humidity alarm!";
+        String temperatureAlarm = "Temperature alarm!";
+
+        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, vibration) VALUES (?,?,?,?,?)";
+        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, vibration);
+
+        // if info outside safe ranges, get productioninfoID and insert alarm into alarm table.
+        if (humidity <= humidityMin || humidity >= humidityMax || temperature <= temperatureMin || temperature >= temperatureMax) {
+            String getSql = "SELECT * FROM productioninfo ORDER BY productioninfoid DESC limit 1;";
+            SimpleSet set = connection.query(getSql);
+            int productionInfoID = 0;
+            for (int i = 0; i < set.getRows(); i++) {
+                productionInfoID = Integer.valueOf(String.valueOf(set.get(i, "productioninfoid")));
+            }
+            String alarmSql = "INSERT INTO alarmlog(productioninfoid, alarm) VALUES (?,?);";
+            if (humidity <= humidityMin || humidity >= humidityMax) {
+                int humidInsert = connection.queryUpdate(alarmSql, productionInfoID, humidityAlarm);
+            } 
+            if(temperature <= temperatureMin || temperature >= temperatureMax){
+                int tempInsert = connection.queryUpdate(alarmSql, productionInfoID, temperatureAlarm);
             }
         }
     }
@@ -79,14 +95,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         
         String sql = "INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)";
         int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, stopReasonID);
-        System.out.println("Res stops: "+result);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, stopReasonID);
-        } else {
-            if(dq.isQueueExisting() && !dq.isRunningQueue()) {
-                dq.runQueue();
-            }
-        }
+
     }
 
     public void insertFinalBatchInformation(int ProductionListID,
@@ -102,16 +111,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline),
                 Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
                 productID, totalCount, defectCount, acceptedCount);
-        
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, Date.valueOf(deadline),
-                Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
-                productID, totalCount, defectCount, acceptedCount);
-        } else {
-            if(dq.isQueueExisting() && !dq.isRunningQueue()) {
-                dq.runQueue();
-            }
-        }
+
     }
 
     @Override
@@ -132,21 +132,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 totalCount,
                 defectCount,
                 acceptedCount);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql,
-                ProductionListID,
-                BreweryMachineID,
-                Date.valueOf(deadline),
-                Date.valueOf(dateOfCreation),
-                productID,
-                totalCount,
-                defectCount,
-                acceptedCount);
-        } else {
-            if(dq.isQueueExisting() && !dq.isRunningQueue()) {
-                dq.runQueue();
-            }
-        }
+
     }
     
     @Override
@@ -203,19 +189,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     @Override
-    public void changeProductionListStatus(int productionListID, String newStatus) {
-        
-        String sql = "UPDATE productionList SET status = ? WHERE productionListID = ?";
-        int result = connection.queryUpdate(sql, newStatus, productionListID);
-        System.out.println("Res status: "+result);
-        if(result == 0) {
-            dq.addToQueue("queryUpdate", sql, newStatus, productionListID);
-        } else {
-            System.out.println("status " +dq.isQueueExisting() + " : " + dq.isRunningQueue());
-            if(dq.isQueueExisting() && !dq.isRunningQueue()) {
-                dq.runQueue();
-            }
-        }
+    public void changeProductionListStatus(int productionListID, String newStatus, int machineID) {
+        String sql = "UPDATE productionList SET status = ? AND machineid = ? WHERE productionListID = ?";
+        int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
     }
 
     @Override
@@ -245,7 +221,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {
         TemporaryProductionBatch tpb = null;
-        
+
         SimpleSet set = connection.query("SELECT tp.*, pl.productamount "
                 + "FROM temporaryproduction AS tp, productionlist AS pl "
                 + "WHERE tp.productionlistid = ?", productionlistid);
