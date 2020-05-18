@@ -3,6 +3,8 @@
 
   class ProductionData extends Database
   {
+    // Get data from machine somehow?
+    // What about resumed batches?
     public function StartProduction()
     {
       $sql = "SELECT *

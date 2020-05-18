@@ -7,14 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-  <script type="text/javascript" src="../js/machineApi.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="<?php echo DOC_ROOT; ?>/js/machineApi.js"></script>
 </head>
 
 <body>
 
   <?php include_once '../app/views/partials/menu.php'; ?>
   <pre>
-<?php //var_dump($viewbag); 
+<?php //var_dump($viewbag);
 ?>
 </pre>
   <div class="container-fluid">
@@ -45,7 +46,7 @@
     ?>
     <div class="col-xl-12 col-sm-12">
       <!-- Overvej AJAX til knapperne, især hvis dashboard skal sættes ind som partial eller omvendt -->
-      <form name="controlForm" id="controlForm" action="" method="post" onsubmit="">
+      <form name="controlForm" id="controlForm" action="" method="post" onsubmit="return false;">
         <div class="form-row">
           <div class="form-group col-auto">
             <?php
@@ -55,7 +56,7 @@
             ?>
           </div>
           <div class="form-group col-auto">
-            <input type="hidden" value="" name="command" id="command">
+            <input type="hidden" value="Reset" name="command" id="command">
             <div class="btn-group">
               <?php
               $commands = "";

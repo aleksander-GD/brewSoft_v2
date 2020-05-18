@@ -9,15 +9,6 @@
   </head>
 
   <body>
-    
-    <div class="control-buttons">
-      <button onclick="startProduction()">Start</button>
-      <button>Reset</button>
-      <button>Clear</button>
-      <button onclick="stopProduction()">Stop</button>
-      <button>Abort</button>
-    </div>
-    
     <br>
     <div class="production-materials">
       <div class="barley" id="barley">
@@ -46,7 +37,7 @@
         <input type="text" id="yeast-update" name="yeast" readonly>
       </div>
     </div>
-    
+
     <br>
     <div>
       <div class="">
@@ -81,7 +72,7 @@
           <input type="text" id="defect-products-update" name="defectProducts" readonly>
         </div>
       </div>
-      
+
       <br>
       <div class="">
         <div class="products-per-minut">
@@ -105,7 +96,7 @@
           <input type="text" id="vibration-update" name="vibration" readonly>
         </div>
       </div>
-      
+
       <br>
       <div>
         <div class="stop-reason">
@@ -125,8 +116,8 @@
         </div>
       </div>
     </div>
-    
+
     <script type='text/javascript' src="/brewsoft/mvc/public/js/brewdashboard.js"></script>
-  
+
   </body>
 </html>

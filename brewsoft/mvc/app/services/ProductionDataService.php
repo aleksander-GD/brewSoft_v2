@@ -2,7 +2,7 @@
   require_once '../models/ProductionData.php';
 
   class ProductionDataService
-  { 
+  {
 
     private $productionlistID = 0;
     private $machineID = 0;
@@ -30,7 +30,7 @@
 
     public function getProductionData()
     {
-      $productionstart = $model->StartProduction();
+      $productionstart = $this->model->StartProduction();
 
       $this->productionlistID = $productionstart['productionlistid'];
       $this->machineID = $productionstart['machineid'];
@@ -47,7 +47,7 @@
 
     public function getProducedData()
     {
-      $getproducedData = $model->ProducedData($this->productionlistID);
+      $getproducedData = $this->model->ProducedData($this->productionlistID);
 
       $producedData = array(
         "produced"=>$getproducedData['produced'],
@@ -60,8 +60,8 @@
 
     public function getMachineData()
     {
-      $machineDataRecived = $model->MachineData($this->productionlistID, $this->machineID);
-      $stopreason = $model->ProductionStop($this->productionlistID, $this->machineID);
+      $machineDataRecived = $this->model->MachineData($this->productionlistID, $this->machineID);
+      $stopreason = $this->model->ProductionStop($this->productionlistID, $this->machineID);
 
       $machineData = array(
         "temperature"=>$machineDataRecived['temperature'],
