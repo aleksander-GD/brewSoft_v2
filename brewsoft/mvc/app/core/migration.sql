@@ -69,7 +69,7 @@ EntryTime time DEFAULT current_time
 create table manualStopReasen(
     manualStopReasenid serial primary key,
     StopDuringProductionID int,
-    Reason TEXT,
+    Reason VARCHAR(255),
     userid int
 );
 
@@ -101,7 +101,7 @@ CREATE TABLE alarmlog (
     FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
 );
 
-create table user(
+create table users(
 userid serial Primary key,
 username VARCHAR(255),
 password VARCHAR(255),
@@ -222,21 +222,3 @@ ADD CONSTRAINT timeInState_breweryMachine FOREIGN KEY (BreweryMachineID) REFEREN
 
 ALTER TABLE TimeInState
 ADD CONSTRAINT timeInState_machineState FOREIGN KEY (MachineStateID) REFERENCES MachineState;
-
-ALTER TABLE ProductionInfo
-ADD vibration float;
-
-ALTER TABLE ingredientsUpdate
-ADD CONSTRAINT ingredientsUpdate_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
-
-ALTER TABLE machinedata
-ADD CONSTRAINT machinedata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
-
-ALTER TABLE produceddata
-ADD CONSTRAINT produceddata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
-
-ALTER TABLE ProductionList
-ADD machineid INT;
-
-ALTER TABLE ProductionList
-ADD CONSTRAINT productionlist_machineid FOREIGN KEY (BreweryMachineID) REFERENCES BreweryMachine;

@@ -16,7 +16,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     public DatabaseConnection connection;
     private DatabaseQueue dq;
-    
+
     public MachineSubscribeDataHandler() {
         connection = new DatabaseConnection();
         dq = new DatabaseQueue();
@@ -37,9 +37,23 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         String humidityAlarm = "Humidity alarm!";
         String temperatureAlarm = "Temperature alarm!";
 
-        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, vibration) VALUES (?,?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, vibration);
+        Timestamp ts = getTimestamp();
+        Timestamp td = getDatestamp();
 
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
+        }
+
+        String sql = "INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature, vibration, entrytime, entrydate) VALUES (?,?,?,?,?,?,?)";
+        int result = connection.queryUpdate(sql, productionListID, BreweryMachineID, humidity, temperature, vibration, ts, td);
+
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql, productionListID, BreweryMachineID, humidity, temperature, vibration, ts, td);
+        }
+
+        /* MAYBE USE productionlist AND NOT productioninfo? ALARM BLIVER IKKE SAT I KØ */
         // if info outside safe ranges, get productioninfoID and insert alarm into alarm table.
         if (humidity <= humidityMin || humidity >= humidityMax || temperature <= temperatureMin || temperature >= temperatureMax) {
             String getSql = "SELECT * FROM productioninfo ORDER BY productioninfoid DESC limit 1;";
@@ -48,35 +62,77 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
             for (int i = 0; i < set.getRows(); i++) {
                 productionInfoID = Integer.valueOf(String.valueOf(set.get(i, "productioninfoid")));
             }
-            String alarmSql = "INSERT INTO alarmlog(productioninfoid, alarm) VALUES (?,?);";
+            String alarmSql = "INSERT INTO alarmlog(productioninfoid, alarm, entrytime) VALUES (?,?,?);";
             if (humidity <= humidityMin || humidity >= humidityMax) {
-                int humidInsert = connection.queryUpdate(alarmSql, productionInfoID, humidityAlarm);
-            } 
-            if(temperature <= temperatureMin || temperature >= temperatureMax){
-                int tempInsert = connection.queryUpdate(alarmSql, productionInfoID, temperatureAlarm);
+                int humidInsert = connection.queryUpdate(alarmSql, productionInfoID, humidityAlarm, ts);
+            }
+            if (temperature <= temperatureMin || temperature >= temperatureMax) {
+                int tempInsert = connection.queryUpdate(alarmSql, productionInfoID, temperatureAlarm, ts);
             }
         }
+
+    }
+
+    private Timestamp getTimestamp() {
+        ZoneId zoneId = ZoneId.of("Europe/Copenhagen");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        Timestamp ts = Timestamp.from(zdt.toInstant());
+        return ts;
+    }
+
+    private Timestamp getDatestamp() {
+        ZoneId zoneId = ZoneId.of("Europe/Copenhagen");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("YYYY/MM/DD");
+        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        Timestamp ts = Timestamp.from(zdt.toInstant());
+        return ts;
     }
 
     @Override
     public void insertTimesInStates(int ProductionListID, int BreweryMachineID, int MachinestateID) {
-        String sql = "INSERT INTO timeInstate (productionListID, breweryMachineID, machineStateID) VALUES (?,?,?)";
-        int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, MachinestateID);
+        Timestamp ts = getTimestamp();
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
+        }
 
+        String sql = "INSERT INTO timeInstate (productionListID, breweryMachineID, machineStateID, StartTimeInState) VALUES (?,?,?,?)";
+        int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, MachinestateID, ts);
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, MachinestateID, ts);
+        }
     }
 
     @Override
     public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonID) {
-        
-        String sql = "INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)";
-        int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, stopReasonID);
+        Timestamp ts = getTimestamp();
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
+        }
+
+        String sql = "INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID, entrytime) VALUES (?,?,?,?)";
+        int result = connection.queryUpdate(sql, ProductionListID, BreweryMachineID, stopReasonID, ts);
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql, ProductionListID, BreweryMachineID, stopReasonID, ts);
+        }
 
     }
 
+    /*
     public void insertFinalBatchInformation(int ProductionListID,
             int BreweryMachineID, String deadline, String dateOfCreation,
             String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount) {
-        
+
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
+        }
+
         String sql = "INSERT INTO finalBatchInformation "
                 + "(ProductionListID, BreweryMachineID, deadline, "
                 + "dateOfCreation, dateOfCompletion, productID, totalCount, "
@@ -86,35 +142,63 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline),
                 Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
                 productID, totalCount, defectCount, acceptedCount);
-
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql,
+                    ProductionListID, BreweryMachineID, Date.valueOf(deadline),
+                    Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
+                    productID, totalCount, defectCount, acceptedCount);
+        }
     }
-
+     */
     @Override
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID,
             String deadline, String dateOfCreation, int productID, float totalCount,
             int defectCount, int acceptedCount) {
-        
-        String sql = "INSERT INTO finalBatchInformation "
+        Timestamp td = getDatestamp();
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
+        }
+
+        /*String sql = "INSERT INTO finalBatchInformation "
                 + "(ProductionListID, BreweryMachineID, deadline, dateOfCreation, "
                 + "productID, totalCount, defectCount, acceptedCount) "
-                + "values(?,?,?,?,?,?,?,?)";
+                + "values(?,?,?,?,?,?,?,?)";*/
+        String sql = "INSERT INTO finalBatchInformation "
+                + "(ProductionListID, BreweryMachineID, deadline, "
+                + "dateOfCreation, dateOfCompletion, productID, totalCount, "
+                + "defectCount, acceptedCount) "
+                + "values(?,?,?,?,?,?,?,?,?)";
         int result = connection.queryUpdate(sql,
                 ProductionListID,
                 BreweryMachineID,
                 Date.valueOf(deadline),
                 Date.valueOf(dateOfCreation),
+                td,
                 productID,
                 totalCount,
                 defectCount,
                 acceptedCount);
-
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql,
+                    ProductionListID,
+                    BreweryMachineID,
+                    Date.valueOf(deadline),
+                    Date.valueOf(dateOfCreation),
+                    td,
+                    productID,
+                    totalCount,
+                    defectCount,
+                    acceptedCount);
+        }
     }
-    
+
     @Override
-    public boolean hasQueue(){
+    public boolean hasQueue() {
         return dq.isQueueExisting();
     }
-    
+
     /**
      * HOW TO RUN THIS AUTOMATICALLY WHEN CONNECTION IS BACK??
      */
@@ -125,9 +209,10 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public Batch getNextBatch() {
-        System.out.println(dq.isQueueExisting() + " : " + dq.isRunningQueue());
-        if(dq.isQueueExisting() && !dq.isRunningQueue()) {
-            dq.runQueue();
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
         }
         Batch batch = null;
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1");
@@ -165,20 +250,41 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void changeProductionListStatus(int productionListID, String newStatus, int machineID) {
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
+        }
         System.out.println("This is productionlistID: " + productionListID);
         String sql = "UPDATE productionList SET status = ?, machineid = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql, newStatus, machineID, productionListID);
+        }
     }
 
     @Override
     public void insertStoppedProductionToTempTable(TemporaryProductionBatch tempBatch) {
-        String sql = "INSERT INTO temporaryproduction (productionlistid, acceptedcount,defectcount) VALUES (?,?,?)";
+        Timestamp ts = getDatestamp();
+        if (connection.isConnected()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+                dq.runQueue();
+            }
+        }
+        String sql = "INSERT INTO temporaryproduction (productionlistid, acceptedcount,defectcount,dateforstop) VALUES (?,?,?,?)";
 
         int result = connection.queryUpdate(sql,
                 tempBatch.getProductionListId(),
                 tempBatch.getAcceptedCount(),
-                tempBatch.getDefectCount());
-
+                tempBatch.getDefectCount(),
+                ts);
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql,
+                    tempBatch.getProductionListId(),
+                    tempBatch.getAcceptedCount(),
+                    tempBatch.getDefectCount(),
+                    ts);
+        }
     }
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {

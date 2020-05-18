@@ -5,13 +5,9 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductionBatch;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,10 +30,9 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private static final AtomicLong ATOMICLOMG = new AtomicLong(1L);
     private MachineConnection mconn;
-    private Map<String, String> consumerMap;
 
     private IMachineSubscriberDataHandler msdh;
-
+    
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
     private final NodeId totalProductsNode = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
@@ -97,7 +92,6 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public MachineSubscriber(Machine machineObj) {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
-        consumerMap = new HashMap();
         this.machineObj = machineObj;
     }
 
@@ -121,7 +115,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     @Override
     public void subscribe() {
-        if (this.mconn.getStatus()) {
+        if (this.mconn.getStatus() && this.batch != null) {
             List<MonitoredItemCreateRequest> requestList = new ArrayList();
             requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
             requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
@@ -183,7 +177,7 @@ public class MachineSubscriber implements IMachineSubscribe {
                 items.get(14).setValueConsumer(onWheatReadItem);
                 items.get(15).setValueConsumer(onYeastReadItem);
                 items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
-
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
@@ -248,7 +242,6 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     private void consumerStarter(String nodename, DataValue dataValue) {
-        //System.out.println("node: " + nodename);
         switch (nodename) {
             case BATCHID_NODENAME:
                 this.batchIDValue = Float.parseFloat(dataValue.getValue().getValue().toString());
@@ -258,9 +251,7 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case TEMPERATURE_NODENAME:
                 this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                System.out.println("temp");
             case HUMIDITY_NODENAME:
-                System.out.println("humid");
                 if (nodename.equals(HUMIDITY_NODENAME)) {
                     this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 }
@@ -328,6 +319,8 @@ public class MachineSubscriber implements IMachineSubscribe {
         msdh.insertStoppedProductionToTempTable(tpb);
     }
 
+    
+    /* USED FOR ANYTHING? */
     @Override
     public String stateTranslator(String state) {
         switch (state) {

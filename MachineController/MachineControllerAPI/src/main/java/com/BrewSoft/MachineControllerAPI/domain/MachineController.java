@@ -8,7 +8,6 @@ import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineControl;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,8 +28,6 @@ public class MachineController implements IMachineControl {
 
     private IMachineSubscribe subscriber;
     private Machine machineObj;
-    
-    private int id;
 
     public MachineController(Machine machineObj, IMachineSubscribe subscriber) {
         this.machineObj = machineObj;
@@ -38,7 +35,6 @@ public class MachineController implements IMachineControl {
         this.subscriber = subscriber;
         this.msdh = new MachineSubscribeDataHandler();
         subscriber.setSubscriberDataHandler(msdh);
-        this.id = new Random().nextInt();
     }
 
     @Override
@@ -52,7 +48,7 @@ public class MachineController implements IMachineControl {
     }
 
     /**
-     * TODO: Check if the machine actually starts, somehow...
+     * TODO: Check if the machine actually starts, somehow... subscriber, state?
      * @return 
      */
     @Override
@@ -77,21 +73,22 @@ public class MachineController implements IMachineControl {
                     NodeId quantityNode = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
                     mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant((float) newBatch.getTotalAmount()))).get();
 
-                    // Set the speed of production, table for speeds in projektoplæg.pdf
+                    // Set the speed of production, table for speeds in projektoplÃ¦g.pdf
                     // Need to calculate the "right" speeds, maybe in mathlab
                     NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
                     mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant(newBatch.getSpeedforProduction())));
                 } catch (InterruptedException ex) {
                     Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {
-                    Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
+                    returnTxt = "Connection between controller and machine lost. Check the java program and machine are both running.";
+                    rtm.put("error", returnTxt);
+                    //Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 // Start the production
                 sendCntrlCmd(new Variant(2));
                 sendCmdRequest();
-                //System.out.println(newBatch.getBatchID() + " : " + newBatch.getProductionListID() + " : " + newBatch.getTotalAmount());
-                returnTxt = this.id + " Machine started.";
+                returnTxt = "Machine started.";
                 rtm.put("Success", returnTxt);
             } else {
                 returnTxt = "No batch in queue.";
@@ -111,14 +108,17 @@ public class MachineController implements IMachineControl {
             if(msdh.hasQueue()) {
                 msdh.runQueue();
             }
-            sendCntrlCmd(new Variant(1));
-            sendCmdRequest();
-            rtm.put("Success", this.id + " Machine reset.");
-            return rtm;
+            String res = sendCntrlCmd(new Variant(1));
+            if(res.equals("")) {
+                sendCmdRequest();
+                rtm.put("Success", "Machine reset.");
+            } else {
+                rtm.put("Error", res);
+            }
         } else {
             rtm.put("Error", "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort());
-            return rtm;
         }
+        return rtm;
     }
 
     @Override
@@ -127,12 +127,16 @@ public class MachineController implements IMachineControl {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
             if (newBatch != null) {
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", this.machineObj.getMachineID());
-                subscriber.stoppedproduction(newBatch.getProductionListID());
-                sendCntrlCmd(new Variant(3));
-                sendCmdRequest();
-                returnTxt = this.id + " Machine stopped.";
-                rtm.put("Success", returnTxt);
+                String res = sendCntrlCmd(new Variant(3));
+                if(res.equals("")) {
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", this.machineObj.getMachineID());
+                    subscriber.stoppedproduction(newBatch.getProductionListID());
+                    sendCmdRequest();
+                    returnTxt = "Machine stopped.";
+                    rtm.put("Success", returnTxt);
+                } else {
+                    rtm.put("Error", res);
+                }
             } else {
                 returnTxt = "The machine has not been started yet!";
                 rtm.put("Error", returnTxt);
@@ -150,12 +154,16 @@ public class MachineController implements IMachineControl {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
             if (newBatch != null) {
-                sendCntrlCmd(new Variant(4));
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", newBatch.getMachineID());
-                sendCmdRequest();
-                subscriber.stoppedproduction(newBatch.getProductionListID());
-                returnTxt = "Aborted production.";
-                rtm.put("Success", returnTxt);
+                String res = sendCntrlCmd(new Variant(4));
+                if(res.equals("")) {
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", this.machineObj.getMachineID());
+                    sendCmdRequest();
+                    subscriber.stoppedproduction(newBatch.getProductionListID());
+                    returnTxt = "Aborted production.";
+                    rtm.put("Success", returnTxt);
+                } else {
+                    rtm.put("Error", res);
+                }
             } else {
                 returnTxt = "The machine has not been started yet!";
                 rtm.put("Error", returnTxt);
@@ -171,23 +179,31 @@ public class MachineController implements IMachineControl {
     public Map<String, String> clearState() {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
-            sendCntrlCmd(new Variant(5));
-            sendCmdRequest();
-            rtm.put("Success", "Machine has been cleared.");
+            String res = sendCntrlCmd(new Variant(5));
+            if(res.equals("")) {
+                sendCmdRequest();
+                rtm.put("Success", "Machine has been cleared.");
+            } else {
+                rtm.put("Error", res);
+            }
         } else {
             rtm.put("Error", "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort());
         }
         return rtm;
     }
 
-    private void sendCntrlCmd(Variant variantNo) {
+    private String sendCntrlCmd(Variant variantNo) {
+        String returnTxt = "";
         try {
             mconn.getClient().writeValue(cntrlCmdNodeId, DataValue.valueOnly(variantNo)).get();
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
+            returnTxt = "Connection between controller and machine lost. Check the java program and machine are both running.";
+            //rtm.put("error", returnTxt);
+            //Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return returnTxt;
     }
 
     private void sendCmdRequest() {
@@ -196,7 +212,9 @@ public class MachineController implements IMachineControl {
         } catch (ExecutionException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
+            //returnTxt = "Connection between controller and machine lost. Check the java program and machine are both running.";
+            //rtm.put("error", returnTxt);
+            //Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
