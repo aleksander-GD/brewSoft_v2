@@ -46,7 +46,8 @@ ProductionListID int,
 BreweryMachineID int,
 Humidity float,
 Temperature float,
-TimeStamp time DEFAULT current_time
+EntryTime time DEFAULT current_time,
+EntryDate Date DEFAULT current_date
 );
 
 Create table TimeInState(
@@ -62,7 +63,7 @@ StopDuringProductionID serial Primary key,
 ProductionListID int,
 BreweryMachineID int,
 StopReasonID int,
-TimeStamp time DEFAULT current_time
+EntryTime time DEFAULT current_time
 );
 
 create table manualStopReasen(
@@ -96,7 +97,7 @@ CREATE TABLE alarmlog (
     alarmid SERIAL PRIMARY KEY,
     productioninfoid INT,
     alarm VARCHAR(50),
-    timestamp TIME DEFAULT current_time,
+    EntryTime TIME DEFAULT current_time,
     FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
 );
 

@@ -94,6 +94,11 @@ class ManagerController extends Controller
 
 	public function batchReport($productionlistID)
 	{
+		// Start performance requirement 03
+		$start_time = microtime(true);
+		$viewbag['start'] = $start_time;
+		// End of performance requirement 03
+
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
 		$length = sizeof($timeArray) - 1;
 
