@@ -3,6 +3,7 @@
 
   class ProductionData extends Database
   {
+    // TODO: Changes so it checks for stopped batches or gets this data from the Java part.
     public function StartProduction()
     {
       $sql = "SELECT *
