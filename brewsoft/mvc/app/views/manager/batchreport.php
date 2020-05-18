@@ -17,6 +17,7 @@
 </head>
 
 <?php include_once '../app/views/partials/menu.php'; ?>
+<?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
     //Timeline 
@@ -178,5 +179,8 @@
         <p>Total amount of products: <?php echo $products['totalcount']; ?> </p>
         <div id="piechart" style="width: 800px; height: 400px;"></div>
     </div>
+    <?php else : ?>
+        <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
 
+    <?php endif; ?>
     <?php include '../app/views/partials/foot.php'; ?>

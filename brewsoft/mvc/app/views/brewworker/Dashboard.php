@@ -1,3 +1,4 @@
+<?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Worker' OR $_SESSION['usertype'] == 'Admin' ) ) : ?>
 <!DOCTYPE html>
 <html>
 
@@ -128,4 +129,8 @@
   </div>
 
   <script type='text/javascript' src="/brewsoft/mvc/public/js/brewdashboard.js"></script>
+
+  <?php else : ?>
+    <?php header('Location: /brewsoft/mvc/public/manager/planbatch'); ?>
+<?php endif; ?>
   <?php include '../app/views/partials/foot.php'; ?>
