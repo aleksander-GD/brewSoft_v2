@@ -180,3 +180,10 @@
     </div>
 
     <?php include '../app/views/partials/foot.php'; ?>
+    
+    <?php
+    // Performance 03 requirement test 
+    $end_time = microtime(true);
+    $execution_time = ($end_time - $viewbag['start']);
+    echo "The batch report was generated in " . $execution_time . " seconds ";
+    ?>
