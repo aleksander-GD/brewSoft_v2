@@ -83,7 +83,7 @@ class ManagerController extends Controller
 			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
-			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
+			$this->model('Productionlist')->insertBatchToQueue($productID, $productAmount, $deadline, $speed, $status);
 			header('Location: /brewsoft/mvc/public/manager/batchQueue');
 		}
 	}
@@ -91,6 +91,11 @@ class ManagerController extends Controller
 
 	public function batchReport($productionlistID)
 	{
+		// Start performance requirement 03
+		$start_time = microtime(true);
+		$viewbag['start'] = $start_time;
+		// End of performance requirement 03
+
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
 		$length = sizeof($timeArray) - 1;
 

@@ -46,7 +46,8 @@ ProductionListID int,
 BreweryMachineID int,
 Humidity float,
 Temperature float,
-TimeStamp time DEFAULT current_time
+EntryTime time DEFAULT current_time,
+EntryDate Date DEFAULT current_date
 );
 
 Create table TimeInState(
@@ -62,7 +63,7 @@ StopDuringProductionID serial Primary key,
 ProductionListID int,
 BreweryMachineID int,
 StopReasonID int,
-TimeStamp time DEFAULT current_time
+EntryTime time DEFAULT current_time
 );
 
 create table manualStopReasen(
@@ -92,12 +93,63 @@ CREATE TABLE temporaryproduction (
     FOREIGN KEY (productionlistid) REFERENCES productionlist(productionlistid)
 );
 
+CREATE TABLE alarmlog (
+    alarmid SERIAL PRIMARY KEY,
+    productioninfoid INT,
+    alarm VARCHAR(50),
+    EntryTime TIME DEFAULT current_time,
+    FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
+);
+
 create table users(
 userid serial Primary key,
 username VARCHAR(255),
 password VARCHAR(255),
 usertype VARCHAR(255)
 );
+
+CREATE TABLE ingredientsUpdate(
+    ingredientsid serial,
+    barley INT,
+    hops INT,
+    malt INT,
+    wheat INT,
+    yeast INT,
+    BreweryMachineID INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (ingredientsid),
+);
+
+CREATE TABLE machinedata(
+    machinedataid serial,
+    brewerymachineid INT,
+    maintenace FLOAT,
+    state INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (machinedataid)
+);
+
+CREATE TABLE produceddata(
+    produceddataid serial,
+    ProductionListID INT,
+    produced INT,
+    acceptable INT,
+    defect INT,
+    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (produceddataid),
+);
+
+
+CREATE TABLE connectionTest(
+    connectionid serial
+    connectionString varchar(50),
+    EntryTime time DEFAULT CURRENT_TIMESTAMP,
+    EntryDate date DEFAULT CURRENT_DATE,
+    PRIMARY KEY (connectionid)
+)
+
+insert into user(username,password,usertype) VALUES('manager','manager','wanager');
+insert into user(username,password,usertype) VALUES('worker','worker','worker');
 
 insert into brewerymachine (Hostname, Port) values ('192.168.0.122',4840);
 insert into brewerymachine (Hostname, Port) values ('127.0.0.1', 4840);

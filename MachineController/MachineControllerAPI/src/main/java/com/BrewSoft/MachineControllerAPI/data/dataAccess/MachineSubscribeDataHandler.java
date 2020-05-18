@@ -255,6 +255,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 dq.runQueue();
             }
         }
+        System.out.println("This is productionlistID: " + productionListID);
         String sql = "UPDATE productionList SET status = ?, machineid = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
         if (result == 0) {
