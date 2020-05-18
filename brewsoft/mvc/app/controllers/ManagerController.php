@@ -184,9 +184,9 @@ class ManagerController extends Controller
 		$viewbag['oeeForBatch'] = $oee;
 		$this->view('manager/showOeeForBatch', $viewbag);
 	}
-	public function dashboardManager()
+	public function managerdashboard()
 	{
-		$this->view('brewworker/dashboard');
+		$this->view('manager/managerdashboard');
 	}
 	public function logout()
 	{

@@ -122,6 +122,3 @@
     </div>
 
     <script type='text/javascript' src="<?php echo DOC_ROOT; ?>/js/brewdashboard.js"></script>
-
-  </body>
-</html>

@@ -80,7 +80,7 @@
                             <a class="nav-link" href="/brewsoft/mvc/public/manager/displayOeeForDay"><i class="far fa-chart-bar" aria-hidden="true"></i>Display Oee for day</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/dashboardManager"><i class="fas fa-boxes" aria-hidden="true"></i>productionview</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/managerdashboard"><i class="fas fa-boxes" aria-hidden="true"></i>productionview</a>
                         </li>
                     </ul>
                     <span class="navbar-text">
