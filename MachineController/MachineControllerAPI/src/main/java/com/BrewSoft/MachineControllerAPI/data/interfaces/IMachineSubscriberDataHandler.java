@@ -18,6 +18,12 @@ public interface IMachineSubscriberDataHandler {
     public void insertStoppedProductionToTempTable(TemporaryProductionBatch tempBatch);
 
     public void changeProductionListStatus(int productionListID, String newStatus, int machineID);
+    
+    public void ingredientsUpdate(int barley, int hops, int malt, int wheat, int yeast, int machineID);
+    
+    public void machinedata(int machineID, float maintenace, int state);
+    
+    public void producedData(int productionlistid, int produced, int acceptable, int defect);
 
     public Batch getNextBatch();
     
