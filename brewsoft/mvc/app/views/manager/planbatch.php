@@ -3,7 +3,7 @@
 
 <head>
     <title> Create batch </title>
-    <link rel="stylesheet" href="../css/planbatch.css">
+    <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/planbatch.css">
 </head>
 
 <body>

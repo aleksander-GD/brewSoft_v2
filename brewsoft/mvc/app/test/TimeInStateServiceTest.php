@@ -333,7 +333,7 @@ class TimeInStateServiceTest extends TestCase
         $dt->add($this->dteDiff2);
         $dt->add($this->dteDiff4);
 
-        $result = $dt_diff->diff($dt);
+        $result = $dt->diff($dt_diff);
 
         $expected = array(
             0 => array(

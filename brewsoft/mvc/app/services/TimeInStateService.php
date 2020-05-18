@@ -80,7 +80,8 @@ class TimeInStateService
                 $dt->add($newtime);
 
                 // The result of the two intervals is now the difference between the datetimeobject and its clone
-                $result = $dt_diff->diff($dt);
+                $result = $dt->diff($dt_diff);
+
 
                 $sorted[$index] = ["machinestate" => $state['machinestate'], "timeinstate" => $result];
             } else {
