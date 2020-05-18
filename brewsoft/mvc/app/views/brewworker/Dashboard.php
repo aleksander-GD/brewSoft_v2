@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Brewery Worker Dashboard</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/brewsoft/mvc/public/css/brewdashboard.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  </head>
 
-  <body>
     <br>
     <div class="production-materials">
       <div class="barley" id="barley">
@@ -117,7 +107,7 @@
       </div>
     </div>
 
-    <script type='text/javascript' src="/brewsoft/mvc/public/js/brewdashboard.js"></script>
+    <script type='text/javascript' src="<?php echo DOC_ROOT; ?>/js/brewdashboard.js"></script>
 
   </body>
 </html>

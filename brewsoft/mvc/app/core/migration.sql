@@ -4,82 +4,83 @@ CREATE SCHEMA if not exists brewSoftDBTest;
 SET search_path = brewSoftDBTest;
 
 Create Table BreweryMachine (
-BreweryMachineID serial Primary Key,
-Hostname VARCHAR (255),
-Port int
+    BreweryMachineID serial Primary Key,
+    Hostname VARCHAR (255),
+    Port int
 );
 
 Create table ProductionList(
-ProductionListID serial Primary key,
-BatchID int,
-ProductID int,
-ProductAmount int,
-Deadline date,
-Speed float,
-Status VARCHAR(20),
-DateOfCreation date DEFAULT CURRENT_DATE
+    ProductionListID serial Primary key,
+    BatchID int,
+    ProductID int,
+    ProductAmount int,
+    Deadline date,
+    Speed float,
+    Status VARCHAR(20),
+    DateOfCreation date DEFAULT CURRENT_DATE
 );
 
 Create Table ProductType (
-ProductID int Primary key,
-ProductName VARCHAR (20),
-Speed float,
-IdealCycleTime float
+    ProductID int Primary key,
+    ProductName VARCHAR (20),
+    Speed float,
+    IdealCycleTime float
 );  
 
 Create Table FinalBatchInformation(
-FinalBatchInformationID serial Primary key,
-ProductionListID int,
-BreweryMachineID int,
-Deadline Date,
-DateOfCreation Date,
-DateOfCompletion Date DEFAULT current_date,
-ProductID int,
-TotalCount int,
-DefectCount float,
-AcceptedCount float
+    FinalBatchInformationID serial Primary key,
+    ProductionListID int,
+    BreweryMachineID int,
+    Deadline Date,
+    DateOfCreation Date,
+    DateOfCompletion Date DEFAULT current_date,
+    ProductID int,
+    TotalCount int,
+    DefectCount float,
+    AcceptedCount float
 );
 
 create table ProductionInfo(
-ProductionInfoID serial primary key,
-ProductionListID int,
-BreweryMachineID int,
-Humidity float,
-Temperature float,
-TimeStamp time DEFAULT current_time
+    ProductionInfoID serial primary key,
+    ProductionListID int,
+    BreweryMachineID int,
+    Humidity float,
+    Temperature float,
+    EntryTime time DEFAULT current_time,
+    EntryDate Date DEFAULT current_date
 );
 
 Create table TimeInState(
-TimeInStateID serial Primary key,
-ProductionListID int,
-BreweryMachineID int,
-StartTimeInState time DEFAULT current_time,
-MachineStateID int
+    TimeInStateID serial Primary key,
+    ProductionListID int,
+    BreweryMachineID int,
+    StartTimeInState time DEFAULT current_time,
+    MachineStateID int
 );
 
 Create table StopDuringProduction(
-StopDuringProductionID serial Primary key,
-ProductionListID int,
-BreweryMachineID int,
-StopReasonID int,
-TimeStamp time DEFAULT current_time
+    StopDuringProductionID serial Primary key,
+    ProductionListID int,
+    BreweryMachineID int,
+    StopReasonID int,
+    EntryTime time DEFAULT current_time
 );
 
 create table manualStopReasen(
     manualStopReasenid serial primary key,
     StopDuringProductionID int,
-    Reason TEXT,
+    Reason VARCHAR(255),
     userid int
 );
 
 create table StopReason(
-StopReasonID int primary Key,
-Reason VARCHAR (50)
+    StopReasonID int primary Key,
+    Reason VARCHAR (50)
 );
 
 create table MachineState (
-MachineStateID int primary key,
-MachineState VARCHAR (50)
+    MachineStateID int primary key,
+    MachineState VARCHAR (50)
 );
 
 CREATE TABLE temporaryproduction (
@@ -96,15 +97,15 @@ CREATE TABLE alarmlog (
     alarmid SERIAL PRIMARY KEY,
     productioninfoid INT,
     alarm VARCHAR(50),
-    timestamp TIME DEFAULT current_time,
+    EntryTime TIME DEFAULT current_time,
     FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
 );
 
-create table user(
-userid serial Primary key,
-username VARCHAR(255),
-password VARCHAR(255),
-usertype VARCHAR(255)
+create table users(
+    userid serial Primary key,
+    username VARCHAR(255),
+    password VARCHAR(255),
+    usertype VARCHAR(255)
 );
 
 CREATE TABLE ingredientsUpdate(
@@ -115,7 +116,7 @@ CREATE TABLE ingredientsUpdate(
     wheat INT,
     yeast INT,
     BreweryMachineID INT,
-    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    EntryTime time DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (ingredientsid),
 );
 
@@ -124,7 +125,7 @@ CREATE TABLE machinedata(
     brewerymachineid INT,
     maintenace FLOAT,
     state INT,
-    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    EntryTime time DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (machinedataid)
 );
 
@@ -134,9 +135,18 @@ CREATE TABLE produceddata(
     produced INT,
     acceptable INT,
     defect INT,
-    timestamp time DEFAULT CURRENT_TIMESTAMP,
+    EntryTime time DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (produceddataid),
 );
+
+
+CREATE TABLE connectionTest(
+    connectionid serial
+    connectionString varchar(50),
+    EntryTime time DEFAULT CURRENT_TIMESTAMP,
+    EntryDate date DEFAULT CURRENT_DATE,
+    PRIMARY KEY (connectionid)
+)
 
 insert into user(username,password,usertype) VALUES('manager','manager','wanager');
 insert into user(username,password,usertype) VALUES('worker','worker','worker');

@@ -1,5 +1,6 @@
 package com.BrewSoft.MachineControllerAPI.data.dataAccess.Connect;
 
+import com.BrewSoft.MachineControllerAPI.data.dataAccess.DatabaseQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,11 +15,13 @@ public class DatabaseConnection {
     final private String user;
     final private String password;
     private Connection con;
+    private boolean connected;
 
     public DatabaseConnection() {
         this.url = "jdbc:postgresql://tek-mmmi-db0a.tek.c.sdu.dk:5432/si3_2019_group_2_db";
         this.user = "si3_2019_group_2";
         this.password = "did3+excises";
+        connected = false;
     }
 
     private Connection connect() throws SQLException, ClassNotFoundException {
@@ -31,22 +34,27 @@ public class DatabaseConnection {
 
         try {
             con = connect();
+            connected = true;
             statement = con.prepareStatement(query);
 
             for (int i = 0; i < values.length; i++) {
                 statement.setObject(i + 1, values[i]);
             }
+            //System.out.println("statement: "+statement);
         } catch (SQLException ex) {
             if(ex.getSQLState().equalsIgnoreCase("08001")) {
                 /**
                  * HUGE GAMBLE, NO IDEA ABOUT "smells"
+                 * 
                  */
-                boolean connected = false;
-                System.out.println("USING QUEUE AND NOT DATABASE?!?");
+                connected = false;
+                //System.out.println("prepare USING QUEUE AND NOT DATABASE?!?");
+                /* THREADING NEEDED FOR THIS TO WORK
                 while(!connected) {
                     try {
-                        connect();
+                        con = connect();
                         connected = true;
+                        databasequeue.runQueue();
                     } catch (SQLException ex1) {
                         if(ex.getSQLState().equalsIgnoreCase("08001")) {
                             System.out.println("Still not connected to database");
@@ -58,9 +66,10 @@ public class DatabaseConnection {
                         Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex1);
                     }
                 }
+*/
                 // retry connecting to DB automatically?
             } else {
-                System.out.println("USING QUEUE AND NOT DATABASE?!? logger");
+                System.out.println("SQL exception - logging");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (ClassNotFoundException ex) {
@@ -70,7 +79,6 @@ public class DatabaseConnection {
     }
 
     public int queryUpdate(String query, Object... values) {
-        System.out.println("sql: " + query);
         int affectedRows = 0;
         try (PreparedStatement statement = prepareStatement(query, values)) {
 
@@ -81,7 +89,7 @@ public class DatabaseConnection {
                 System.out.println("USING QUEUE AND NOT DATABASE?!?");
                 // retry connecting to DB automatically?
             } else {
-                System.out.println("USING QUEUE AND NOT DATABASE?!? logger");
+                System.out.println("SQL exception - logging");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
@@ -118,7 +126,7 @@ public class DatabaseConnection {
                 System.out.println("GETTING BATCH INFO WITHOUT DATABASE?!?");
                 // retry connecting to DB automatically?
             } else {
-                System.out.println("USING QUEUE AND NOT DATABASE?!? logger");
+                System.out.println("SQL exception - logging");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
@@ -131,9 +139,14 @@ public class DatabaseConnection {
         if(con != null) {
             try {
                 con.close();
+                //connected = false;
             } catch (SQLException ex) {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public boolean isConnected() {
+        return this.connected;
     }
 }

@@ -11,7 +11,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
@@ -45,18 +44,8 @@ public class DatabaseQueue {
     
     public void addToQueue(String fn, String sql, Object... values) {
         QueueObject qo = new QueueObject(fn, sql, values);
-        for (Object value : values) {
-            System.out.println("val: "+ value);
-        }
-        System.out.println(qo);
-        /*
-        queue.add(qo);
-        for (QueueObject queueObject : queue) {
-            System.out.println(queueObject);
-        }*/
         this.saveObjectToFile(qo);
         this.queueExist = true;
-        //return queue.size();
     }
  /**
   * PROBABLY NOT THE MOST EFFICIENT WAY OF DOING IT
@@ -147,12 +136,8 @@ public class DatabaseQueue {
         Queue<QueueObject> fileQueue = this.readFile();
         Queue<QueueObject> deleteQueue = new LinkedList();
         for (QueueObject queueObject : fileQueue) {
-            System.out.println("TEST: val is gone? " + Arrays.deepToString(queueObject.getValues()));
             try {
                 Method m = con.getClass().getDeclaredMethod(queueObject.getFunction(), String.class, Object[].class);
-                for (Object value : queueObject.getValues()) {
-                    System.out.println("val: "+ value);
-                }
                 m.invoke(con, queueObject.getSql(), queueObject.getValues());
                 deleteQueue.add(queueObject);
             } catch (NoSuchMethodException ex) {

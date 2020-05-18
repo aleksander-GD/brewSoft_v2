@@ -5,13 +5,9 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.Machine;
 import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductionBatch;
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,10 +30,9 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private static final AtomicLong ATOMICLOMG = new AtomicLong(1L);
     private MachineConnection mconn;
-    private Map<String, String> consumerMap;
 
     private IMachineSubscriberDataHandler msdh;
-
+    
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
     private final NodeId totalProductsNode = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
@@ -97,7 +92,6 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public MachineSubscriber(Machine machineObj) {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
-        consumerMap = new HashMap();
         this.machineObj = machineObj;
     }
 
@@ -121,7 +115,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     @Override
     public void subscribe() {
-        if (this.mconn.getStatus()) {
+        if (this.mconn.getStatus() && this.batch != null) {
             List<MonitoredItemCreateRequest> requestList = new ArrayList();
             requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
             requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
@@ -183,7 +177,7 @@ public class MachineSubscriber implements IMachineSubscribe {
                 items.get(14).setValueConsumer(onWheatReadItem);
                 items.get(15).setValueConsumer(onYeastReadItem);
                 items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
-
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
@@ -222,6 +216,18 @@ public class MachineSubscriber implements IMachineSubscribe {
             System.out.println("stopreasonid: " + StopReasonID);
         }
     }
+    
+    public void ingredientsUpdate() {
+        msdh.ingredientsUpdate((int)barleyValue, (int)hopsValue, (int)maltValue, (int)wheatValue, (int)yeastValue, machineObj.getMachineID());
+    }
+    
+    public void machineData() {
+        msdh.machinedata(machineObj.getMachineID(), maintenanceValue, currentStateValue);
+    }
+    
+    public void produceddata() {
+        msdh.producedData(batch.getProductionListID(), productionCountValue, acceptableCountValue, defectCountValue);
+    }
 
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
@@ -248,7 +254,6 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     private void consumerStarter(String nodename, DataValue dataValue) {
-        //System.out.println("node: " + nodename);
         switch (nodename) {
             case BATCHID_NODENAME:
                 this.batchIDValue = Float.parseFloat(dataValue.getValue().getValue().toString());
@@ -256,36 +261,40 @@ public class MachineSubscriber implements IMachineSubscribe {
             case TOTAL_PRODUCTS_NODENAME:
                 this.totalProductValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
-            case TEMPERATURE_NODENAME:
-                this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                System.out.println("temp");
-            case HUMIDITY_NODENAME:
-                System.out.println("humid");
-                if (nodename.equals(HUMIDITY_NODENAME)) {
-                    this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
-                this.sendProductionData();
-                break;
-            case VIBRATION_NODENAME:
-                this.vibrationValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
-
-            case DEFECT_PRODUCTS_NODENAME:
-                this.defectCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
-                break;
             case PRODUCTS_PR_MINUTE_NODENAME:
                 this.productionPrMinValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
-            case ACCEPTABLE_PRODUCTS_NODENAME:
-                this.acceptableCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case STOP_REASON_NODENAME:
                 this.StopReasonID = Integer.parseInt(dataValue.getValue().getValue().toString());
                 sendStopDuingProduction();
                 break;
-            case STATE_CURRENT_NODENAME:
-                this.currentStateValue = Integer.parseInt(dataValue.getValue().getValue().toString());
-                sendTimeInState();
+            case TEMPERATURE_NODENAME:
+                this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+            case HUMIDITY_NODENAME:
+                if (nodename.equals(HUMIDITY_NODENAME)) {
+                    this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                }
+            case VIBRATION_NODENAME:
+                if (nodename.equals(VIBRATION_NODENAME)) {
+                    this.vibrationValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                }
+                this.sendProductionData();
+                break;
+            case DEFECT_PRODUCTS_NODENAME:
+                this.defectCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+            case ACCEPTABLE_PRODUCTS_NODENAME:
+                if (nodename.equals(ACCEPTABLE_PRODUCTS_NODENAME)) {
+                    this.acceptableCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                }
+            case PRODUCED_PRODUCTS_NODENAME:
+                if (nodename.equals(PRODUCED_PRODUCTS_NODENAME)) {
+                    this.productionCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                    if(machineObj.getHostname().equals(this.SOFTWARESIM)){
+                        this.generateRandomAmountProduced();
+                    }
+                    this.completedBatch();
+                }
+                this.produceddata();
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
                 this.maintenanceValue = Integer.parseInt(dataValue.getValue().getValue().toString());
@@ -295,28 +304,32 @@ public class MachineSubscriber implements IMachineSubscribe {
                     this.sendProductionData();
                 }
                 // End of software simulator values
+            case STATE_CURRENT_NODENAME:
+                if(nodename.equals(STATE_CURRENT_NODENAME)) {
+                    this.currentStateValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                    sendTimeInState();
+                }
+                this.machineData();
                 break;
             case BARLEY_NODENAME:
                 this.barleyValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
             case HOPS_NODENAME:
-                this.hopsValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
-            case MALT_NODENAME:
-                this.maltValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
-            case WHEAT_NODENAME:
-                this.wheatValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
-            case YEAST_NODENAME:
-                this.yeastValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
-            case PRODUCED_PRODUCTS_NODENAME:
-                this.productionCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
-                if(machineObj.getHostname().equals(this.SOFTWARESIM)){
-                    this.generateRandomAmountProduced();
+                if(nodename.equals(HOPS_NODENAME)) {
+                    this.hopsValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 }
-                this.completedBatch();
+            case MALT_NODENAME:
+                if(nodename.equals(MALT_NODENAME)) {
+                    this.maltValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                }
+            case WHEAT_NODENAME:
+                if(nodename.equals(WHEAT_NODENAME)) {
+                    this.wheatValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                }
+            case YEAST_NODENAME:
+                if(nodename.equals(YEAST_NODENAME)) {
+                    this.yeastValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                }
+                this.ingredientsUpdate();
                 break;
             default:
         }
@@ -328,6 +341,8 @@ public class MachineSubscriber implements IMachineSubscribe {
         msdh.insertStoppedProductionToTempTable(tpb);
     }
 
+    
+    /* USED FOR ANYTHING? */
     @Override
     public String stateTranslator(String state) {
         switch (state) {

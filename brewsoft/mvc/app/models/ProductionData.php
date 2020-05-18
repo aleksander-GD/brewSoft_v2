@@ -3,6 +3,7 @@
 
   class ProductionData extends Database
   {
+    // TODO: Changes so it checks for stopped batches or gets this data from the Java part.
     // Get data from machine somehow?
     // What about resumed batches?
     public function StartProduction()
