@@ -1,14 +1,18 @@
 <?php
-
+require_once $_SERVER['DOCUMENT_ROOT'] . '/brewsoft/mvc/app/models/Connectiontest.php';
 class DatabasePerformanceController extends Controller
 {
-    public function index()
+
+    protected $connTest;
+    public function __construct()
     {
-        
+        $this->connTest = new Connectiontest();
+    
     }
 
-    public function testDatabaseConnections(){
-        
+    public function testDatabaseConnections($connections)
+    {
+        $this->connTest->testOpenConnectionAmount($connections);
     }
 
 
