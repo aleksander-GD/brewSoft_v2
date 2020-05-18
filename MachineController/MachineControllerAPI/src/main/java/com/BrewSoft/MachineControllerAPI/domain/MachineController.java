@@ -48,7 +48,7 @@ public class MachineController implements IMachineControl {
     }
 
     /**
-     * TODO: Check if the machine actually starts, somehow...
+     * TODO: Check if the machine actually starts, somehow... subscriber, state?
      * @return 
      */
     @Override
@@ -80,7 +80,6 @@ public class MachineController implements IMachineControl {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {
-                    System.out.println("MC execute " + ex.getMessage() +" : "+ ex.getCause());
                     returnTxt = "Connection between controller and machine lost. Check the java program and machine are both running.";
                     rtm.put("error", returnTxt);
                     //Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,7 +88,6 @@ public class MachineController implements IMachineControl {
                 // Start the production
                 sendCntrlCmd(new Variant(2));
                 sendCmdRequest();
-                //System.out.println(newBatch.getBatchID() + " : " + newBatch.getProductionListID() + " : " + newBatch.getTotalAmount());
                 returnTxt = "Machine started.";
                 rtm.put("Success", returnTxt);
             } else {
@@ -131,7 +129,6 @@ public class MachineController implements IMachineControl {
             if (newBatch != null) {
                 String res = sendCntrlCmd(new Variant(3));
                 if(res.equals("")) {
-                    System.out.println("Stop production");
                     msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", machineObj.getMachineID());
                     subscriber.stoppedproduction(newBatch.getProductionListID());
                     sendCmdRequest();
