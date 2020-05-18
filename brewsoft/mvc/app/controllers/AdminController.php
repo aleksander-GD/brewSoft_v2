@@ -4,7 +4,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        header('Location: /brewSoft/mvc/public/manager/planBatch');
+        $viewbag = array();
     }
 
     public function logout()

@@ -7,14 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-  <script type="text/javascript" src="../js/machineApi.js"></script>
+  <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/brewdashboard.css">
+  <script type="text/javascript" src="<?php echo DOC_ROOT; ?>/js/machineApi.js"></script>
 </head>
 
 <body>
 
   <?php include_once '../app/views/partials/menu.php'; ?>
   <pre>
-<?php //var_dump($viewbag); 
+<?php //var_dump($viewbag);
 ?>
 </pre>
   <div class="container-fluid">

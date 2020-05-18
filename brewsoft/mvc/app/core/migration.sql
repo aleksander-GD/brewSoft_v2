@@ -46,7 +46,8 @@ ProductionListID int,
 BreweryMachineID int,
 Humidity float,
 Temperature float,
-TimeStamp time DEFAULT current_time
+EntryTime time DEFAULT current_time,
+EntryDate Date DEFAULT current_date
 );
 
 Create table TimeInState(
@@ -62,13 +63,13 @@ StopDuringProductionID serial Primary key,
 ProductionListID int,
 BreweryMachineID int,
 StopReasonID int,
-TimeStamp time DEFAULT current_time
+EntryTime time DEFAULT current_time
 );
 
 create table manualStopReasen(
     manualStopReasenid serial primary key,
     StopDuringProductionID int,
-    Reason TEXT,
+    Reason VARCHAR(255),
     userid int
 );
 
@@ -96,11 +97,11 @@ CREATE TABLE alarmlog (
     alarmid SERIAL PRIMARY KEY,
     productioninfoid INT,
     alarm VARCHAR(50),
-    timestamp TIME DEFAULT current_time,
+    EntryTime TIME DEFAULT current_time,
     FOREIGN KEY (productioninfoid) REFERENCES productioninfo(productioninfoid)
 );
 
-create table user(
+create table users(
 userid serial Primary key,
 username VARCHAR(255),
 password VARCHAR(255),
@@ -137,6 +138,15 @@ CREATE TABLE produceddata(
     timestamp time DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (produceddataid),
 );
+
+
+CREATE TABLE connectionTest(
+    connectionid serial
+    connectionString varchar(50),
+    EntryTime time DEFAULT CURRENT_TIMESTAMP,
+    EntryDate date DEFAULT CURRENT_DATE,
+    PRIMARY KEY (connectionid)
+)
 
 insert into user(username,password,usertype) VALUES('manager','manager','wanager');
 insert into user(username,password,usertype) VALUES('worker','worker','worker');
@@ -212,21 +222,3 @@ ADD CONSTRAINT timeInState_breweryMachine FOREIGN KEY (BreweryMachineID) REFEREN
 
 ALTER TABLE TimeInState
 ADD CONSTRAINT timeInState_machineState FOREIGN KEY (MachineStateID) REFERENCES MachineState;
-
-ALTER TABLE ProductionInfo
-ADD vibration float;
-
-ALTER TABLE ingredientsUpdate
-ADD CONSTRAINT ingredientsUpdate_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
-
-ALTER TABLE machinedata
-ADD CONSTRAINT machinedata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
-
-ALTER TABLE produceddata
-ADD CONSTRAINT produceddata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
-
-ALTER TABLE ProductionList
-ADD machineid INT;
-
-ALTER TABLE ProductionList
-ADD CONSTRAINT productionlist_machineid FOREIGN KEY (BreweryMachineID) REFERENCES BreweryMachine;
