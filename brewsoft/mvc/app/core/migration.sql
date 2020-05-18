@@ -138,6 +138,15 @@ CREATE TABLE produceddata(
     PRIMARY KEY (produceddataid),
 );
 
+
+CREATE TABLE connectionTest(
+    connectionid serial
+    connectionString varchar(50),
+    EntryTime time DEFAULT CURRENT_TIMESTAMP,
+    EntryDate date DEFAULT CURRENT_DATE,
+    PRIMARY KEY (connectionid)
+)
+
 insert into user(username,password,usertype) VALUES('manager','manager','wanager');
 insert into user(username,password,usertype) VALUES('worker','worker','worker');
 
