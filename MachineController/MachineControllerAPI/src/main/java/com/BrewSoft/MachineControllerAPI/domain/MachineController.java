@@ -127,7 +127,7 @@ public class MachineController implements IMachineControl {
         Map<String, String> rtm = new HashMap();
         if(this.mconn.getStatus()) {
             if (newBatch != null) {
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
+                msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", this.machineObj.getMachineID());
                 subscriber.stoppedproduction(newBatch.getProductionListID());
                 sendCntrlCmd(new Variant(3));
                 sendCmdRequest();
@@ -151,7 +151,7 @@ public class MachineController implements IMachineControl {
         if(this.mconn.getStatus()) {
             if (newBatch != null) {
                 sendCntrlCmd(new Variant(4));
-                msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
+                msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", newBatch.getMachineID());
                 sendCmdRequest();
                 subscriber.stoppedproduction(newBatch.getProductionListID());
                 returnTxt = "Aborted production.";

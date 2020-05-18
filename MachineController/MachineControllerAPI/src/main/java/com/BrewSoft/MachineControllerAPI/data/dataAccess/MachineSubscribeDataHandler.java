@@ -165,7 +165,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void changeProductionListStatus(int productionListID, String newStatus, int machineID) {
-        String sql = "UPDATE productionList SET status = ? AND machineid = ? WHERE productionListID = ?";
+        System.out.println("This is productionlistID: " + productionListID);
+        String sql = "UPDATE productionList SET status = ?, machineid = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
     }
 
