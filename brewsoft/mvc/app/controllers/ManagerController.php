@@ -80,7 +80,7 @@ class ManagerController extends Controller
 			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
 			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 			$status = 'queued';
-			$this->model('Productionlist')->insertBatchToQueue($batchID, $productID, $productAmount, $deadline, $speed, $status);
+			$this->model('Productionlist')->insertBatchToQueue($productID, $productAmount, $deadline, $speed, $status);
 			header('Location: /brewsoft/mvc/public/manager/batchQueue');
 		}
 	}

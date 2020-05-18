@@ -1,4 +1,4 @@
-{"batchID":0,"productID":"4","productAmount":"123123","deadline":"2020-05-15","speed":"100","status":"queued"}
-{"batchID":0,"productID":"2","productAmount":"12312","deadline":"2020-05-15","speed":"102","status":"queued"}
-{"batchID":0,"productID":"4","productAmount":"1231","deadline":"2020-05-15","speed":"104","status":"queued"}
-{"batchID":0,"productID":"1","productAmount":"123","deadline":"2020-05-15","speed":"101","status":"queued"}
+{"batchID":0,"productID":null,"productAmount":"4","deadline":"123123","speed":"","status":"333"}
+{"batchID":0,"productID":null,"productAmount":"4","deadline":"1421241","speed":"2020-05-21","status":"100"}
+{"batchID":0,"productID":null,"productAmount":"2","deadline":"123","speed":"2020-05-20","status":"222"}
+{"batchID":0,"productID":null,"productAmount":"1","deadline":"123","speed":"2020-05-22","status":"222"}
