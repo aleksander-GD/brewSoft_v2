@@ -29,19 +29,34 @@ if ($searchParameter !== "" || !empty($searchParameter)) {
 }
 
 $completedBatchResults = $completedBatchData;
-
-foreach ($completedBatchResults as $batch) {
-
+if (!$completedBatchResults) {
+    echo 'Nothing found, no connection to the database';
     echo '<tr>';
-    echo "<td>" . $batch['productionlistid'] . "</td>";
-    echo "<td>" . $batch['batchid'] . "</td>";
-    echo "<td>" . $batch['brewerymachineid'] . "</td>";
-    echo "<td>" . $batch['deadline'] . "</td>";
-    echo "<td>" . $batch['dateofcreation'] . "</td>";
-    echo "<td>" . $batch['dateofcompletion'] . "</td>";
-    echo "<td>" . $batch['productid'] . "</td>";
-    echo "<td>" . $batch['totalcount'] . "</td>";
-    echo "<td>" . $batch['defectcount'] . "</td>";
-    echo "<td>" . $batch['acceptedcount'] . "</td>";
+    echo "<td>" . "</td>";
+    echo "<td>" . "</td>";
+    echo "<td>" . "</td>";
+    echo "<td>" . "</td>";
+    echo "<td>"  . "</td>";
+    echo "<td>"  . "</td>";
+    echo "<td>"  . "</td>";
+    echo "<td>"  . "</td>";
+    echo "<td>"  . "</td>";
+    echo "<td>"  . "</td>";
     echo '</tr>';
+} else {
+    foreach ($completedBatchResults as $batch) {
+
+        echo '<tr>';
+        echo "<td>" . $batch['productionlistid'] . "</td>";
+        echo "<td>" . $batch['batchid'] . "</td>";
+        echo "<td>" . $batch['brewerymachineid'] . "</td>";
+        echo "<td>" . $batch['deadline'] . "</td>";
+        echo "<td>" . $batch['dateofcreation'] . "</td>";
+        echo "<td>" . $batch['dateofcompletion'] . "</td>";
+        echo "<td>" . $batch['productid'] . "</td>";
+        echo "<td>" . $batch['totalcount'] . "</td>";
+        echo "<td>" . $batch['defectcount'] . "</td>";
+        echo "<td>" . $batch['acceptedcount'] . "</td>";
+        echo '</tr>';
+    }
 }
