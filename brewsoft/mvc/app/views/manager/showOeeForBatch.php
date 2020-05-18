@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../css/oeeforbatch.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 </head>
-
+<?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
 <body>
 
     <div>
@@ -30,4 +30,8 @@
     <input type="button" class="canceleditbuttonshowoee" name="canceleditbuttonshowoee" value="Cancel"></input>
 
     <script src="../../js/batch.js"></script>
+    <?php else : ?>
+        <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
+
+    <?php endif; ?>
     <?php include '../app/views/partials/foot.php'; ?>

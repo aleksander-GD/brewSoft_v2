@@ -6,8 +6,9 @@ function restricted($controller, $method)
 	$restricted_urls = array(
 		'HomeController' => array('logout'),
 		'ApiController' => array(),
-		'ManagerController' => array('index', 'batchQueue', 'planBatch', 'editBatch', 'completedBatches', 'displayOeeForBatch', 'displayOeeForDay', 'batchReport', 'logout'),
+		'ManagerController' => array('index', 'batchQueue', 'planBatch','managerdashboard', 'editBatch', 'completedBatches', 'displayOeeForBatch', 'displayOeeForDay', 'batchReport', 'logout'),
 		'MachineApiController' => array('machineControls','logout'),
+		'WorkerController' => array(),
 		'AdminController' => array('index', 'logout')
 	);
 

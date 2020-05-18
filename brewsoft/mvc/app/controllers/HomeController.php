@@ -17,7 +17,7 @@ class HomeController extends Controller
 					header('Location: /brewsoft/mvc/public/manager/index');
 				}
 				if ($_SESSION['usertype'] == 'Worker') {
-					header('Location: /brewsoft/mvc/public/MachineApi/index');
+					header('Location: /brewsoft/mvc/public/worker/index');
 				}
 				if ($_SESSION['usertype'] == 'Admin') {
 					header('Location: /brewsoft/mvc/public/admin/index');
