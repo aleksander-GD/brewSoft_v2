@@ -26,7 +26,7 @@ class ManagerController extends Controller
 
 	public function index($param)
 	{
-		$this->planbatch();
+		$this->planBatch();
 	}
 
 	public function batchQueue()
@@ -71,7 +71,7 @@ class ManagerController extends Controller
 		$viewbag['batches'] = $batches;
 		$this->view('manager/completedbatches', $viewbag);
 	}
-	public function planbatch()
+	public function planBatch()
 	{
 		ob_start();
 		$product = $this->model('ProductType')->getProducts();

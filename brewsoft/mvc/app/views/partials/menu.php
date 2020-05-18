@@ -15,14 +15,14 @@
         <?php if (isset($_SESSION['usertype']) && $_SESSION['usertype'] == 'Admin') : ?>
             <div id="marginBox"></div>
             <nav id="nav" class="navbar smart-scroll navbar-expand-lg navbar-light bg-light fixed-top">
-                <a class="navbar-brand" id="home" href="/brewsoft/mvc/public/manager/planbatch">BrewSoft</a>
+                <a class="navbar-brand" id="home" href="/brewsoft/mvc/public/manager/planBatch">BrewSoft</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav mx-auto ">
                         <li class="nav-item active">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/planbatch"><i class="fa fa-calendar-alt" aria-hidden="true"></i>Plan batch <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/planBatch"><i class="fa fa-calendar-alt" aria-hidden="true"></i>Plan batch <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/brewsoft/mvc/public/manager/batchQueue"><i class="fas fa-th-list" aria-hidden="true"></i>batch queue</a>
@@ -59,14 +59,14 @@
         <?php if (isset($_SESSION['usertype']) && $_SESSION['usertype'] == 'Manager') : ?>
             <div id="marginBox"></div>
             <nav id="nav" class="navbar smart-scroll navbar-expand-lg navbar-light bg-light fixed-top">
-                <a class="navbar-brand" id="home" href="/brewsoft/mvc/public/manager/planbatch">BrewSoft</a>
+                <a class="navbar-brand" id="home" href="/brewsoft/mvc/public/manager/planBatch">BrewSoft</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav mx-auto ">
                         <li class="nav-item active">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/planbatch"><i class="fa fa-calendar-alt" aria-hidden="true"></i>Plan batch <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/planBatch"><i class="fa fa-calendar-alt" aria-hidden="true"></i>Plan batch <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/brewsoft/mvc/public/manager/batchQueue"><i class="fas fa-th-list" aria-hidden="true"></i>batch queue</a>
