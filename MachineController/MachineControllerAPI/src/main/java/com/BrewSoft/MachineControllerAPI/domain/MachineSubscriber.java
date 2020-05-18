@@ -95,6 +95,9 @@ public class MachineSubscriber implements IMachineSubscribe {
     private final String SOFTWARESIM = "127.0.0.1";
     private int tempProducts = 0;
 
+    // AVAIL03 - Test variables
+    private int insertCounter = 0;
+    
     public MachineSubscriber(Machine machineObj) {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
         consumerMap = new HashMap();
@@ -117,6 +120,8 @@ public class MachineSubscriber implements IMachineSubscribe {
     @Override
     public void setCurrentBatch(Batch currentBatch) {
         this.batch = currentBatch;
+        //resets AVAIL03 counter when new batch is started. 
+        this.insertCounter = 0;
     }
 
     @Override
@@ -225,11 +230,11 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
-            msdh.changeProductionListStatus(batch.getProductionListID(), "Completed");
+            msdh.changeProductionListStatus(batch.getProductionListID(), "Completed", machineObj.getMachineID());
             msdh.insertFinalBatchInformation(batch.getProductionListID(), machineObj.getMachineID(), batch.getDeadline(),
                     batch.getDateofCreation(), batch.getType(),
                     totalProductValue, defectCountValue, acceptableCountValue);
-
+            System.out.println("Amount of errors detected :" + this.insertCounter);
         }
     }
 
@@ -371,16 +376,24 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private void generateRandomProdValues() {
         Random random = new Random();
-        int value = random.nextInt(2000);
+        int value = random.nextInt(20);
       
-        if (value > 1 && value < 5) {
+        if (value >= 0 && value <= 4) {
             humidityValue = Math.round((float) (Math.random() * (21 - 17) + 17) * 100.0 / 100.0); // low humid alarm
-        } else if (value > 5 && value < 10) {
+            //AVAIL03 error counter
+            this.insertCounter += 1;
+        } else if(value >= 5 && value <= 10) {
             temperaturValue = Math.round((float) (Math.random() * (26 - 20) + 20) * 100.0 / 100.0);   // low temp alarm
-        } else if (value > 10 && value < 15) {
+            //AVAIL03 error counter
+            this.insertCounter += 1;
+        } else if (value >= 11 && value <= 15) {
             humidityValue = Math.round((float) (Math.random() * (38 - 34) + 34) * 100.0 / 100.0);     // high humid alarm
-        } else if (value > 15 && value < 20) {
+            //AVAIL03 error counter
+            this.insertCounter += 1;
+        } else if (value >= 16 && value <= 20) {
             temperaturValue = Math.round((float) (Math.random() * (38 - 33) + 33) * 100.0 / 100.0);   // high temp alarm
+            //AVAIL03 error counter
+            this.insertCounter += 1;
         } else {
             temperaturValue = Math.round((float) (Math.random() * (30 - 27) + 27) * 100.0 / 100.0);  // Normal values
             humidityValue = Math.round((float) (Math.random() * (30 - 27) + 27) * 100.0 / 100.0);
