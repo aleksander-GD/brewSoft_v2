@@ -35,9 +35,9 @@ class OeeService
         return round($calculateOee, 2);
     }
 
-    public function calculateAvailability($batchResultArray, $sortedTimes, $idealcycletime)
+    public function calculateAvailability($batchResultArray,$sortedTimeInStateList, $idealcycletime)
     {
-        $runtime = $this->calculateRuntime($sortedTimes);
+        $runtime = $this->calculateRuntime($sortedTimeInStateList);
         foreach ($batchResultArray as $batchData) {
             if (is_numeric($batchData['totalcount'])) {
                 $idealCycleTimeMultiTotalCount = $batchData['totalcount'] * $idealcycletime;
@@ -49,16 +49,18 @@ class OeeService
 
         return $availability;
     }
-    private function calculateRuntime($sortedTimes)
+    
+    private function calculateRuntime($sortedTimeInStateList)
     {
 
         $startTime = 0;
         $endTime = 0;
         $downTime = 0;
+        $runtime =0;
+        foreach ($sortedTimeInStateList as $time) {
 
-        foreach ($sortedTimes as $time) {
-
-            if (strtolower($time["machinestate"]) == 'execute') {
+            $runtime += $time["timeinstate"]->days * 86400 + $time["timeinstate"]->h * 3600 + $time["timeinstate"]->i * 60 + $time["timeinstate"]->s;
+            /* if (strtolower($time["machinestate"]) == 'execute') {
                 $seconds = $time["timeinstate"]->days * 86400 + $time["timeinstate"]->h * 3600 + $time["timeinstate"]->i * 60 + $time["timeinstate"]->s;
                 $startTime = $seconds;
             }
@@ -69,9 +71,10 @@ class OeeService
             if (strtolower($time["machinestate"]) == 'held') {
                 $seconds = $time["timeinstate"]->days * 86400 + $time["timeinstate"]->h * 3600 + $time["timeinstate"]->i * 60 + $time["timeinstate"]->s;
                 $downTime = $seconds;
-            }
+            } */
         }
-        $runtime = (($startTime + $endTime)) - $downTime;
+        //$runtime = (($startTime + $endTime)) - $downTime;
+        print_r($runtime);
         return $runtime;
     }
 

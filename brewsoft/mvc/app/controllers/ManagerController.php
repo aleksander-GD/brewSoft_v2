@@ -116,23 +116,22 @@ class ManagerController extends Controller
 
 		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
 		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
-
-		/* $batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
+ 
+		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
 
 		$availability = $this->oeeService->calculateAvailability($batchResults, $sortedTimeInStateList, $idealcycletime);
 		$performance = $this->oeeService->calculatePerformance($batchResults, $sortedTimeInStateList,  $idealcycletime);
 		$quality = $this->oeeService->calculateQuality($batchResults);
 
-		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality); */
-		$oeeResult = $this->displayOeeForBatch($productionlistID);
+		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
+		//$oeeResult = $this->displayOeeForBatch($productionlistID);
 	
 
-		$viewbag['availability'] = $oeeResult['availability'];
-		$viewbag['performance'] = $oeeResult['performance'];
-		$viewbag['quality'] = $oeeResult['quality'];
-		$viewbag['oeeForBatch'] = $oeeResult['oeeForBatch'];
-
+		$viewbag['availability'] = $availability;
+		$viewbag['performance'] = $performance;
+		$viewbag['quality'] = $quality;
+		$viewbag['oeeForBatch'] = $oee;
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['datetime'] = $dateTimeArray;
 		$viewbag['products'] = $products;

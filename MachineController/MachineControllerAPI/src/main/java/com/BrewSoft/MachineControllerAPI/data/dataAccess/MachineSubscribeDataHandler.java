@@ -214,7 +214,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 dq.runQueue();
             }
         }
-        Batch batch = null;
+        Batch batch = null;                                                                
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1");
 
         if (batchSet.isEmpty()) {
