@@ -101,7 +101,7 @@ class ManagerController extends Controller
 		$sortedTimeInStateList = $this->model('TimeInState')->sortedTimeStates($productionlistID);			// for time spent in each state
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID); 						// for timeline 
 
-		$finalBatchInformation = $this->model('Finalbatchinformation')->getAllDataFromProdlistID($productionlistID);	// all finalbatch information + batchid.
+		$finalBatchInformation = $this->model('Finalbatchinformation')->getAllStaticDataFromProdlistID($productionlistID);	// all finalbatch information + batchid, beertype and speed.
 		$dateTimeArray = $this->model('TimeInState')->getDateTimeArray($timeArray,$finalBatchInformation['dateofcompletion']); 		// for timeline. Date needs a fix.
 		
 		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID); 				// Data for temp and humid graphs

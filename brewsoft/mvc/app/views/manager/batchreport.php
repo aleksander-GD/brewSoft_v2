@@ -98,6 +98,7 @@
         ]);
         var options = {
             height: 450,
+            colors: ['red'],
             hAxis: {
                 title: 'Time',
                 format: 'HH:mm:ss',
@@ -142,6 +143,7 @@
 
         var options = {
             height: 450,
+            colors: ['blue'],
             hAxis: {
                 title: 'Time',
                 format: 'HH:mm:ss',
@@ -201,6 +203,7 @@
         <h2>Batch OEE</h2>
         <p>Batch id: <?php echo $finalbatchinformation['batchid'] ?> </p>
         <p>Beer type: <?php echo $finalbatchinformation['productname'] ?> </p>
+        <p>Production speed: <?php echo $finalbatchinformation['speed'] ?> </p>
         <p>Queue date: <?php echo $finalbatchinformation['dateofcreation'] ?> </p>
         <p>Deadline for production: <?php echo $finalbatchinformation['deadline'] ?> </p>
         <p>Batch was produced: <?php echo $finalbatchinformation['dateofcompletion'] ?> </p>

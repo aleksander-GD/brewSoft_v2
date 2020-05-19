@@ -118,11 +118,11 @@ class Finalbatchinformation extends Database
         return $results;
     }
     
-    public function getAllDataFromProdlistID($productionListID){
+    public function getAllStaticDataFromProdlistID($productionListID){
         if (!$this->check_database_connection()) {
             exit();
         }
-        $sql = "SELECT fb.*, pl.batchid, pt.productname
+        $sql = "SELECT fb.*, pl.batchid, pl.speed, pt.productname 
         FROM finalbatchinformation AS fb, productionlist AS pl, producttype AS pt
         WHERE fb.productid = pt.productid AND fb.productionlistid = pl.productionlistid AND fb.productionlistid = :productionlistid;";
         $stmt = $this->conn->prepare($sql);
