@@ -5,28 +5,28 @@ $(document).ready(function() {
     var batchIDValueQueue;
     var productionlistIDValueCompleteBatch;
     var batchIDValueCompleteBatch;
+    var timer_check_alive = setInterval(function() {
+        check_database_alive_call();
+    }, 100000);
+    /*  $('.generateBatchReport').on('click', function(e) {
+         var productID;
+         var productAmount;
+         var deadline;
+         var speed;
 
-    $('.generateBatchReport').on('click', function(e) {
-        var productID;
-        var productAmount;
-        var deadline;
-        var speed;
+         //var timer_check = window.setInterval(getCompletedBatches, 1000);
+         event.preventDefault();
+         productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
+         batchIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(1)").html();
+         if (productionlistIDValueCompleteBatch != null) {
+             window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
+             window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
 
-        //var timer_check = window.setInterval(getCompletedBatches, 1000);
-        event.preventDefault();
-        productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
-        batchIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(1)").html();
-        if (productionlistIDValueCompleteBatch != null) {
-            window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
-            window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
+         } else {
+             window.location = 'completedBatches';
+         }
 
-        } else {
-            window.location = 'completedBatches';
-        }
-        var timer_check_alive = setInterval(function() {
-            check_database_alive_call();
-        }, 100000);
-    });
+     }); */
 
 
     $('.showOeeForBatch').on('click', function(e) {
@@ -38,7 +38,7 @@ $(document).ready(function() {
             console.log(check_database_alive_call());
             if (check_database_alive_call()) {
                 if (productionlistIDValueCompleteBatch != null) {
-                    window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
+                    window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
 
                 } else {
                     window.location = 'completedBatches';

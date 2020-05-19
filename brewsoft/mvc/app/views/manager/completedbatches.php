@@ -38,7 +38,7 @@
 
                 </table>
             </div>
-            <input type="button" name="generateBatchReport" id="generateBatchReport" class="generateBatchReport" value="Generate Batch report" />
+            <input type="button" name="showOeeForBatch" id="showOeeForBatch" class="showOeeForBatch" value="Generate Batch report" />
             <!-- Instead insert button that redirects to batch report dashboard -->
             <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
         </div>
