@@ -204,6 +204,7 @@ class ProductionList extends Database
         }
     }
 
+
     private function check_database_connection()
     {
         return $this->conn != null;

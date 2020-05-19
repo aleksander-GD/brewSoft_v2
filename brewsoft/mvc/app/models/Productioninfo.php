@@ -5,7 +5,7 @@ class Productioninfo extends Database
 {
     public function getTempAndHumid($productionlistID)
     {
-        $sql = "SELECT temperature, humidity 
+        $sql = "SELECT temperature, humidity, entrydate,entrytime 
                 FROM productioninfo
                 WHERE productionlistid = :productionlistID 
                 ORDER BY productioninfoid ASC;";

@@ -5,12 +5,15 @@
 
     <?php
 
-    $dateTime = $viewbag['datetime'];
+    $dateTime = $viewbag['datetime'];   
+ 
 
     $tempAndHumid = $viewbag['tempandhumid'];
+
     $highlow = $viewbag['highlowtemphumid'];
-    $products = $viewbag['products'];
     $sortedTimes = $viewbag['sortedTimes'];
+    $finalbatchinformation = $viewbag['finalbatchinformation'];
+
 
 
     ?>
@@ -34,11 +37,22 @@
     });
 
     //Callback timeline
+    <?php 
+    if(!empty($dateTime)){ ?>
     google.charts.setOnLoadCallback(drawTimeline);
+    <?php } ?>
     //Callback lineChart
-    google.charts.setOnLoadCallback(drawLineChart);
+    <?php 
+    if(!empty($tempAndHumid)){ ?>
+    google.charts.setOnLoadCallback(drawTemperatureLineChart);
+    google.charts.setOnLoadCallback(drawHumidityLineChart);
+    <?php } ?>
+
     //Callback PieChart
+    <?php 
+    if(!empty($finalbatchinformation)){ ?>
     google.charts.setOnLoadCallback(drawPieChart);
+    <?php } ?>
 
     //timeline
     function drawTimeline() {
@@ -66,19 +80,62 @@
         chart.draw(data, options);
     }
     //Timeline end
-    //Line
-    function drawLineChart() {
+    //Temperature line
+    function drawTemperatureLineChart() {
         var data = new google.visualization.DataTable();
-        data.addColumn('number', 'X');
+        data.addColumn('datetime', 'time');
         data.addColumn('number', 'Temperature');
+
+        data.addRows([
+            <?php
+            //$count = 0;
+            foreach ($tempAndHumid as $temp) {
+                //echo "[" . $count . "," . $temp['temperature'] . "," . $temp['humidity'] . "],";
+                echo "[" . "new Date('". $temp['entrydate'] . " " . $temp['entrytime'] . "')" . "," . $temp['temperature'] . "],";
+                //$count++;
+            }
+            ?>
+        ]);
+        var options = {
+            height: 450,
+            hAxis: {
+                title: 'Time',
+                format: 'HH:mm:ss',
+            },
+            explorer: {
+                actions: ['dragToZoom', 'rightClickToReset'],
+                axis: 'horizontal',
+                keepInBounds: true,
+                maxZoomIn: 15.0
+            },
+            vAxis: {
+                title: 'Temperature',
+                viewWindow: {
+                    //dynamic view window with buffer of two on the min / max values of temp and humidity
+                    min: <?php echo $highlow['mintemp'] - 2; ?>,
+                    max: <?php echo $highlow['maxtemp'] + 2; ?>
+                },
+            },
+            backgroundColor: 'white'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('templine_div'));
+        chart.draw(data, options);
+    }
+    //Line end
+    //Humidity line
+    function drawHumidityLineChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'time');
         data.addColumn('number', 'Humidity');
 
         data.addRows([
             <?php
-            $count = 0;
+            //$count = 0;
             foreach ($tempAndHumid as $temp) {
-                echo "[" . $count . "," . $temp['temperature'] . "," . $temp['humidity'] . "],";
-                $count++;
+                //echo "[" . $count . "," . $temp['temperature'] . "," . $temp['humidity'] . "],";
+                echo "[" . "new Date('". $temp['entrydate'] . " " . $temp['entrytime'] . "')" . "," . $temp['humidity'] . "],";
+                //$count++;
             }
             ?>
         ]);
@@ -86,28 +143,30 @@
         var options = {
             height: 450,
             hAxis: {
-                title: 'Entry points'
+                title: 'Time',
+                format: 'HH:mm:ss',
+                
             },
             explorer: {
                 actions: ['dragToZoom', 'rightClickToReset'],
                 axis: 'horizontal',
                 keepInBounds: true,
-                maxZoomIn: 4.0
+                maxZoomIn: 15.0
 
             },
             vAxis: {
-                title: 'Temperature/Humidity',
+                title: 'Humidity',
 
                 viewWindow: {
                     //dynamic view window with buffer of two on the min / max values of temp and humidity
-                    min: <?php echo min($highlow) - 2; ?>,
-                    max: <?php echo max($highlow) + 2; ?>
+                    min: <?php echo $highlow['minhumid'] - 2; ?>,
+                    max: <?php echo $highlow['maxhumid'] + 2; ?>
                 },
             },
             backgroundColor: 'white'
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('line_div'));
+        var chart = new google.visualization.LineChart(document.getElementById('humidline_div'));
         chart.draw(data, options);
     }
     //Line end
@@ -120,9 +179,9 @@
             <?php
 
             echo
-                "[ 'Accepted'" . "," . $products['acceptedcount'] . "]," .
-                    "[ 'Rejected'" . "," . $products['defectcount'] . "]," .
-                    "[ 'Not produced'" . "," . ($products['totalcount'] - $products['acceptedcount'] - $products['defectcount']) . "]";
+                "[ 'Accepted'" . "," . $finalbatchinformation['acceptedcount'] . "]," .
+                    "[ 'Rejected'" . "," . $finalbatchinformation['defectcount'] . "]," .
+                    "[ 'Not produced'" . "," . ($finalbatchinformation['totalcount'] - $finalbatchinformation['acceptedcount'] - $finalbatchinformation['defectcount']) . "]";
             ?>
 
         ]);
@@ -138,6 +197,15 @@
 
 <body>
 <?php include_once '../app/views/partials/menu.php'; ?>
+    <div id="overallinfo-div">
+        <h2>Batch OEE</h2>
+        <p>Batch id: <?php echo $finalbatchinformation['batchid'] ?> </p>
+        <p>Beer type: <?php echo $finalbatchinformation['productname'] ?> </p>
+        <p>Queue date: <?php echo $finalbatchinformation['dateofcreation'] ?> </p>
+        <p>Deadline for production: <?php echo $finalbatchinformation['deadline'] ?> </p>
+        <p>Batch was produced: <?php echo $finalbatchinformation['dateofcompletion'] ?> </p>
+        <p>Batch was produced by machine number : <?php echo $finalbatchinformation['brewerymachineid'] ?> </p>
+    </div>
     <div id="oee-div">
         <h2>Batch OEE</h2>
         <p for="OEE">
@@ -168,15 +236,21 @@
         }
         ?>
     </div>
-    <div id="productioninfo-div">
-        <h2>Production Info</h2>
-        <p>Peak humidity: <?php echo $highlow['maxhumid'] ?> </p>
+    <div id="tempinfo-div">
+        <h2>Temperature Info</h2>
         <p>Peak temprature: <?php echo $highlow['maxtemp'] ?> </p>
-        <div id="line_div" style="width: 800px; height: 450px;"></div>
+        <p>Lowest temperature: <?php echo $highlow['mintemp'] ?> </p>
+        <div id="templine_div" style="width: 800px; height: 450px;"></div>
+    </div>
+    <div id="humidinfo-div">
+        <h2>Humidity Info</h2>
+        <p>Peak humidity: <?php echo $highlow['maxhumid'] ?> </p>
+        <p>Lowest humidity: <?php echo $highlow['minhumid'] ?> </p>
+        <div id="humidline_div" style="width: 800px; height: 450px;"></div>
     </div>
     <div id="piechart-div">
         <h2>Productionstatus</h2>
-        <p>Total amount of products: <?php echo $products['totalcount']; ?> </p>
+        <p>Total amount of products: <?php echo $finalbatchinformation['totalcount'] ?> </p>
         <div id="piechart" style="width: 800px; height: 400px;"></div>
     </div>
     <?php else : ?>

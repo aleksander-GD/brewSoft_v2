@@ -16,9 +16,9 @@ class TimeInStateService
         $times = $timeArray;
         $count = 0;
         foreach ($timeArray as $key => $value) {
-            $times[$key]['starttimeinstate'] = $completiondate['dateofcompletion'] . " " . $value['starttimeinstate'];
+            $times[$key]['starttimeinstate'] = $completiondate . " " . $value['starttimeinstate'];
             if ($count < sizeof($times) - 1) {
-                $times[$key]['endtimeinstate'] = $completiondate['dateofcompletion'] . " " . $times[$key + 1]['starttimeinstate'];
+                $times[$key]['endtimeinstate'] = $completiondate . " " . $times[$key + 1]['starttimeinstate'];
             }
             $count++;
         }
