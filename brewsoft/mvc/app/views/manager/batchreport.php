@@ -14,9 +14,11 @@
     $finalbatchinformation = $viewbag['finalbatchinformation'];
     $rowCount = 0;
     $pixel = 0;
-
-
     ?>
+    <title>Batch report</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchreport.css">
 </head>
 
 <?php include_once '../app/views/partials/menu.php'; ?>
@@ -60,7 +62,7 @@
                 ?>
             ]);
             var options = {
-                height: 450,
+                /*  height: 450, */
 
                 hAxis: {
                     format: 'HH:mm:ss',
@@ -90,7 +92,7 @@
                 ?>
             ]);
             var options = {
-                height: 450,
+                /* height: 450, */
                 colors: ['red'],
                 hAxis: {
                     title: 'Time',
@@ -135,7 +137,7 @@
             ]);
 
             var options = {
-                height: 450,
+                /* height: 450, */
                 colors: ['blue'],
                 hAxis: {
                     title: 'Time',
@@ -183,7 +185,7 @@
             ]);
 
             var options = {
-                height: 450,
+                /* height: 450, */
                 colors: ['blue'],
                 hAxis: {
                     title: 'Time',
@@ -198,7 +200,7 @@
 
                 },
                 vAxis: {
-                    title: 'Humidity',
+                    title: 'Vibration',
 
                     viewWindow: {
                         //dynamic view window with buffer of two on the min / max values of temp and humidity
@@ -234,7 +236,16 @@
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
             chart.draw(data, options);
+
         }
+
+        $(window).resize(function() {
+            drawTimeline();
+            drawPieChart();
+            drawTemperatureLineChart();
+            drawHumidityLineChart();
+            drawVibrationLineChart();
+        });
     </script>
     </head>
 
@@ -242,28 +253,22 @@
         <?php include_once '../app/views/partials/menu.php'; ?>
 
         <div class="container">
-
-            <div class="row">
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="card" style="width: 30rem; height:23rem;">
+            <div class="card-deck">
+                <div class="row">
+                    <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Batch number: <?php echo $finalbatchinformation['batchid'] ?></h2>
                         </div>
                         <div class="card-body">
-
                             <p>Beer type: <?php echo $finalbatchinformation['productname'] ?> </p>
                             <p>Production speed: <?php echo $finalbatchinformation['speed'] ?> </p>
                             <p>Queue date: <?php echo $finalbatchinformation['dateofcreation'] ?> </p>
                             <p>Deadline: <?php echo $finalbatchinformation['deadline'] ?> </p>
                             <p>Produced: <?php echo $finalbatchinformation['dateofcompletion'] ?> </p>
                             <p>Production machine : <?php echo $finalbatchinformation['brewerymachineid'] ?> </p>
-
                         </div>
                     </div>
-                </div>
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-
-                    <div class="card" style="width: 30rem; height:23rem;">
+                    <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Total time spent in each state</h2>
                         </div>
@@ -272,40 +277,19 @@
                                 $timeObject = $time['timeinstate'];
                                 $timeObject->format("%H:%I:%S");
                                 echo "<p>" . $time['machinestate'] . ": " . $timeObject->format("%H:%I:%S") . "</p>";
-                                $rowCount++;
-                            }
-                            if ($rowCount >= 6) {
-                                $pixel = 400;
-                            } else {
-                                $pixel = 300;
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="card" style="width: 30rem; height:20rem;">
-                        <div class="card-header">
-                            <h2 class="card-title">Products</h2>
-                        </div>
-                        <div id="piechart" style="width: 100%; height: 100%;"></div>
-                        <div class="card-body">
-                            <p>Total amount of products: <?php echo $finalbatchinformation['totalcount'] ?> </p>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="card" style="width: 30rem; height:20rem;">
+                    <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Batch OEE</h2>
+                            <h2 class="card-title">Batch OEE <?php if (!empty($viewbag['oeeForBatch'])) {
+                                                                    echo $viewbag['oeeForBatch'] . '&#37';
+                                                                } ?></h2>
                         </div>
                         <div class="card-body">
                             <p for="OEE">
                                 <?php
-                                if (!empty($viewbag['oeeForBatch'])) {
-                                    echo 'OEE: ' . $viewbag['oeeForBatch'] . '&#37';
-                                }
                                 if (!empty($viewbag['availability'])) {
                                     echo "<br>" . 'Availability: ' . $viewbag['availability'] . '&#37';
                                 }
@@ -317,67 +301,65 @@
                                 } ?> </p><br>
                         </div>
                     </div>
-                </div>
 
-            </div>
-            <div class="row">
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="card" style="width: 100%; height:<?php echo $pixel ?>px;">
-                        <div class="card-header">
-                            <h2 class="card-title">Timeline for production</h2>
-                        </div>
-
-                        <div id="chart_div" style="width: 100%; height:100%;"></div>
-                        <div class="card-body">
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="card" style="width: 100%; ">
-                        <div class="card-header">
-                            <h2 class="card-title">Temperature Info</h2>
-                        </div>
 
-                        <div id="templine_div" style="width:100%; height: 100%;"></div>
-                        <div class="card-body">
-                            <p>Peak temprature: <?php echo $highlow['maxtemp'] ?> </p>
-                            <p>Lowest temperature: <?php echo $highlow['mintemp'] ?> </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="card" style="width: 100%;">
-                        <div class="card-header">
-                            <h2 class="card-title">Humidity Info</h2>
-                        </div>
+        </div>
 
-                        <div id="humidline_div" style="width:100%; height: 100%;"></div>
-                        <div class="card-body">
-                            <p>Peak humidity: <?php echo $highlow['maxhumid'] ?> </p>
-                            <p>Lowest humidity: <?php echo $highlow['minhumid'] ?> </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg 3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="card" style="width: 100%;">
-                        <div class="card-header">
-                            <h2 class="card-title">vibration Info</h2>
-                        </div>
+        <div class="row">
 
-                        <div id="vibrationline_div" style="width:100%; height: 100%;"></div>
-                        <div class="card-body">
-                            <p>Peak vibration: <?php echo $highlow['maxvibration'] ?> </p>
-                            <p>Lowest vibration: <?php echo $highlow['minvibration'] ?> </p>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-md-6">
+                <H2>Timeline for production</H2>
+
+
+                <div id="chart_div" class="chart"></div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+
+                <h2>Temperature chart</h2>
+
+                <div id="templine_div" class="chart"></div>
+                <p>Peak temprature: <?php echo $highlow['maxtemp'] ?> </p>
+                <p>Lowest temperature: <?php echo $highlow['mintemp'] ?> </p>
+
+            </div>
+            <div class="col-md-6">
+
+                <h2>Humidity chart</h2>
+
+
+                <div id="humidline_div" class="chart"></div>
+                <p>Peak humidity: <?php echo $highlow['maxhumid'] ?> </p>
+                <p>Lowest humidity: <?php echo $highlow['minhumid'] ?> </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+
+                <h2>Vibration chart</h2>
+
+
+                <div id="vibrationline_div" class="chart">
+
+                </div>
+                <p>Peak vibration: <?php echo $highlow['maxvibration'] ?> </p>
+                <p>Lowest vibration: <?php echo $highlow['minvibration'] ?> </p>
+
+
+            </div>
+            <div class="col-md-6">
+
+                <H2>Products</H2>
+
+                <div id="piechart" class="chart"></div>
+                <p>Total amount of products: <?php echo $finalbatchinformation['totalcount'] ?> </p>
+
+
+            </div>
+
         </div>
 
 
