@@ -104,7 +104,7 @@ class ManagerController extends Controller
 		$finalBatchInformation = $this->model('Finalbatchinformation')->getAllStaticDataFromProdlistID($productionlistID);	// all finalbatch information + batchid, beertype and speed.
 		$dateTimeArray = $this->model('TimeInState')->getDateTimeArray($timeArray,$finalBatchInformation['dateofcompletion']); 		// for timeline. Date needs a fix.
 		
-		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID); 				// Data for temp and humid graphs
+		$productionInfo = $this->model('Productioninfo')->getProductionInfo($productionlistID); 				// Data for temp and humid graphs
 
 		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);	// Peak and low values for temp and humid.
 
@@ -126,7 +126,7 @@ class ManagerController extends Controller
 
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['datetime'] = $dateTimeArray;
-		$viewbag['tempandhumid'] = $tempAndHumidity;
+		$viewbag['productioninfo'] = $productionInfo;
 		
 		$this->view('manager/batchreport', $viewbag);
 	}
