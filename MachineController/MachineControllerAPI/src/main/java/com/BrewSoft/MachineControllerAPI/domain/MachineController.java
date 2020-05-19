@@ -90,6 +90,8 @@ public class MachineController implements IMachineControl {
                 sendCmdRequest();
                 returnTxt = "Machine started.";
                 rtm.put("Success", returnTxt);
+                rtm.put("machineID", String.valueOf(this.machineObj.getMachineID()));
+                rtm.put("productionListID", String.valueOf(this.newBatch.getProductionListID()));
             } else {
                 returnTxt = "No batch in queue.";
                 rtm.put("Error", returnTxt);

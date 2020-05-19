@@ -1,31 +1,39 @@
 function fillHiddenForm() {
-  var select = document.querySelector("#machineSelect").value;
+  var select = $("#machineSelect").val();//.value;
   console.log(select);
   var json = JSON.parse(select);
-  document.querySelector("#hostname").value = json.hostname;
-  document.querySelector("#port").value = json.port;
-  document.querySelector("#machineID").value = json.brewerymachineid;
+  $("#hostname").val(json.hostname);
+  $("#port").val(json.port);
+  $("#machineID").val(json.brewerymachineid);
 }
 
 function changeCommand(button) {
-  input = document.querySelector('#command');
-  input.value = button.value;
+  input = $('#command');
+  input.val(button.value);
 }
+
 $(function() {
+// Auto close response modal after 5sec
+  $('.modal-auto-clear').on('shown.bs.modal', function () {
+    $(this).delay(5000).fadeOut(200, function () {
+      $(this).modal('hide');
+    })
+  })
+
   $("#controlForm").submit(function(e) {
     e.preventDefault();
 
-    var command = document.querySelector('#command').value;
+    var command = $('#command').val();
+    console.log(command)
+
+    // Shows the spinner on button
+    $('#'+command+'-spn').toggleClass('d-none');
 
     var form = $(this);
     var url = "/brewsoft/mvc/public/machineapi/"+command;
-    if(command == "Start") {
-      startProduction();
-    }
-    if(command == "Stop") {
-      stopProduction();
-    }
+
     console.log(form.serialize());
+    console.log(url);
     $.ajax({
       type: 'post',
       url: url,
@@ -33,6 +41,26 @@ $(function() {
     })
     .done(function (data) {
       console.log(data);
+      json = JSON.parse(data);
+      if(json.hasOwnProperty("success")){
+        console.log(json.success.API)
+        txt = document.createTextNode(json.success.API);
+        if(command == "Start") {
+          startProduction(json.machineID, json.productionListID);
+        }
+        if(command == "Stop") {
+          stopProduction();
+        }
+      }
+      if(json.hasOwnProperty("error")) {
+        console.log(json.error.API)
+        txt = document.createTextNode(json.error.API);
+      }
+      $("#output-response").empty();
+      $("#output-response").append(txt);
+      $("#responseModal").modal("show");
+      // Hides the spinner on button
+      $('#'+command+'-spn').toggleClass('d-none');
     })
     .fail(function (data) {
         console.log(data);
