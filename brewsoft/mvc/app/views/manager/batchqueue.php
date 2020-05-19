@@ -15,17 +15,17 @@
     <div id="batch-table-wrapper">
         <div id="tableplace">
             <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getQueuedBatches(this.value);" onkeyup="getQueuedBatches(this.value);">
-            <table id="table">
-                <thead>
+            <table id="table" class="table">
+                <thead id="tableheadid" class="thead-dark">
                     <tr>
-                        <th>Productionlist ID</th>
-                        <th>Batch ID</th>
-                        <th>Product ID</th>
-                        <th>Product amount</th>
-                        <th>Deadline</th>
-                        <th>Speed</th>
-                        <th>Status</th>
-                        <th>Date of creation</th>
+                        <th scope="col">Productionlist ID</th>
+                        <th scope="col">Batch ID</th>
+                        <th scope="col">Product ID</th>
+                        <th scope="col">Product amount</th>
+                        <th scope="col">Deadline</th>
+                        <th scope="col">Speed</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date of creation</th>
                     </tr>
                 </thead>
 

@@ -18,25 +18,27 @@
         <div id="batch-table-wrapper">
             <div id="tableplace">
                 <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getCompletedBatches(this.value);" onkeyup="getCompletedBatches(this.value);">
-                <table id="table">
-                    <thead>
-                        <tr>
-                            <th>Productionlist ID</th>
-                            <th>Batch ID</th>
-                            <th>Brewerymachine ID</th>
-                            <th>Deadline</th>
-                            <th>Date of creation</th>
-                            <th>Date of completion</th>
-                            <th>Product ID</th>
-                            <th>Total count</th>
-                            <th>Defect count</th>
-                            <th>Accepted count</th>
-                        </tr>
-                    </thead>
+                <div style="overflow-y:scroll; height:700px;">
+                    <table id="table" class="table">
+                        <thead id="tableheadid" class="thead-dark">
+                            <tr>
+                                <th scope="col">Productionlist ID</th>
+                                <th scope="col">Batch ID</th>
+                                <th scope="col">Brewerymachine ID</th>
+                                <th scope="col">Deadline</th>
+                                <th scope="col">Date of creation</th>
+                                <th scope="col">Date of completion</th>
+                                <th scope="col">Product ID</th>
+                                <th scope="col">Total count</th>
+                                <th scope="col">Defect count</th>
+                                <th scope="col">Accepted count</th>
+                            </tr>
+                        </thead>
 
-                    <tbody id="completedBatchData"></tbody>
+                        <tbody id="completedBatchData"></tbody>
 
-                </table>
+                    </table>
+                </div>
             </div>
             <input type="button" name="showOeeForBatch" id="showOeeForBatch" class="showOeeForBatch" value="Generate Batch report" />
             <!-- Instead insert button that redirects to batch report dashboard -->
