@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchqueue.css">
     <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="<?php echo DOC_ROOT; ?>/js/batch.js"></script>
-
 </head>
 
 <body>
@@ -18,7 +16,11 @@
         <div id="batch-table-wrapper">
             <div id="tableplace">
                 <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getCompletedBatches(this.value);" onkeyup="getCompletedBatches(this.value);">
-                <div style="overflow-y:scroll; height:700px;">
+                <div id="formobilescreen">
+                    <input type="button" name="showOeeForBatch" id="showOeeForBatch" class="showOeeForBatch" value="Generate Batch report" />
+                </div>
+
+                <div id='tablewrap'>
                     <table id="table" class="table">
                         <thead id="tableheadid" class="thead-dark">
                             <tr>
@@ -44,6 +46,8 @@
             <!-- Instead insert button that redirects to batch report dashboard -->
             <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
         </div>
+        <script src="<?php echo DOC_ROOT; ?>/js/batch.js"></script>
+
     <?php else : ?>
         <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
 

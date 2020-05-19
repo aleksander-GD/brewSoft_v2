@@ -1,6 +1,7 @@
 var timer_check;
 var timer_check_alive;
 $(document).ready(function() {
+    event.preventDefault();
     var productionlistIDValueQueue;
     var batchIDValueQueue;
     var productionlistIDValueCompleteBatch;
@@ -28,7 +29,15 @@ $(document).ready(function() {
 
      }); */
 
+    var ww = $(window).width();
+    var wh = $(window).height();
+    if (ww <= 375 && wh < 812) {
+        $("#formobilescreen").show();
+    } else {
 
+        $("#formobilescreen").hide();
+
+    }
     $('.showOeeForBatch').on('click', function(e) {
         event.preventDefault();
         productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
@@ -49,7 +58,6 @@ $(document).ready(function() {
         }
     });
 
-
     $('.editbatch').on('click', function(e) {
         event.preventDefault();
         productionlistIDValueQueue = $("#queuedBatchData tr.selected td:eq(0)").html();
@@ -59,13 +67,24 @@ $(document).ready(function() {
         if (productionlistIDValueQueue != null) {
             window.location = 'editBatch/' + productionlistIDValueQueue;
 
+
         } else {
 
             window.location = 'batchqueue';
         }
 
     });
+    $('#table tr').on('click', function() {
+        console.log("check");
+        if (window.location = 'completedBatches') {
+            window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
+        }
+        if (window.location = 'batchqueue') {
+            window.location = 'editBatch/' + productionlistIDValueQueue;
+        }
+        return false;
 
+    });
     $('.canceleditbuttoneditbatch').on('click', function(e) {
         event.preventDefault();
         window.location.replace('/brewsoft/mvc/public/manager/batchqueue')

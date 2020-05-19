@@ -37,6 +37,7 @@ class ManagerController extends Controller
 
 	public function editBatch($id)
 	{
+		ob_start();
 		$batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
 		//the selected batch is sent to the view.
 		$viewbag['batch'] = $batch;
@@ -88,7 +89,6 @@ class ManagerController extends Controller
 		}
 	}
 
-
 	public function batchReport($productionlistID)
 	{
 		// Start performance requirement 03
@@ -102,8 +102,6 @@ class ManagerController extends Controller
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
 
-
-
 		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
 
@@ -116,7 +114,7 @@ class ManagerController extends Controller
 
 		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
 		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
- 
+
 		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
 
@@ -126,7 +124,7 @@ class ManagerController extends Controller
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
 		//$oeeResult = $this->displayOeeForBatch($productionlistID);
-	
+
 
 		$viewbag['availability'] = $availability;
 		$viewbag['performance'] = $performance;
