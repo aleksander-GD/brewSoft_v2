@@ -9,23 +9,23 @@ function updateIngredients() {
     success: function(data){
 
       var response = JSON.parse(data);
-      var inventoryMax = 30000;
-      var b = ((inventoryMax-response.barley)/inventoryMax)*100;
-      var h = ((inventoryMax-response.hops)/inventoryMax)*100;
-      var m = ((inventoryMax-response.malt)/inventoryMax)*100;
-      var w = ((inventoryMax-response.wheat)/inventoryMax)*100;
-      var y = ((inventoryMax-response.yeast)/inventoryMax)*100;
+      var inventoryMax = 36000;
+      var b = inventoryMax - (((inventoryMax-response.barley)/inventoryMax)*100);
+      var h = inventoryMax - (((inventoryMax-response.hops)/inventoryMax)*100);
+      var m = inventoryMax - (((inventoryMax-response.malt)/inventoryMax)*100);
+      var w = inventoryMax - (((inventoryMax-response.wheat)/inventoryMax)*100);
+      var y = inventoryMax - (((inventoryMax-response.yeast)/inventoryMax)*100);
 
-      document.querySelector("#barley-update").value = response.barley;
-      document.querySelector("#barley-statusbar").style.height = b;
-      document.querySelector("#hops-update").value = response.hops;
-      document.querySelector("#hops-statusbar").style.height = h;
-      document.querySelector("#malt-update").value = response.malt;
-      document.querySelector("#malt-statusbar").style.height = m;
-      document.querySelector("#wheat-update").value = response.wheat;
-      document.querySelector("#wheat-statusbar").style.height = w;
-      document.querySelector("#yeast-update").value = response.yeast;
-      document.querySelector("#yeast-statusbar").style.height = y;
+      document.querySelector("#barley-update").value = b;
+      document.querySelector("#barley-statusbar").style.height = b+"%";
+      document.querySelector("#hops-update").value = h;
+      document.querySelector("#hops-statusbar").style.height = h+"%";
+      document.querySelector("#malt-update").value = m;
+      document.querySelector("#malt-statusbar").style.height = m+"%";
+      document.querySelector("#wheat-update").value = w;
+      document.querySelector("#wheat-statusbar").style.height = w+"%";
+      document.querySelector("#yeast-update").value = y;
+      document.querySelector("#yeast-statusbar").style.height = y+"%";
     }
   });
 }
@@ -56,7 +56,7 @@ function updateproducedData()
     datatype: "json",
     async: true,
     success: function(data){
-console.log(data)
+
       var response = JSON.parse(data);
 
       document.querySelector("#produced-update").value = response.produced;
@@ -74,7 +74,7 @@ function updateMachineData()
     datatype: "json",
     async: true,
     success: function(data){
-
+console.log(data)
       var response = JSON.parse(data);
       var maintenanceFull = 30000;
       var m = ((maintenanceFull-response.maintenance)/maintenanceFull)*100;
@@ -83,7 +83,7 @@ function updateMachineData()
       document.querySelector("#vibration-update").value = response.vibration;
       document.querySelector("#stop-reason-update").value = response.stopReason;
       document.querySelector("#maintenance-status-update").value = m;// response.maintenance;
-      document.querySelector("#maintenance-statusbar").style.width = m;
+      document.querySelector("#maintenance-statusbar").style.height = m+"%";
       document.querySelector("#state-update").value = response.state;
     }
   });
@@ -100,7 +100,7 @@ function startProduction(machineId, productionListID)
 {
   machineID = machineId
   productionlistID = productionListID;
-  console.log(machineID, productionlistID);
+  
   updateProductionData();
   updateIngredientsInterval = setInterval(updateIngredients, 1000);
   updateProducedDataInterval = setInterval(updateproducedData, 1000);
