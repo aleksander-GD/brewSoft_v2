@@ -90,32 +90,46 @@ class Finalbatchinformation extends Database
         return $resultObject;
     }
 
-    public function getDateOfCompletion($productionlistID)
+    public function getDateOfCompletion($productionListID)
     {
         if (!$this->check_database_connection()) {
             exit();
-        }
-        $sql = "SELECT dateofcompletion 
+        } else {
+            $sql = "SELECT dateofcompletion 
                 FROM finalbatchinformation
-                WHERE productionlistid =" . $productionlistID . ";";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $results = $stmt->fetch();
-        return $results;
+                WHERE productionlistid = :productionlistid;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":productionlistid",$productionListID);
+                $stmt->execute([$productionListID]);
+                $results = $stmt->fetch();
+                return $results;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
 
-    public function getProductCounts($productionlistID)
+    public function getProductCounts($productionListID)
     {
         if (!$this->check_database_connection()) {
             exit();
-        }
-        $sql = "SELECT pt.productname, fb.totalcount, fb.defectcount, fb.acceptedcount 
+        } else {
+            $sql = "SELECT pt.productname, fb.totalcount, fb.defectcount, fb.acceptedcount 
         FROM producttype AS pt, finalbatchinformation as fb
-        WHERE pt.productid = fb.productid AND productionlistid =" . $productionlistID . ";";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $results = $stmt->fetch();
-        return $results;
+        WHERE pt.productid = fb.productid AND productionlistid = :productionlistid;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":productionlistid",$productionListID);
+                $stmt->execute([$productionListID]);
+                $results = $stmt->fetch();
+                return $results;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
 
     private function check_database_connection()

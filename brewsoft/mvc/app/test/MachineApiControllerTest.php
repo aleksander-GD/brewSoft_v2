@@ -2,11 +2,8 @@
 
 use PHPUnit\Framework\TestCase;
 
-//$doc_root = implode("/",array_slice(explode("/", $_SERVER['REQUEST_URI']),0,3));
-//require_once $doc_root.'/app/core/Database.php';
 require_once '../core/Database.php';
 require_once '../core/Controller.php';
-require_once '../models/MachineList.php';
 require_once '../controllers/MachineApiController.php';
 
 class MachineApiControllerTest extends TestCase {
@@ -20,8 +17,26 @@ class MachineApiControllerTest extends TestCase {
         $this->machineArr = array (
             0 => array (
                 'brewerymachineid' => 1,
+                'hostname' => '192.168.0.122',
+                'port' => 4840
+            ),
+
+            1 => array (
+                'brewerymachineid' => 2,
                 'hostname' => '127.0.0.1',
-                'port' => 4321
+                'port' => 4840
+            ),
+
+            2 => array (
+                'brewerymachineid' => 3,
+                'hostname' => '127.0.0.1',
+                'port' => 4840
+            ),
+
+            3 => array (
+                'brewerymachineid' => 4,
+                'hostname' => '127.0.0.1',
+                'port' => 4840
             )
         );
     }
@@ -31,5 +46,19 @@ class MachineApiControllerTest extends TestCase {
         $viewbag['availableMachines'] = $this->machineArr;
 
         $this->assertEquals($this->machine->availableMachines(), $viewbag);
+    }
+
+    public function testArrayHasKeys() {
+        $array = $this->machine->availableMachines();
+        $key = array('brewerymachineid', 'hostname', 'port');
+        foreach($array as $row => $innerArray) {
+            foreach ($innerArray as $innerRow => $values) {
+                $i = 0;
+                foreach ($key as $value) {
+                    $this->assertArrayHasKey($key[$i], $values, "Array does not contain key: '$key[$i]'");
+                    $i++;
+                }
+            }
+        }
     }
 }

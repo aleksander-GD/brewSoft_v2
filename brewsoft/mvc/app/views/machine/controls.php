@@ -1,3 +1,6 @@
+<?php
+include_once $_SERVER['DOCUMENT_ROOT'] . '\\brewsoft\\mvc\\app\\views\\partials\\error.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 

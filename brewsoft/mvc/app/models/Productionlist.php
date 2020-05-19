@@ -124,21 +124,21 @@ class ProductionList extends Database
         }
     }
 
-    public function getQueuedBatchFromListID($productionlistID)
-    {
+    public function getQueuedBatchFromListID($productionListID) {
         if (!$this->check_database_connection()) {
             return false;
             exit();
-        }
-        $sql = "SELECT * FROM productionlist WHERE productionlistid =" . $productionlistID . ";";
-        try {
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetchAll();
-            return $result;
-        } catch (PDOException $e) {
-            return false;
-            exit();
+        } else {
+            $sql = "SELECT * FROM productionlist WHERE productionlistid = :productionlistid;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":productionlistid",$productionListID);
+                $stmt->execute([$productionListID]);
+                return $stmt->fetchAll();
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
         }
     }
 
