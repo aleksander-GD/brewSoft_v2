@@ -15,7 +15,7 @@
     
     public function getIngredients()
     {
-      $ingredientsData = $model->ingredientsUpdate($this->machineID);
+      $ingredientsData = $this->model->ingredientsUpdate($this->machineID);
 
       $ingredients = array(
         "barley"=>$ingredientsData['barley'],
@@ -96,5 +96,3 @@
       echo "Not a variable";
       break;
   }
-
-?>

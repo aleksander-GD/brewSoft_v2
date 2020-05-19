@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/oeeforbatch.css">
     <?php include_once '../app/views/partials/head.php'; ?>
 </head>
-
+<?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
 <body>
 
     <div>
@@ -28,4 +28,8 @@
     <input type="button" class="canceleditbuttonshowoee" name="canceleditbuttonshowoee" value="Cancel"></input>
 
     <script src="<?php echo DOC_ROOT; ?>/js/batch.js"></script>
+    <?php else : ?>
+        <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
+
+    <?php endif; ?>
     <?php include '../app/views/partials/foot.php'; ?>

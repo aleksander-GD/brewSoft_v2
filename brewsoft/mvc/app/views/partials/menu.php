@@ -25,10 +25,10 @@
                             <a class="nav-link" href="/brewsoft/mvc/public/manager/displayOeeForDay"><i class="far fa-chart-bar" aria-hidden="true"></i>Display Oee for day</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/productionview"><i class="fas fa-boxes" aria-hidden="true"></i>productionview Worker </a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/dashboardManager"><i class="fas fa-boxes" aria-hidden="true"></i>productionview Manager </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/productionview"><i class="fas fa-boxes" aria-hidden="true"></i>productionview Manager</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/worker/dashboardWorker"><i class="fas fa-boxes" aria-hidden="true"></i>productionview Worker</a>
                         </li>
                     </ul>
                     <span class="navbar-text">
@@ -69,7 +69,7 @@
                             <a class="nav-link" href="/brewsoft/mvc/public/manager/displayOeeForDay"><i class="far fa-chart-bar" aria-hidden="true"></i>Display Oee for day</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/productionview"><i class="fas fa-boxes" aria-hidden="true"></i>productionview</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/managerdashboard"><i class="fas fa-boxes" aria-hidden="true"></i>productionview</a>
                         </li>
                     </ul>
                     <span class="navbar-text">
@@ -90,14 +90,14 @@
         <?php if (isset($_SESSION['usertype']) && $_SESSION['usertype'] == 'Worker') : ?>
             <div id="marginBox"></div>
             <nav id="nav" class="navbar smart-scroll navbar-expand-lg navbar-light bg-light fixed-top">
-                <a class="navbar-brand" id="home" href="/brewsoft/mvc/public/MachineApi/index">BrewSoft</a>
+                <a class="navbar-brand" id="home" href="/brewsoft/mvc/public/worker/index">BrewSoft</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav mx-auto ">
                         <li class="nav-item active">
-                            <a class="nav-link" href="/brewsoft/mvc/public/MachineApi/index"><i class="fas fa-boxes" aria-hidden="true"></i>Productioninfo <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/worker/dashboardWorker"><i class="fas fa-boxes" aria-hidden="true"></i>Productioninfo <span class="sr-only">(current)</span></a>
                         </li>
                         <!-- <li class="nav-item">
                         <a class="nav-link" href="/brewsoft/mvc/public/breweryworker/"><i class="fa fa-cloud-upload" aria-hidden="true"></i>Text here</a>
@@ -111,7 +111,7 @@
                     </ul>
                     <span class="navbar-text">
                         <li class="nav-item">
-                            <form method="post" action="/brewsoft/mvc/public/MachineApi/logout">
+                            <form method="post" action="/brewsoft/mvc/public/worker/logout">
                                 <button name="logoutbtn" id="logoutbtn" type="submit" class="btn btn-default">
                                     <i class="fa fa-sign-out" aria-hidden="true"></i> logout
                                 </button>

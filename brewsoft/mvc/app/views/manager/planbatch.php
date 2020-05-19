@@ -8,8 +8,8 @@
 </head>
 
 <body>
-
     <?php include_once '../app/views/partials/menu.php'; ?>
+    <?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
     <div>
         <br>
         Please enter the correct values!
@@ -43,5 +43,9 @@
                     <input type="submit" name="planbatch" id="planbatch" value="Create" />
         </form>
     </div>
+    <?php else : ?>
+        <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
+
+    <?php endif; ?>
 
     <?php include '../app/views/partials/foot.php'; ?>

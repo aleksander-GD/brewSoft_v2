@@ -9,6 +9,7 @@
 
 <body>
     <?php include_once '../app/views/partials/menu.php'; ?>
+    <?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
     <div id="batch-table-wrapper">
         <div id="tableplace">
             <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getQueuedBatches(this.value);" onkeyup="getQueuedBatches(this.value);">
@@ -33,5 +34,8 @@
         <input type="button" name="editbatch" class="editbatch" value="edit batch" />
     </div>
     <script src="<?php echo DOC_ROOT; ?>/js/batch.js"></script>
+    <?php else : ?>
+        <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
 
+    <?php endif; ?>
     <?php include '../app/views/partials/foot.php'; ?>

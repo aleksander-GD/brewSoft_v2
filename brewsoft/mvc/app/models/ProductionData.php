@@ -57,7 +57,7 @@
       $stmt = $this->conn->prepare($sql);
       $stmt->bindParam(':machineID', $machineID);
       $stmt->execute();
-      $results = $stmt-fetch();
+      $results = $stmt->fetch();
       return $results;
     }
 
@@ -68,11 +68,10 @@
               WHERE productionlistid = :productionlistid
               ORDER BY timestamp DESC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
-      $stmt->bindPara(':productionlistid', $productionListID);
+      $stmt->bindParam(':productionlistid', $productionListID);
       $stmt->execute();
       $results = $stmt->fetch();
       return $results;
     }
 
   }
-?>

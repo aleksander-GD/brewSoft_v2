@@ -11,7 +11,7 @@
 <body>
 
     <?php include_once '../app/views/partials/menu.php'; ?>
-
+    <?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
     <div id="batch-table-wrapper">
         <div id="tableplace">
             <input type="text" class="search" name="search" id="search" placeholder="search for batches" onload="getCompletedBatches(this.value);" onkeyup="getCompletedBatches(this.value);">
@@ -39,5 +39,8 @@
         <!-- Instead insert button that redirects to batch report dashboard -->
         <!-- <input type="button" name="editbatch" class="editbatch" value="edit batch" /> -->
     </div>
+    <?php else : ?>
+        <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
 
+    <?php endif; ?>
     <?php include '../app/views/partials/foot.php'; ?>

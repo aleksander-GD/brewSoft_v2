@@ -9,7 +9,7 @@
 <body>
 
     <?php include_once '../app/views/partials/menu.php'; ?>
-
+    <?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
     <div>
         <br>
         OEE
@@ -28,5 +28,8 @@
         </div>
 
     </div>
+    <?php else : ?>
+        <?php include_once '../app/views/brewworker/Dashboard.php'; ?>
 
+    <?php endif; ?>
     <?php include '../app/views/partials/foot.php'; ?>
