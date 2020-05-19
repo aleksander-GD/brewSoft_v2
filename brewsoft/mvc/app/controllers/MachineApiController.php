@@ -9,7 +9,8 @@ class MachineApiController extends Controller
   public function index()
   {
     $this->machineControls();
-    $this->view('brewworker/dashboard');
+    /* $this->chooseMachine();
+    $this->view('machine/machines'); */
   }
 
   protected function validate() {
