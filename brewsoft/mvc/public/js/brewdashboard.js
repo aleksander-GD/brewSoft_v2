@@ -1,8 +1,9 @@
 // Consider using jQuery for element selection
+// Consider rewrite to POST?
 function updateIngredients() {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getIngredients",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getIngredients&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
@@ -16,15 +17,15 @@ function updateIngredients() {
       var y = ((inventoryMax-response.yeast)/inventoryMax)*100;
 
       document.querySelector("#barley-update").value = response.barley;
-      document.querySelector("#barley-statusbar").style.width = b;
+      document.querySelector("#barley-statusbar").style.height = b;
       document.querySelector("#hops-update").value = response.hops;
-      document.querySelector("#hops-statusbar").style.width = h;
+      document.querySelector("#hops-statusbar").style.height = h;
       document.querySelector("#malt-update").value = response.malt;
-      document.querySelector("#malt-statusbar").style.width = m;
+      document.querySelector("#malt-statusbar").style.height = m;
       document.querySelector("#wheat-update").value = response.wheat;
-      document.querySelector("#wheat-statusbar").style.width = w;
+      document.querySelector("#wheat-statusbar").style.height = w;
       document.querySelector("#yeast-update").value = response.yeast;
-      document.querySelector("#yeast-statusbar").style.width = y;
+      document.querySelector("#yeast-statusbar").style.height = y;
     }
   });
 }
@@ -32,7 +33,7 @@ function updateIngredients() {
 function updateProductionData(machineId, productionListID) {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProductionData&machineId="+machineId+"&productionListID="+productionListID,
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProductionData&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
@@ -51,11 +52,11 @@ function updateproducedData()
 {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProducedData",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProducedData&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
-
+console.log(data)
       var response = JSON.parse(data);
 
       document.querySelector("#produced-update").value = response.produced;
@@ -69,7 +70,7 @@ function updateMachineData()
 {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getMachineData",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getMachineData&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
@@ -92,9 +93,15 @@ var updateIngredientsInterval;
 var updateProducedDataInterval;
 var updateMachineDataInterval;
 
+var machineID;
+var productionlistID;
+
 function startProduction(machineId, productionListID)
 {
-  updateProductionData(machineId, productionListID);
+  machineID = machineId
+  productionlistID = productionListID;
+  console.log(machineID, productionlistID);
+  updateProductionData();
   updateIngredientsInterval = setInterval(updateIngredients, 1000);
   updateProducedDataInterval = setInterval(updateproducedData, 1000);
   updateMachineDataInterval = setInterval(updateMachineData, 1000);

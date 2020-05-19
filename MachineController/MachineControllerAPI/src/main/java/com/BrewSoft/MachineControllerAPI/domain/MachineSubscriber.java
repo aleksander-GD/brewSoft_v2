@@ -6,7 +6,6 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductio
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;

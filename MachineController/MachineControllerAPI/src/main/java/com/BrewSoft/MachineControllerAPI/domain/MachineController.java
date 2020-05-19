@@ -100,6 +100,7 @@ public class MachineController implements IMachineControl {
             returnTxt = "No machine available on host: " + this.machineObj.getHostname() + " port: " + this.machineObj.getPort();
             rtm.put("Error", returnTxt);
         }
+        System.out.println(rtm);
         return rtm;
     }
 

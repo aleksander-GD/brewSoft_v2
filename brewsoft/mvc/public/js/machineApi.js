@@ -40,21 +40,23 @@ $(function() {
       data: form.serialize()
     })
     .done(function (data) {
-      console.log(data);
+
       json = JSON.parse(data);
-      if(json.hasOwnProperty("success")){
-        console.log(json.success.API)
-        txt = document.createTextNode(json.success.API);
+      console.log(json);
+      if(json.hasOwnProperty("Success")){
+        console.log(json.Success)
+        txt = document.createTextNode(json.Success[0]);
         if(command == "Start") {
-          startProduction(json.machineID, json.productionListID);
+          console.log(json.machineID[0], json.productionListID[0])
+          startProduction(json.machineID[0], json.productionListID[0]);
         }
         if(command == "Stop") {
           stopProduction();
         }
       }
-      if(json.hasOwnProperty("error")) {
-        console.log(json.error.API)
-        txt = document.createTextNode(json.error.API);
+      if(json.hasOwnProperty("Error")) {
+        console.log(json.Error)
+        txt = document.createTextNode(json.Error);
       }
       $("#output-response").empty();
       $("#output-response").append(txt);

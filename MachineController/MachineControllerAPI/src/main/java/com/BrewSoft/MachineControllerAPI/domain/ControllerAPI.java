@@ -63,6 +63,7 @@ public class ControllerAPI {
                     mc.connectMachine();
                     //returnText = mc.startProduction();
                     rtm.putAll(mc.startProduction());
+                    System.out.println(rtm);
                     sub = machineSubscriberMap.get(machineID);
                     sub.connectMachine();
                     sub.subscribe();

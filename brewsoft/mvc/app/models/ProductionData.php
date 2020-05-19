@@ -26,7 +26,7 @@
               FROM productioninfo AS pi, machinedata AS md
               WHERE pi.productionlistid = :productionListID
                 AND md.brewerymachineid = :machineid
-              ORDER BY timestamp DESC LIMIT 1;";
+              ORDER BY entrytime DESC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
       $stmt->bindParam(':productionListID', $productionListID);
       $stmt->bindParam(':machineid', $machineID);
@@ -41,7 +41,7 @@
               FROM stopduringproduction
               WHERE productionlistid = :productionListID
                 AND brewerymachineid = :machineid
-              ORDER BY timestamp DESC LIMIT 1;";
+              ORDER BY entrytime DESC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
       $stmt->bindParam(':productionListID', $productionListID);
       $stmt->bindParam(':machineid', $machineID);
@@ -55,7 +55,7 @@
       $sql = "SELECT *
               FROM ingredientsUpdate
               WHERE brewerymachineid = :machineID
-              ORDER BY timestamp DESC LIMIT 1;";
+              ORDER BY entrytime DESC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
       $stmt->bindParam(':machineID', $machineID);
       $stmt->execute();
@@ -66,9 +66,9 @@
     public function ProducedData($productionListID)
     {
       $sql = "SELECT *
-              FROM productiondata
+              FROM produceddata
               WHERE productionlistid = :productionlistid
-              ORDER BY timestamp DESC LIMIT 1;";
+              ORDER BY entrytime DESC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
       $stmt->bindParam(':productionlistid', $productionListID);
       $stmt->execute();

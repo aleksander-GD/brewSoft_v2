@@ -76,17 +76,17 @@
       $this->machineID = $machineId;
     }
 
-    public function setProductionListId($productionListID) {
-      $this->productionlistID = $productionListID;
+    public function setProductionListID($productionlistID) {
+      $this->productionlistID = $productionlistID;
     }
   }
 
   $objInstance = new ProductionDataService();
   $filterInput = filter_input(INPUT_GET, 'method', FILTER_SANITIZE_STRING);
-  $machineId = filter_input(INPUT_GET, 'machineId', FILTER_SANITIZE_STRING);
-  $productionListID = filter_input(INPUT_GET, 'productionListID', FILTER_SANITIZE_STRING);
-  $objInstance.setMachineId($machineId);
-  $objInstance.setProductionListId($productionListID);
+  $machineId = filter_input(INPUT_GET, 'machineId', FILTER_SANITIZE_NUMBER_INT);
+  $productionListID = filter_input(INPUT_GET, 'productionListID', FILTER_SANITIZE_NUMBER_INT);
+  $objInstance->setMachineId($machineId);
+  $objInstance->setProductionListID($productionListID);
 
   switch ($filterInput) {
     case 'getIngredients':
@@ -105,3 +105,5 @@
       echo "Not a variable";
       break;
   }
+
+?>
