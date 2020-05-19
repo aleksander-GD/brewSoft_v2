@@ -13,7 +13,16 @@ $(document).ready(function() {
         var speed;
 
         //var timer_check = window.setInterval(getCompletedBatches, 1000);
+        event.preventDefault();
+        productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
+        batchIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(1)").html();
+        if (productionlistIDValueCompleteBatch != null) {
+            window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
+            window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
 
+        } else {
+            window.location = 'completedBatches';
+        }
         var timer_check_alive = setInterval(function() {
             check_database_alive_call();
         }, 100000);
