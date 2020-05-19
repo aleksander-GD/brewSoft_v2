@@ -49,7 +49,7 @@ public class MachineController implements IMachineControl {
 
     /**
      * TODO: Check if the machine actually starts, somehow... subscriber, state?
-     * @return 
+     * @return
      */
     @Override
     public Map<String, String> startProduction() {
@@ -102,7 +102,7 @@ public class MachineController implements IMachineControl {
         }
         return rtm;
     }
-    
+
     @Override
     public Map<String, String> resetMachine() {
         Map<String, String> rtm = new HashMap();
@@ -131,7 +131,7 @@ public class MachineController implements IMachineControl {
             if (newBatch != null) {
                 String res = sendCntrlCmd(new Variant(3));
                 if(res.equals("")) {
-                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", this.machineObj.getMachineID());
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped", machineObj.getMachineID());
                     subscriber.stoppedproduction(newBatch.getProductionListID());
                     sendCmdRequest();
                     returnTxt = "Machine stopped.";
@@ -158,7 +158,7 @@ public class MachineController implements IMachineControl {
             if (newBatch != null) {
                 String res = sendCntrlCmd(new Variant(4));
                 if(res.equals("")) {
-                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", this.machineObj.getMachineID());
+                    msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted", machineObj.getMachineID());
                     sendCmdRequest();
                     subscriber.stoppedproduction(newBatch.getProductionListID());
                     returnTxt = "Aborted production.";

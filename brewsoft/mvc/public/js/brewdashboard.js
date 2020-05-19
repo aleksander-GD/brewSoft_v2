@@ -1,3 +1,4 @@
+// Consider using jQuery for element selection
 function updateIngredients() {
   $.ajax({
     type: "GET",
@@ -28,10 +29,10 @@ function updateIngredients() {
   });
 }
 
-function updateProductionData() {
+function updateProductionData(machineId, productionListID) {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProductionData",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProductionData&machineId="+machineId+"&productionListID="+productionListID,
     datatype: "json",
     async: true,
     success: function(data){
@@ -91,9 +92,9 @@ var updateIngredientsInterval;
 var updateProducedDataInterval;
 var updateMachineDataInterval;
 
-function startProduction()
+function startProduction(machineId, productionListID)
 {
-  updateProductionData();
+  updateProductionData(machineId, productionListID);
   updateIngredientsInterval = setInterval(updateIngredients, 1000);
   updateProducedDataInterval = setInterval(updateproducedData, 1000);
   updateMachineDataInterval = setInterval(updateMachineData, 1000);

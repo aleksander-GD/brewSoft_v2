@@ -91,7 +91,7 @@ class MachineApiController extends Controller
 
   }
 
-  public function startProduction($machineId)
+  public function Start($machineId)
   {
     $viewbag = [];
     try {
@@ -116,7 +116,7 @@ class MachineApiController extends Controller
     echo json_encode($viewbag);
   }
 
-  public function stopProduction($machineId)
+  public function Stop($machineId)
   {
     $viewbag = [];
     try {
@@ -142,7 +142,7 @@ class MachineApiController extends Controller
     echo json_encode($viewbag);
   }
 
-  public function resetMachine($machineId)
+  public function Reset($machineId)
   {
     $viewbag = [];
     try {
@@ -170,7 +170,7 @@ class MachineApiController extends Controller
     echo json_encode($viewbag);
   }
 
-  public function clearMachine($machineId)
+  public function Clear($machineId)
   {
     $viewbag = [];
     try {
@@ -195,7 +195,7 @@ class MachineApiController extends Controller
     echo json_encode($viewbag);
   }
 
-  public function abortMachine($machineId)
+  public function Abort($machineId)
   {
     $viewbag = [];
     try {
@@ -269,10 +269,7 @@ class MachineApiController extends Controller
           break;
       }
 
-      $viewbag += $return;
-      echo "<pre>";
-      var_dump($viewbag);
-      echo "</pre>";
+      //$viewbag += $return;
     }
     $viewbag += $this->availableMachines();
     $endpoint = "http://localhost:8080/MachineControls";

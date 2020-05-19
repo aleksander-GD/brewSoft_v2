@@ -12,7 +12,7 @@
     public function __construct(){
       $this->model = new ProductionData();
     }
-    
+
     public function getIngredients()
     {
       $ingredientsData = $this->model->ingredientsUpdate($this->machineID);
@@ -30,10 +30,7 @@
 
     public function getProductionData()
     {
-      $productionstart = $this->model->StartProduction();
-
-      $this->productionlistID = $productionstart['productionlistid'];
-      $this->machineID = $productionstart['machineid'];
+      $productionstart = $this->model->StartProduction($this->machineID, $this->productionlistID);
 
       $productionData = array(
         "productType"=>$productionstart['productid'],
@@ -74,10 +71,22 @@
 
       echo json_encode($machineData);
     }
+
+    public function setMachineId($machineId) {
+      $this->machineID = $machineId;
+    }
+
+    public function setProductionListId($productionListID) {
+      $this->productionlistID = $productionListID;
+    }
   }
 
   $objInstance = new ProductionDataService();
   $filterInput = filter_input(INPUT_GET, 'method', FILTER_SANITIZE_STRING);
+  $machineId = filter_input(INPUT_GET, 'machineId', FILTER_SANITIZE_STRING);
+  $productionListID = filter_input(INPUT_GET, 'productionListID', FILTER_SANITIZE_STRING);
+  $objInstance.setMachineId($machineId);
+  $objInstance.setProductionListId($productionListID);
 
   switch ($filterInput) {
     case 'getIngredients':

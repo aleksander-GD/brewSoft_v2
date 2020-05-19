@@ -6,13 +6,15 @@
     // TODO: Changes so it checks for stopped batches or gets this data from the Java part.
     // Get data from machine somehow?
     // What about resumed batches?
-    public function StartProduction()
+    public function StartProduction($machineId, $productionListID)
     {
       $sql = "SELECT *
               FROM productionlist
-              WHERE status = 'queued'
+              WHERE productionlistid = :listid AND machineid = :machineid AND status = 'In Production'
               ORDER BY deadline ASC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':machineid', $machineId);
+      $stmt->bindParam(':listid', $productionListID);
       $stmt->execute();
       $results = $stmt->fetch();
       return $results;

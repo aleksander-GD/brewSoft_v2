@@ -255,7 +255,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 dq.runQueue();
             }
         }
-        System.out.println("This is productionlistID: " + productionListID);
         String sql = "UPDATE productionList SET status = ?, machineid = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
         if (result == 0) {
@@ -285,24 +284,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                     tempBatch.getDefectCount(),
                     ts);
         }
-    }
-    
-    @Override
-    public void ingredientsUpdate(int barley, int hops, int malt, int wheat, int yeast, int machineID) {
-        String sql = "INSERT INTO ingredientsupdate (barley, hops, malt, wheat, yeast, brewerymachineid) VALUES (?,?,?,?,?,?)";
-        int result = connection.queryUpdate(sql, barley, hops, malt, wheat, yeast, machineID);
-    }
-    
-    @Override
-    public void machinedata(int machineID, float maintenace, int state) {
-        String sql = "INSERT INTO machinedata (brewerymachineid, maintenace, state) VALUES (?,?,?)";
-        int result = connection.queryUpdate(sql, machineID, maintenace, state);
-    }
-    
-    @Override
-    public void producedData(int productionlistid, int produced, int acceptable, int defect) {
-        String sql = "INSERT INTO produceddata (productionlistid, produced, acceptable, defect) VALUES (?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionlistid, produced, acceptable, defect);
     }
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {

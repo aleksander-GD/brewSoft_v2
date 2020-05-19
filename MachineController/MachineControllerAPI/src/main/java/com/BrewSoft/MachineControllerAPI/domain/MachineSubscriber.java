@@ -216,18 +216,6 @@ public class MachineSubscriber implements IMachineSubscribe {
             System.out.println("stopreasonid: " + StopReasonID);
         }
     }
-    
-    public void ingredientsUpdate() {
-        msdh.ingredientsUpdate((int)barleyValue, (int)hopsValue, (int)maltValue, (int)wheatValue, (int)yeastValue, machineObj.getMachineID());
-    }
-    
-    public void machineData() {
-        msdh.machinedata(machineObj.getMachineID(), maintenanceValue, currentStateValue);
-    }
-    
-    public void produceddata() {
-        msdh.producedData(batch.getProductionListID(), productionCountValue, acceptableCountValue, defectCountValue);
-    }
 
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
@@ -261,40 +249,34 @@ public class MachineSubscriber implements IMachineSubscribe {
             case TOTAL_PRODUCTS_NODENAME:
                 this.totalProductValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
-            case PRODUCTS_PR_MINUTE_NODENAME:
-                this.productionPrMinValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                break;
-            case STOP_REASON_NODENAME:
-                this.StopReasonID = Integer.parseInt(dataValue.getValue().getValue().toString());
-                sendStopDuingProduction();
-                break;
             case TEMPERATURE_NODENAME:
                 this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
             case HUMIDITY_NODENAME:
                 if (nodename.equals(HUMIDITY_NODENAME)) {
                     this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 }
-            case VIBRATION_NODENAME:
-                if (nodename.equals(VIBRATION_NODENAME)) {
-                    this.vibrationValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
                 this.sendProductionData();
                 break;
+            case VIBRATION_NODENAME:
+                this.vibrationValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                break;
+
             case DEFECT_PRODUCTS_NODENAME:
                 this.defectCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                break;
+            case PRODUCTS_PR_MINUTE_NODENAME:
+                this.productionPrMinValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                break;
             case ACCEPTABLE_PRODUCTS_NODENAME:
-                if (nodename.equals(ACCEPTABLE_PRODUCTS_NODENAME)) {
-                    this.acceptableCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
-                }
-            case PRODUCED_PRODUCTS_NODENAME:
-                if (nodename.equals(PRODUCED_PRODUCTS_NODENAME)) {
-                    this.productionCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
-                    if(machineObj.getHostname().equals(this.SOFTWARESIM)){
-                        this.generateRandomAmountProduced();
-                    }
-                    this.completedBatch();
-                }
-                this.produceddata();
+                this.acceptableCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                break;
+            case STOP_REASON_NODENAME:
+                this.StopReasonID = Integer.parseInt(dataValue.getValue().getValue().toString());
+                sendStopDuingProduction();
+                break;
+            case STATE_CURRENT_NODENAME:
+                this.currentStateValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                sendTimeInState();
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
                 this.maintenanceValue = Integer.parseInt(dataValue.getValue().getValue().toString());
@@ -304,32 +286,28 @@ public class MachineSubscriber implements IMachineSubscribe {
                     this.sendProductionData();
                 }
                 // End of software simulator values
-            case STATE_CURRENT_NODENAME:
-                if(nodename.equals(STATE_CURRENT_NODENAME)) {
-                    this.currentStateValue = Integer.parseInt(dataValue.getValue().getValue().toString());
-                    sendTimeInState();
-                }
-                this.machineData();
                 break;
             case BARLEY_NODENAME:
                 this.barleyValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                break;
             case HOPS_NODENAME:
-                if(nodename.equals(HOPS_NODENAME)) {
-                    this.hopsValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
+                this.hopsValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                break;
             case MALT_NODENAME:
-                if(nodename.equals(MALT_NODENAME)) {
-                    this.maltValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
+                this.maltValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                break;
             case WHEAT_NODENAME:
-                if(nodename.equals(WHEAT_NODENAME)) {
-                    this.wheatValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
+                this.wheatValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                break;
             case YEAST_NODENAME:
-                if(nodename.equals(YEAST_NODENAME)) {
-                    this.yeastValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                this.yeastValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                break;
+            case PRODUCED_PRODUCTS_NODENAME:
+                this.productionCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
+                if(machineObj.getHostname().equals(this.SOFTWARESIM)){
+                    this.generateRandomAmountProduced();
                 }
-                this.ingredientsUpdate();
+                this.completedBatch();
                 break;
             default:
         }
