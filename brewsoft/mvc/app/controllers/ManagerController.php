@@ -102,13 +102,14 @@ class ManagerController extends Controller
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
 
-		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
-		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
-		$sortedTimeInStateList = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
+
 
 		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
 
+		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
+		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
+		$sortedTimeInStateList = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
 
 		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
@@ -116,18 +117,21 @@ class ManagerController extends Controller
 		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
 		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
 
-		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
+		/* $batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
 
 		$availability = $this->oeeService->calculateAvailability($batchResults, $sortedTimeInStateList, $idealcycletime);
 		$performance = $this->oeeService->calculatePerformance($batchResults, $sortedTimeInStateList,  $idealcycletime);
 		$quality = $this->oeeService->calculateQuality($batchResults);
 
-		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
-		$viewbag['availability'] = $availability;
-		$viewbag['performance'] = $performance;
-		$viewbag['quality'] = $quality;
-		$viewbag['oeeForBatch'] = $oee;
+		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality); */
+		$oeeResult = $this->displayOeeForBatch($productionlistID);
+	
+
+		$viewbag['availability'] = $oeeResult['availability'];
+		$viewbag['performance'] = $oeeResult['performance'];
+		$viewbag['quality'] = $oeeResult['quality'];
+		$viewbag['oeeForBatch'] = $oeeResult['oeeForBatch'];
 
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['datetime'] = $dateTimeArray;
@@ -158,7 +162,7 @@ class ManagerController extends Controller
 		}
 	}
 
-	public function displayOeeForBatch($productionListid)
+	private function displayOeeForBatch($productionListid)
 	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionListid);
 
@@ -177,12 +181,18 @@ class ManagerController extends Controller
 		$quality = $this->oeeService->calculateQuality($batchResults);
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
-		$viewbag['availability'] = $availability;
+		/* $viewbag['availability'] = $availability;
 		$viewbag['performance'] = $performance;
 		$viewbag['quality'] = $quality;
 
 		$viewbag['oeeForBatch'] = $oee;
-		$this->view('manager/showOeeForBatch', $viewbag);
+		$this->view('manager/showOeeForBatch', $viewbag); */
+		return $validData = [
+			'availability' => $availability,
+			'performance' => $performance,
+			'quality' => $quality,
+			'oeeForBatch' => $oee
+		];
 	}
 	public function managerdashboard()
 	{
