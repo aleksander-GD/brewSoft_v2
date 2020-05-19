@@ -29,7 +29,7 @@ $(document).ready(function() {
             console.log(check_database_alive_call());
             if (check_database_alive_call()) {
                 if (productionlistIDValueCompleteBatch != null) {
-                    window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
+                    window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
 
                 } else {
                     window.location = 'completedBatches';
