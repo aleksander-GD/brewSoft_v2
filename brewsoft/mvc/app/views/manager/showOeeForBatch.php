@@ -3,10 +3,8 @@
 
 <head>
     <title>Show Oee for batch</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/oeeforbatch.css">
-    <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/oeeforbatch.css">
+    <?php include_once '../app/views/partials/head.php'; ?>
 </head>
 
 <body>
@@ -29,5 +27,5 @@
     </div>
     <input type="button" class="canceleditbuttonshowoee" name="canceleditbuttonshowoee" value="Cancel"></input>
 
-    <script src="../../js/batch.js"></script>
+    <script src="<?php echo DOC_ROOT; ?>/js/batch.js"></script>
     <?php include '../app/views/partials/foot.php'; ?>

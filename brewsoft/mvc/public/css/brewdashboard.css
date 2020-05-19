@@ -1,74 +1,31 @@
-div.barley {
-  display: inline-block;
+div.barley, div.hops, div.malt, div.wheat, div.yeast {
+  /*display: inline-block;*/
 }
 
-div.hops {
-  display: inline-block;
+ .form-control-plaintext {
+   border: 1px solid blue;
+ }
+
+.producing_info {
+  border: 1px solid blue;
 }
 
-div.malt {
-  display: inline-block;
+.batch_info {
+
 }
 
-div.wheat {
-  display: inline-block;
+div.product-type, div.batch-id, div.to-be-produced, div.products-per-minut {
+
 }
 
-div.yeast {
-  display: inline-block;
+div.produced, div.acceptable-products, div.defect-products {
+  /*display: inline-block;*/
 }
 
-
-div.product-type {
-  display: inline-block;
+div.temperature, div.humidity, div.vibration {
+  /*display: inline-block;*/
 }
 
-div.batch-id {
-  display: inline-block;
-}
-
-div.to-be-produced {
-  display: inline-block;
-}
-
-div.produced {
-  display: inline-block;
-}
-
-div.acceptable-products {
-  display: inline-block;
-}
-
-div.defect-products {
-  display: inline-block;
-}
-
-
-div.products-per-minut {
-  display: inline-block;
-}
-
-div.temperature {
-  display: inline-block;
-}
-
-div.humidity {
-  display: inline-block;
-}
-
-div.vibration {
-  display: inline-block;
-}
-
-
-div.stop-reason {
-  display: inline-block;
-}
-
-div.maintenance-status {
-  display: inline-block;
-}
-
-div.state {
-  display: inline-block;
+div.stop-reason, div.maintenance-status, div.state {
+  /*display: inline-block;*/
 }

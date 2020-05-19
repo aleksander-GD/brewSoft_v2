@@ -3,10 +3,7 @@
 
 <head>
   <title>Machine Control</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <?php include_once '../app/views/partials/head.php'; ?>
   <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/brewdashboard.css">
   <script type="text/javascript" src="<?php echo DOC_ROOT; ?>/js/machineApi.js"></script>
 </head>
@@ -14,10 +11,7 @@
 <body>
 
   <?php include_once '../app/views/partials/menu.php'; ?>
-  <pre>
-<?php //var_dump($viewbag);
-?>
-</pre>
+
   <div class="container-fluid">
     <div class="col-xl-12 col-sm-12 response">
       <?php
@@ -45,13 +39,12 @@
     }
     ?>
     <div class="col-xl-12 col-sm-12">
-      <!-- Overvej AJAX til knapperne, især hvis dashboard skal sættes ind som partial eller omvendt -->
       <form name="controlForm" id="controlForm" action="" method="post" onsubmit="return false;">
         <div class="form-row">
           <div class="form-group col-auto">
             <?php
             if (!empty($viewbag["availableMachines"])) {
-              include '../app/views/machine/machines.php';
+              include '../app/views/partials/machines.php';
             }
             ?>
           </div>

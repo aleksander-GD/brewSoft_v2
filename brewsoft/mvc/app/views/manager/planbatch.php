@@ -4,6 +4,7 @@
 <head>
     <title> Create batch </title>
     <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/planbatch.css">
+    <?php include_once '../app/views/partials/head.php'; ?>
 </head>
 
 <body>
@@ -15,7 +16,7 @@
         </br>
         <form method="POST" action="/brewsoft/mvc/public/manager/planBatch">
             <label for="producttype"> Choose product type: </label><br>
-           
+
                 <?php if (!empty($viewbag['products']) || $viewbag['products'] != null) { ?>
                     <select name="products" id="products">
                         <?php
