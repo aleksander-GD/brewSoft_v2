@@ -5,66 +5,116 @@ class Productioninfo extends Database
 {
     public function getTempAndHumid($productionlistID)
     {
-        $sql = "SELECT temperature, humidity 
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT temperature, humidity 
                 FROM productioninfo
                 WHERE productionlistid = :productionlistID 
                 ORDER BY productioninfoid ASC;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':productionlistID', $productionlistID);
-        $stmt->execute();
-        $results = $stmt->fetchall();
-        return $results;
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':productionlistID', $productionlistID);
+                $stmt->execute();
+                $results = $stmt->fetchall();
+                return $results;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
     public function getHighestTemp($productionlistID)
     {
-        $sql = "SELECT temperature
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT temperature
                 FROM productioninfo
                 WHERE productionlistid = :productionlistID
                 ORDER BY temperature DESC limit 1;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':productionlistID', $productionlistID);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-        return $result;
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':productionlistID', $productionlistID);
+                $stmt->execute();
+                $result = $stmt->fetchAll();
+                return $result;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
 
     public function getLowestTemp($productionlistID)
     {
-        $sql = "SELECT temperature
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT temperature
                 FROM productioninfo
                 WHERE productionlistid = :productionlistID
                 ORDER BY temperature ASC limit 1;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':productionlistID', $productionlistID);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-        return $result;
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':productionlistID', $productionlistID);
+                $stmt->execute();
+                $result = $stmt->fetchAll();
+                return $result;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
 
     public function getHighestHumid($productionlistID)
     {
-        $sql = "SELECT humidity
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT humidity
                 FROM productioninfo
                 WHERE productionlistid = :productionlistID
                 ORDER BY humidity DESC limit 1;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':productionlistID', $productionlistID);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-        return $result;
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':productionlistID', $productionlistID);
+                $stmt->execute();
+                $result = $stmt->fetchAll();
+                return $result;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
 
     public function getLowestHumid($productionlistID)
     {
-        $sql = "SELECT humidity
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT humidity
                 FROM productioninfo
                 WHERE productionlistid = :productionlistID
                 ORDER BY humidity ASC limit 1;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':productionlistID', $productionlistID);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-        return $result;
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':productionlistID', $productionlistID);
+                $stmt->execute();
+                $result = $stmt->fetchAll();
+                return $result;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
 
     public function getHighLowValues($productionlistID)

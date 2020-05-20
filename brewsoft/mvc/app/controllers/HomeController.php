@@ -10,20 +10,21 @@ class HomeController extends Controller
 
 	public function login()
 	{
+        $_SESSION['usertype'] = null;
 		$this->view('home/login');
 		if (isset($_POST['username']) && isset($_POST['password'])) {
 			if ($this->model('User')->login()) {
 				if ($_SESSION['usertype'] == 'Manager') {
 					header('Location: /brewsoft/mvc/public/manager/index');
-				}
-				if ($_SESSION['usertype'] == 'Worker') {
+				} else if ($_SESSION['usertype'] == 'Worker') {
 					header('Location: /brewsoft/mvc/public/MachineApi/index');
-				}
-				if ($_SESSION['usertype'] == 'Admin') {
+				} else if ($_SESSION['usertype'] == 'Admin') {
 					header('Location: /brewsoft/mvc/public/admin/index');
-				}
+				} else {
+				    echo 'Login failed. Check network connection.';
+                }
 			} else {
-				echo 'please fill in the right information';
+				echo 'Login failed. Invalid username or password.';
 			}
 		}
 	}
@@ -35,7 +36,7 @@ class HomeController extends Controller
 			if ($this->model('User')->createUser($_POST['username'], $_POST['password'], $_POST['usertype'])) {
 				header('Location: /brewsoft/mvc/public/home/login');
 			} else {
-				echo 'error at register user';
+				//echo 'Error at register user';
 			}
 		}
 	}
