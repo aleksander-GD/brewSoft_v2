@@ -215,7 +215,6 @@
             chart.draw(data, options);
         }
         //Line end
-
         //Pie Chart
         function drawPieChart() {
 
@@ -308,29 +307,22 @@
         </div>
 
         <div class="row">
-
             <div class="col-md-6">
                 <H2>Timeline for production</H2>
-
-
                 <div id="chart_div" class="chart"></div>
             </div>
         </div>
+        
         <div class="row">
             <div class="col-md-6">
-
                 <h2>Temperature chart</h2>
-
                 <div id="templine_div" class="chart"></div>
                 <p>Peak temprature: <?php echo $highlow['maxtemp'] ?> </p>
                 <p>Lowest temperature: <?php echo $highlow['mintemp'] ?> </p>
 
             </div>
             <div class="col-md-6">
-
                 <h2>Humidity chart</h2>
-
-
                 <div id="humidline_div" class="chart"></div>
                 <p>Peak humidity: <?php echo $highlow['maxhumid'] ?> </p>
                 <p>Lowest humidity: <?php echo $highlow['minhumid'] ?> </p>
@@ -361,11 +353,6 @@
             </div>
 
         </div>
-
-
-
-
-
 
         </div>
     <?php else : ?>
