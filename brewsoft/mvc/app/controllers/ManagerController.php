@@ -114,49 +114,42 @@ class ManagerController extends Controller
 
 	public function batchReport($productionlistID)
 	{
+		
 		// Start performance requirement 03
 		$start_time = microtime(true);
 		$viewbag['start'] = $start_time;
 		// End of performance requirement 03
+		
 
-		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID);
-		$length = sizeof($timeArray) - 1;
+		$sortedTimeInStateList = $this->model('TimeInState')->sortedTimeStates($productionlistID);			// for time spent in each state
+		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID); 						// for timeline 
 
-		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
-		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
+		$finalBatchInformation = $this->model('Finalbatchinformation')->getAllStaticDataFromProdlistID($productionlistID);	// all finalbatch information + batchid, beertype and speed.
+		$dateTimeArray = $this->model('TimeInState')->getDateTimeArray($timeArray,$finalBatchInformation['dateofcompletion']); 		// for timeline. Date needs a fix.
+		
+		$productionInfo = $this->model('Productioninfo')->getProductionInfo($productionlistID); 				// Data for temp and humid graphs
 
-		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
-		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
-		$sortedTimeInStateList = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
-		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
+		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);	// Peak and low values for temp and humid.
 
-		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
-		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
-
-		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
-
-		//$viewbag['highlowtemphumid'] = $this->productionInfoService->getHighLowValues($tempAndHumidity);
-		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);
-
+		
+		// OEE calculations
 		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
-
 		$availability = $this->oeeService->calculateAvailability($batchResults, $sortedTimeInStateList, $idealcycletime);
 		$performance = $this->oeeService->calculatePerformance($batchResults, $sortedTimeInStateList,  $idealcycletime);
 		$quality = $this->oeeService->calculateQuality($batchResults);
-
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
-		//$oeeResult = $this->displayOeeForBatch($productionlistID);
+		// End of OEE calculations
 
-
+		$viewbag['finalbatchinformation'] = $finalBatchInformation;
 		$viewbag['availability'] = $availability;
 		$viewbag['performance'] = $performance;
 		$viewbag['quality'] = $quality;
 		$viewbag['oeeForBatch'] = $oee;
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['datetime'] = $dateTimeArray;
-		$viewbag['products'] = $products;
-		$viewbag['tempandhumid'] = $tempAndHumidity;
+		$viewbag['productioninfo'] = $productionInfo;
+		
 		$this->view('manager/batchreport', $viewbag);
 	}
 

@@ -109,7 +109,7 @@ class Finalbatchinformation extends Database
                 WHERE productionlistid = :productionlistid;";
             try {
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":productionlistid",$productionListID);
+                $stmt->bindParam(":productionlistid", $productionListID);
                 $stmt->execute([$productionListID]);
                 $results = $stmt->fetch();
                 return $results;
@@ -123,6 +123,7 @@ class Finalbatchinformation extends Database
     public function getProductCounts($productionListID)
     {
         if ($this->getConnection() == null) {
+            return false;
             exit();
         } else {
             $sql = "SELECT pt.productname, fb.totalcount, fb.defectcount, fb.acceptedcount 
@@ -130,10 +131,32 @@ class Finalbatchinformation extends Database
         WHERE pt.productid = fb.productid AND productionlistid = :productionlistid;";
             try {
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":productionlistid",$productionListID);
+                $stmt->bindParam(":productionlistid", $productionListID);
                 $stmt->execute([$productionListID]);
                 $results = $stmt->fetch();
                 return $results;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
+    }
+
+    public function getAllStaticDataFromProdlistID($productionListID)
+    {
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT fb.*, pl.batchid, pl.speed, pt.productname 
+        FROM finalbatchinformation AS fb, productionlist AS pl, producttype AS pt
+        WHERE fb.productid = pt.productid AND fb.productionlistid = pl.productionlistid AND fb.productionlistid = :productionlistid;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':productionlistid', $productionListID);
+                $stmt->execute();
+                $result = $stmt->fetch();
+                return $result;
             } catch (PDOException $e) {
                 return false;
                 exit();
