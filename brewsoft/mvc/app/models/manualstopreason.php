@@ -4,9 +4,13 @@
  */
 class manualstopreason extends Database {
   public function saveStopReason() {
-    $sql = "SELECT StopDuringProductionID FROM stopduringproduction WHERE brewerymachineid = :machineid ORDER BY StopDuringProductionID LIMIT 1;";
+    var_dump($_POST);
+    $productionListId = filter_input(INPUT_POST, "productionListId", FILTER_SANITIZE_STRING);
+    $machineid = filter_input(INPUT_POST, "machineID", FILTER_SANITIZE_STRING);
+    $sql = "SELECT StopDuringProductionID FROM stopduringproduction WHERE brewerymachineid = :machineid AND productionListId = :productionListId ORDER BY StopDuringProductionID DESC LIMIT 1;";
     $stmt = $this->conn->prepare($sql);
     $stmt->bindParam(':machineid', $machineid);
+    $stmt->bindParam(':productionListId', $productionListId);
     $stmt->execute();
     $stopid = $stmt->fetch(PDO::FETCH_ASSOC);
 

@@ -17,7 +17,8 @@ Create table ProductionList(
     Deadline date,
     Speed float,
     Status VARCHAR(20),
-    DateOfCreation date DEFAULT CURRENT_DATE
+    DateOfCreation date DEFAULT CURRENT_DATE,
+    machineid INT
 );
 
 Create Table ProductType (
@@ -46,6 +47,7 @@ create table ProductionInfo(
     BreweryMachineID int,
     Humidity float,
     Temperature float,
+    vibration float,
     EntryTime time DEFAULT current_time,
     EntryDate Date DEFAULT current_date
 );
@@ -68,9 +70,9 @@ Create table StopDuringProduction(
 
 create table manualStopReason(
     manualStopReasonid serial primary key,
-    StopDuringProductionID int,
+    productionListID int,
     Reason text,
-    userid int
+    userid int,
 );
 
 create table StopReason(
@@ -151,8 +153,8 @@ CREATE TABLE connectionTest(
     PRIMARY KEY (connectionid)
 )
 
-insert into user(username,password,usertype) VALUES('manager','manager','wanager');
-insert into user(username,password,usertype) VALUES('worker','worker','worker');
+insert into user(username,password,usertype) VALUES('manager','$2y$10$1h5SfzCe/3qO7CoZwmVD.e/DgB32.OPJk8L4dF3tRognC79PlMwQW','wanager');
+insert into user(username,password,usertype) VALUES('worker','$2y$10$Pr1XR2EcYlFDNT5W0kKe4.Mr5jlBKIVDzdfzttX7o9u.DK0Pyzuuy','worker');
 
 insert into brewerymachine (Hostname, Port) values ('192.168.0.122',4840);
 insert into brewerymachine (Hostname, Port) values ('127.0.0.1', 4840);
@@ -169,7 +171,6 @@ insert into StopReason (StopReasonID, Reason) values (11, 'Maintenance');
 insert into StopReason (StopReasonID, Reason) values (12, 'Manual Stop');
 insert into StopReason (StopReasonID, Reason) values (13, 'Motor power loss');
 insert into StopReason (StopReasonID, Reason) values (14, 'Manual abort');
-
 
 insert into MachineState (MachineStateID, MachineState ) values (0, 'Deactivated');
 insert into MachineState (MachineStateID, MachineState ) values (1, 'Clearing');
@@ -188,7 +189,6 @@ insert into MachineState (MachineStateID, MachineState ) values (16, 'Completing
 insert into MachineState (MachineStateID, MachineState ) values (17, 'Complete');
 insert into MachineState (MachineStateID, MachineState ) values (18, 'Deactivating');
 insert into MachineState (MachineStateID, MachineState ) values (19, 'Activating');
-
 
 ALTER TABLE ProductionList
 ADD CONSTRAINT productionList_productType FOREIGN KEY (ProductID) REFERENCES ProductType;
@@ -226,9 +226,6 @@ ADD CONSTRAINT timeInState_breweryMachine FOREIGN KEY (BreweryMachineID) REFEREN
 ALTER TABLE TimeInState
 ADD CONSTRAINT timeInState_machineState FOREIGN KEY (MachineStateID) REFERENCES MachineState;
 
-ALTER TABLE ProductionInfo
-ADD vibration float;
-
 ALTER TABLE ingredientsUpdate
 ADD CONSTRAINT ingredientsUpdate_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
 
@@ -239,7 +236,10 @@ ALTER TABLE produceddata
 ADD CONSTRAINT produceddata_BreweryMachineID FOREIGN KEY (BreweryMachineID) REFERENCES brewerymachine;
 
 ALTER TABLE ProductionList
-ADD machineid INT;
-
-ALTER TABLE ProductionList
 ADD CONSTRAINT productionlist_machineid FOREIGN KEY (BreweryMachineID) REFERENCES BreweryMachine;
+
+ALTER TABLE manualStopReason
+ADD CONSTRAINT manualStopReason_productionlistid FOREIGN KEY (productionlistid) REFERENCES productionlist;
+
+ALTER TABLE manualStopReason
+ADD CONSTRAINT manualStopReason_userid FOREIGN KEY (userid) REFERENCES users;

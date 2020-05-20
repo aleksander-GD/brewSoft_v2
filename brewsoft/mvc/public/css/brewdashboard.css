@@ -1,13 +1,5 @@
-div.barley, div.hops, div.malt, div.wheat, div.yeast {
-  /*display: inline-block;*/
-}
-
- .form-control-plaintext {
-   border: 1px solid blue;
- }
-
-div {
-  /*border: 1px solid blue;*/
+input[type="text"] {
+  text-align:center;
 }
 
 .progress-bar-vertical {
@@ -30,24 +22,4 @@ div {
 .maintenance-status,
 .inventory {
   min-height:10em;
-}
-
-.batch_info {
-
-}
-
-div.product-type, div.batch-id, div.to-be-produced, div.products-per-minut {
-
-}
-
-div.produced, div.acceptable-products, div.defect-products {
-  /*display: inline-block;*/
-}
-
-div.temperature, div.humidity, div.vibration {
-  /*display: inline-block;*/
-}
-
-div.stop-reason, div.maintenance-status, div.state {
-  /*display: inline-block;*/
 }

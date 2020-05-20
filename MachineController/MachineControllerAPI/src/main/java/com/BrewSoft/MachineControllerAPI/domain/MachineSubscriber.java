@@ -225,7 +225,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
     
     public void produceddata() {
-        msdh.producedData(batch.getProductionListID(), productionCountValue, acceptableCountValue, defectCountValue);
+        msdh.producedData(batch.getProductionListID(), productionCountValue, acceptableCountValue, defectCountValue, machineObj.getMachineID());
     }
 
     public void completedBatch() {

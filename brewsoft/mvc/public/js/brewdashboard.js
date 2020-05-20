@@ -56,7 +56,7 @@ function updateproducedData()
     datatype: "json",
     async: true,
     success: function(data){
-
+console.log(data);
       var response = JSON.parse(data);
 
       document.querySelector("#produced-update").value = response.produced;
@@ -74,7 +74,7 @@ function updateMachineData()
     datatype: "json",
     async: true,
     success: function(data){
-//console.log(data)
+
       var response = JSON.parse(data);
       var maintenanceFull = 30000;
       var m = 100 - (((maintenanceFull-response.maintenance)/maintenanceFull)*100);

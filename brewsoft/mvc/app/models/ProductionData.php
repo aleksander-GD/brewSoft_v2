@@ -70,7 +70,7 @@
       $sql = "SELECT *
               FROM produceddata
               WHERE productionlistid = :productionlistid
-              ORDER BY entrytime DESC LIMIT 1;";
+              ORDER BY (entrydate, entrytime) DESC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
       $stmt->bindParam(':productionlistid', $productionListID);
       $stmt->execute();

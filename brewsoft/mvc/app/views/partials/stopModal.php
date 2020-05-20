@@ -5,7 +5,7 @@
 
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Manual $("#machineID").val()</h4>
+          <h4 class="modal-title" id="stopModalTitle"></h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
@@ -13,7 +13,7 @@
         <div class="modal-body">
           <form id="formStopReason" action="/brewsoft/mvc/public/machineApi/saveStopReason" method="post">
             <div><label for="stopReason">Enter reason for stopping production:</label></div>
-            <div><textarea name="stopReason" id="stopReason" placeholder="Stop reason"></textarea></div>
+            <div><textarea class="form-control" name="stopReason" id="stopReason" placeholder="Stop reason"></textarea></div>
           </form>
         </div>
 
@@ -27,10 +27,11 @@
   </div>
   <script>
     //$(document).ready(function(){$('#manualStopReason').modal('show')})
-    
+
     function saveStopReason() {
       url = $("#formStopReason").attr('action');
-      var posting = $.post(url, {stopReason: $('#stopReason').val(), machineID: $("#machineID").val()});
+      console.log("stop: "+productionlistID);
+      var posting = $.post(url, {stopReason: $('#stopReason').val(), machineID: $("#machineID").val(), productionListId: productionlistID});
       posting.done(function(data) { console.log(data); });
     }
   </script>

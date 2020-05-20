@@ -40,6 +40,8 @@ $(function() {
       json = JSON.parse(data);
 
       $("#output-response").empty();
+      $("#stopModalTitle").empty();
+      $("#stopReason").val('');
 
       if(json.hasOwnProperty("Success")) {
         txt = document.createTextNode(json.Success[0]);
@@ -47,8 +49,10 @@ $(function() {
         if(command == "Start") {
           startProduction(json.machineID[0], json.productionListID[0]);
         }
-        if(command == "Stop") {
+        if(command == "Stop" || command == "Abort") {
           stopProduction();
+          title = document.createTextNode("Manual " + command)
+          $("#stopModalTitle").append(title);
           $('#manualStopReason').modal('show');
         } else {
           $("#responseModal").modal("show");
