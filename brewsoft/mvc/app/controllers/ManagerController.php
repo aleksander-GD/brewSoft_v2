@@ -102,13 +102,13 @@ class ManagerController extends Controller
 		$nextBatcTimeInStateID = $timeArray[$length]['timeinstateid'] + 1;
 		$nextBatchFirstTime = $this->model('TimeInState')->getFirstTimeNextBatch($nextBatcTimeInStateID);
 
-		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
-		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
-
 		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
 		$sortedTimeInStateList = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
 		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
+
+		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
+		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
 
 		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
 
