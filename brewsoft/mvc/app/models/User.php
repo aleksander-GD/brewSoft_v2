@@ -18,6 +18,7 @@ class User extends Database
                 $_SESSION['logged_in'] = true;
                 $_SESSION['username'] = $username;
                 $_SESSION['usertype'] = $user['usertype'];
+                $_SESSION['userid'] = $user['userid'];
                 return true;
             } else {
                 return false;

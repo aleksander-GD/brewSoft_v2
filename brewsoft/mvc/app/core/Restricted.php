@@ -7,7 +7,7 @@ function restricted($controller, $method)
 		'HomeController' => array('logout'),
 		'ApiController' => array(),
 		'ManagerController' => array('index', 'batchQueue', 'planBatch','managerdashboard', 'editBatch', 'completedBatches', 'displayOeeForBatch', 'displayOeeForDay', 'batchReport', 'logout'),
-		'MachineApiController' => array('machineControls','logout'),
+		'MachineApiController' => array('index','machineControls','logout'),
 		'WorkerController' => array(),
 		'AdminController' => array('index', 'logout')
 	);

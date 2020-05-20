@@ -250,9 +250,6 @@ class MachineApiController extends Controller
   public function saveStopReason()
   {
     if ($this->post()) {
-      echo "POST: <pre>";
-      var_dump($_POST);
-      echo "</pre>";
       $this->model('manualstopreason')->saveStopReason();
     }
   }

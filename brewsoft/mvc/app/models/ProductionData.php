@@ -25,8 +25,10 @@
       $sql = "SELECT pi.*, md.*
               FROM productioninfo AS pi, machinedata AS md
               WHERE pi.productionlistid = :productionListID
-                AND md.brewerymachineid = :machineid
-              ORDER BY entrytime DESC LIMIT 1;";
+                AND pi.brewerymachineid = :machineid
+                AND pi.entrydate = md.entrydate
+                AND md.brewerymachineid = pi.brewerymachineid
+              ORDER BY pi.entrytime DESC LIMIT 1;";
       $stmt = $this->conn->prepare($sql);
       $stmt->bindParam(':productionListID', $productionListID);
       $stmt->bindParam(':machineid', $machineID);

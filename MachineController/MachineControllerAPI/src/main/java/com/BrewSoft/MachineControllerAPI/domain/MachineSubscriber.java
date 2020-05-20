@@ -296,7 +296,6 @@ public class MachineSubscriber implements IMachineSubscribe {
                 this.produceddata();
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
-                // NOT SAVED IN DB FOR SOME REASON
                 this.maintenanceValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 System.out.println("maintain: " + maintenanceValue);
                 this.machineData();

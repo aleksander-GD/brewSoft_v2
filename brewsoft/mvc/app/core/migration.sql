@@ -25,7 +25,7 @@ Create Table ProductType (
     ProductName VARCHAR (20),
     Speed float,
     IdealCycleTime float
-);  
+);
 
 Create Table FinalBatchInformation(
     FinalBatchInformationID serial Primary key,
@@ -66,10 +66,10 @@ Create table StopDuringProduction(
     EntryTime time DEFAULT current_time
 );
 
-create table manualStopReasen(
-    manualStopReasenid serial primary key,
+create table manualStopReason(
+    manualStopReasonid serial primary key,
     StopDuringProductionID int,
-    Reason VARCHAR(255),
+    Reason text,
     userid int
 );
 
@@ -117,6 +117,7 @@ CREATE TABLE ingredientsUpdate(
     yeast INT,
     BreweryMachineID INT,
     EntryTime time DEFAULT CURRENT_TIMESTAMP,
+    EntryDate Date DEFAULT current_date,
     PRIMARY KEY (ingredientsid),
 );
 
@@ -126,6 +127,7 @@ CREATE TABLE machinedata(
     maintenace FLOAT,
     state INT,
     EntryTime time DEFAULT CURRENT_TIMESTAMP,
+    EntryDate date DEFAULT current_date,
     PRIMARY KEY (machinedataid)
 );
 
@@ -136,6 +138,7 @@ CREATE TABLE produceddata(
     acceptable INT,
     defect INT,
     EntryTime time DEFAULT CURRENT_TIMESTAMP,
+    EntryDate Date DEFAULT current_date,
     PRIMARY KEY (produceddataid),
 );
 

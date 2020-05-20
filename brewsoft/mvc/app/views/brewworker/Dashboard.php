@@ -5,35 +5,30 @@
       <div class="row justify-content-center">
         <div class="barley col-2 col-sm-2 col-lg-1 inventory" id="barley">
           <span for="barley-update">Barley:</span>
-          <input type="text" id="barley-update" name="barley" class="form-control-plaintext" readonly>
           <div class="progress progress-bar-vertical">
             <div id="barley-statusbar" class="progress-bar bg-success" style="height: 100%"></div>
           </div>
         </div>
         <div class="hops col-2 col-sm-2 col-lg-1 inventory" id="hops">
           <span>Hops:</span>
-          <input type="text" id="hops-update" name="hops" class="form-control-plaintext" readonly>
           <div class="progress progress-bar-vertical">
             <div id="hops-statusbar" class="progress-bar bg-success" style="height: 100%"></div>
           </div>
         </div>
         <div class="malt col-2 col-sm-2 col-lg-1 inventory" id="malt">
           <span>Malt:</span>
-          <input type="text" id="malt-update" name="malt" class="form-control-plaintext" readonly>
           <div class="progress progress-bar-vertical">
             <div id="malt-statusbar" class="progress-bar bg-success" style="height: 100%"></div>
           </div>
         </div>
         <div class="wheat col-2 col-sm-2 col-lg-1 inventory" id="wheat">
           <span>Wheat:</span>
-          <input type="text" id="wheat-update" name="wheat" class="form-control-plaintext" readonly>
           <div class="progress progress-bar-vertical">
             <div id="wheat-statusbar" class="progress-bar bg-success" style="height: 100%"></div>
           </div>
         </div>
         <div class="yeast col-2 col-sm-2 col-lg-1 inventory" id="yeast">
           <span>Yeast:</span>
-          <input type="text" id="yeast-update" name="yeast" class="form-control-plaintext" readonly>
           <div class="progress progress-bar-vertical">
             <div id="yeast-statusbar" class="progress-bar bg-success" style="height: 100%"></div>
           </div>
@@ -109,7 +104,6 @@
 
     <div class="maintenance-status col col-md-2 ">
       <span>Maintenance status:</span>
-      <input type="text" id="maintenance-status-update" name="maintenanceStatus" class="form-control-plaintext" readonly>
       <div class="progress progress-bar-vertical">
         <div id="maintenance-statusbar" class="progress-bar bg-danger" style="height: 0%"></div>
       </div>

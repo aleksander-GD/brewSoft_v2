@@ -5,7 +5,7 @@
 
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Manual <?php echo $viewbag["method"]; ?></h4>
+          <h4 class="modal-title">Manual $("#machineID").val()</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
@@ -26,10 +26,11 @@
     </div>
   </div>
   <script>
-    $(document).ready(function(){$('#manualStopReason').modal('show')})
+    //$(document).ready(function(){$('#manualStopReason').modal('show')})
+    
     function saveStopReason() {
       url = $("#formStopReason").attr('action');
-      var posting = $.post(url, {stopReason: $('#stopReason').val()});
+      var posting = $.post(url, {stopReason: $('#stopReason').val(), machineID: $("#machineID").val()});
       posting.done(function(data) { console.log(data); });
     }
   </script>

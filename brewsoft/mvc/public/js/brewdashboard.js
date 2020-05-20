@@ -10,21 +10,21 @@ function updateIngredients() {
 
       var response = JSON.parse(data);
       var inventoryMax = 36000;
-      var b = inventoryMax - (((inventoryMax-response.barley)/inventoryMax)*100);
-      var h = inventoryMax - (((inventoryMax-response.hops)/inventoryMax)*100);
-      var m = inventoryMax - (((inventoryMax-response.malt)/inventoryMax)*100);
-      var w = inventoryMax - (((inventoryMax-response.wheat)/inventoryMax)*100);
-      var y = inventoryMax - (((inventoryMax-response.yeast)/inventoryMax)*100);
+      var b = 100 - (((inventoryMax-response.barley)/inventoryMax)*100);
+      var h = 100 - (((inventoryMax-response.hops)/inventoryMax)*100);
+      var m = 100 - (((inventoryMax-response.malt)/inventoryMax)*100);
+      var w = 100 - (((inventoryMax-response.wheat)/inventoryMax)*100);
+      var y = 100 - (((inventoryMax-response.yeast)/inventoryMax)*100);
 
-      document.querySelector("#barley-update").value = b;
+      //document.querySelector("#barley-update").value = b;
       document.querySelector("#barley-statusbar").style.height = b+"%";
-      document.querySelector("#hops-update").value = h;
+      //document.querySelector("#hops-update").value = h;
       document.querySelector("#hops-statusbar").style.height = h+"%";
-      document.querySelector("#malt-update").value = m;
+      //document.querySelector("#malt-update").value = m;
       document.querySelector("#malt-statusbar").style.height = m+"%";
-      document.querySelector("#wheat-update").value = w;
+      //document.querySelector("#wheat-update").value = w;
       document.querySelector("#wheat-statusbar").style.height = w+"%";
-      document.querySelector("#yeast-update").value = y;
+      //document.querySelector("#yeast-update").value = y;
       document.querySelector("#yeast-statusbar").style.height = y+"%";
     }
   });
@@ -74,15 +74,15 @@ function updateMachineData()
     datatype: "json",
     async: true,
     success: function(data){
-console.log(data)
+//console.log(data)
       var response = JSON.parse(data);
       var maintenanceFull = 30000;
-      var m = ((maintenanceFull-response.maintenance)/maintenanceFull)*100;
+      var m = 100 - (((maintenanceFull-response.maintenance)/maintenanceFull)*100);
       document.querySelector("#temperature-update").value = response.temperature;
       document.querySelector("#humidity-update").value = response.humidity;
       document.querySelector("#vibration-update").value = response.vibration;
       document.querySelector("#stop-reason-update").value = response.stopReason;
-      document.querySelector("#maintenance-status-update").value = m;// response.maintenance;
+      //document.querySelector("#maintenance-status-update").value = m;// response.maintenance;
       document.querySelector("#maintenance-statusbar").style.height = m+"%";
       document.querySelector("#state-update").value = response.state;
     }
@@ -100,7 +100,7 @@ function startProduction(machineId, productionListID)
 {
   machineID = machineId
   productionlistID = productionListID;
-  
+
   updateProductionData();
   updateIngredientsInterval = setInterval(updateIngredients, 1000);
   updateProducedDataInterval = setInterval(updateproducedData, 1000);

@@ -38,21 +38,28 @@ $(function() {
     .done(function (data) {
 
       json = JSON.parse(data);
-      if(json.hasOwnProperty("Success")){
+
+      $("#output-response").empty();
+
+      if(json.hasOwnProperty("Success")) {
         txt = document.createTextNode(json.Success[0]);
+        $("#output-response").append(txt);
         if(command == "Start") {
           startProduction(json.machineID[0], json.productionListID[0]);
         }
         if(command == "Stop") {
           stopProduction();
+          $('#manualStopReason').modal('show');
+        } else {
+          $("#responseModal").modal("show");
         }
       }
       if(json.hasOwnProperty("Error")) {
         txt = document.createTextNode(json.Error);
+        $("#output-response").append(txt);
+        $("#responseModal").modal("show");
       }
-      $("#output-response").empty();
-      $("#output-response").append(txt);
-      $("#responseModal").modal("show");
+
       // Hides the spinner on button
       $('#'+command+'-spn').toggleClass('d-none');
     })

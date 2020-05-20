@@ -35,11 +35,11 @@
     </div>
     <div class="row justify-content-center">
       <?php
-      if (!empty($viewbag["method"])) {
-        if ($viewbag["method"] === "abort" || $viewbag["method"] === "stop") {
+//      if (!empty($viewbag["method"])) {
+//        if ($viewbag["method"] === "abort" || $viewbag["method"] === "stop") {
           include '../app/views/partials/stopModal.php';
-        }
-      }
+//        }
+//      }
       include '../app/views/partials/responseModal.php';
       ?>
       <div class="col-md-6">
