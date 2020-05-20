@@ -4,8 +4,8 @@
   class ProductionDataService
   { 
 
-    private $productionlistID = 0;
-    private $machineID = 0;
+    private $productionlistID = 163;
+    private $machineID = 2;
 
     private $model;
 

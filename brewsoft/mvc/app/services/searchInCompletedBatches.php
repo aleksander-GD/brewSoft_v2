@@ -32,31 +32,31 @@ $completedBatchResults = $completedBatchData;
 if (!$completedBatchResults) {
     echo 'Nothing found, no connection to the database';
     echo '<tr>';
-    echo "<td>" . "</td>";
-    echo "<td>" . "</td>";
-    echo "<td>" . "</td>";
-    echo "<td>" . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
+    echo "<td scope='row'>" . "</td>";
+    echo "<td scope='row'>" . "</td>";
+    echo "<td scope='row'>" . "</td>";
+    echo "<td scope='row'>" . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
     echo '</tr>';
 } else {
     foreach ($completedBatchResults as $batch) {
 
         echo '<tr>';
-        echo "<td>" . $batch['productionlistid'] . "</td>";
-        echo "<td>" . $batch['batchid'] . "</td>";
-        echo "<td>" . $batch['brewerymachineid'] . "</td>";
-        echo "<td>" . $batch['deadline'] . "</td>";
-        echo "<td>" . $batch['dateofcreation'] . "</td>";
-        echo "<td>" . $batch['dateofcompletion'] . "</td>";
-        echo "<td>" . $batch['productid'] . "</td>";
-        echo "<td>" . $batch['totalcount'] . "</td>";
-        echo "<td>" . $batch['defectcount'] . "</td>";
-        echo "<td>" . $batch['acceptedcount'] . "</td>";
+        echo "<td scope='row'>" . $batch['productionlistid'] . "</td>";
+        echo "<td scope='row'>" . $batch['batchid'] . "</td>";
+        echo "<td scope='row'>" . $batch['brewerymachineid'] . "</td>";
+        echo "<td scope='row'>" . $batch['deadline'] . "</td>";
+        echo "<td scope='row'>" . $batch['dateofcreation'] . "</td>";
+        echo "<td scope='row'>" . $batch['dateofcompletion'] . "</td>";
+        echo "<td scope='row'>" . $batch['productid'] . "</td>";
+        echo "<td scope='row'>" . $batch['totalcount'] . "</td>";
+        echo "<td scope='row'>" . $batch['defectcount'] . "</td>";
+        echo "<td scope='row'>" . $batch['acceptedcount'] . "</td>";
         echo '</tr>';
     }
 }

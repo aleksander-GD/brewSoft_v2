@@ -26,11 +26,11 @@ class OeeServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->oeeservice = new OeeService();
-        $this->availability = 108.33333333333;
+        $this->availability = 96.969696969697;
         $this->runtime = 260;
-        $this->performance = 92.307692307692;
+        $this->performance = 93.75;
         $this->quality = 87.5;
-        $this->oeeForBatch = 87.5;
+        $this->oeeForBatch = 79.545454545455;
 
         $this->testdate = '2019-12-11';
         $this->expectedOee = 0.19;

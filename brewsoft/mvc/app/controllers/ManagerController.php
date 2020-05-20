@@ -37,6 +37,7 @@ class ManagerController extends Controller
 
 	public function editBatch($id)
 	{
+		ob_start();
 		$batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
 		//the selected batch is sent to the view.
 		$viewbag['batch'] = $batch;
@@ -88,7 +89,6 @@ class ManagerController extends Controller
 		}
 	}
 
-
 	public function batchReport($productionlistID)
 	{
 		
@@ -123,7 +123,6 @@ class ManagerController extends Controller
 		$viewbag['performance'] = $performance;
 		$viewbag['quality'] = $quality;
 		$viewbag['oeeForBatch'] = $oee;
-
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['datetime'] = $dateTimeArray;
 		$viewbag['productioninfo'] = $productionInfo;
@@ -153,7 +152,7 @@ class ManagerController extends Controller
 		}
 	}
 
-	public function displayOeeForBatch($productionListid)
+	private function displayOeeForBatch($productionListid)
 	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionListid);
 
@@ -172,12 +171,18 @@ class ManagerController extends Controller
 		$quality = $this->oeeService->calculateQuality($batchResults);
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
-		$viewbag['availability'] = $availability;
+		/* $viewbag['availability'] = $availability;
 		$viewbag['performance'] = $performance;
 		$viewbag['quality'] = $quality;
 
 		$viewbag['oeeForBatch'] = $oee;
-		$this->view('manager/showOeeForBatch', $viewbag);
+		$this->view('manager/showOeeForBatch', $viewbag); */
+		return $validData = [
+			'availability' => $availability,
+			'performance' => $performance,
+			'quality' => $quality,
+			'oeeForBatch' => $oee
+		];
 	}
 	public function managerdashboard()
 	{
