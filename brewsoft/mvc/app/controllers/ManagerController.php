@@ -35,32 +35,46 @@ class ManagerController extends Controller
 		$this->view('manager/batchqueue');
 	}
 
+
 	public function editBatch($id)
-	{
-		ob_start();
-		$batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
-		//the selected batch is sent to the view.
-		$viewbag['batch'] = $batch;
-		$product = $this->model('ProductType')->getProducts();
-		$viewbag['products'] = $product;
-		//redirect to editbatch page
-		$this->view('manager/editbatch', $viewbag);
+    {
+        try {
+            ob_start();
+            if ($this->model('Productionlist')->getQueuedBatchFromListID($id)) {
+                $batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
+                //the selected batch is sent to the view.
+                $viewbag['batch'] = $batch;
+                $product = $this->model('ProductType')->getProducts();
+                $viewbag['products'] = $product;
+                //redirect to editbatch page
+                $this->view('manager/editbatch', $viewbag);
 
-		//Data that is sent via post from the view, to update the batch
-		if (isset($_POST['editbutton'])) {
-			$productID = filter_input(INPUT_POST, "productID", FILTER_SANITIZE_STRING);
-			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
-			$deadline = filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING);
-			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 
-			$this->model('Productionlist')->editQueuedBatch($productID, $productAmount, $deadline, $speed, $id);
+                //Data that is sent via post from the view, to update the batch
+                if (isset($_POST['editbutton'])) {
+                    $productID = filter_input(INPUT_POST, "productID", FILTER_SANITIZE_STRING);
+                    $productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
+                    $deadline = filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING);
+                    $speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
 
-			//redirect to batchqueue 
-			//$this->view('manager/batchqueue');
-			header('Location: /brewsoft/mvc/public/manager/batchQueue');
-		}
-	}
+                    $this->model('Productionlist')->editQueuedBatch($productID, $productAmount, $deadline, $speed, $id);
 
+                    //redirect to batchqueue
+                    //$this->view('manager/batchqueue');
+                    header('Location: /brewsoft/mvc/public/manager/batchQueue');
+                }
+            } else {
+                //redirect to /batchqueue if batch id does not exists
+                header('Location: /brewsoft/mvc/public/manager/batchQueue');
+            }
+        } catch (Exception $ex) {
+            /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
+            $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+            if (!empty($viewbag["error"])) {
+                echo "<span>" . $viewbag["error"]["exception"] . "</span>";
+            }
+        }
+    }
 
 	public function completedBatches()
 	{
@@ -69,25 +83,34 @@ class ManagerController extends Controller
 		$viewbag['batches'] = $batches;
 		$this->view('manager/completedbatches', $viewbag);
 	}
-	public function planBatch()
-	{
-		ob_start();
-		$product = $this->model('ProductType')->getProducts();
-		$viewbag['products'] = $product;
-		$this->view('manager/planbatch', $viewbag);
 
-		if (isset($_POST['planbatch'])) {
-			$latestBatchNumber = $this->model('productionlist')->getLatestBatchNumber();
-			$batchID = $this->batchService->createBatchNumber($latestBatchNumber);
-			$productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
-			$productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
-			$deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
-			$speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
-			$status = 'queued';
-			$this->model('Productionlist')->insertBatchToQueue($productID, $productAmount, $deadline, $speed, $status);
-			header('Location: /brewsoft/mvc/public/manager/batchQueue');
-		}
-	}
+	public function planBatch()
+    {
+        try {
+            ob_start();
+            $product = $this->model('ProductType')->getProducts();
+            $viewbag['products'] = $product;
+            $this->view('manager/planbatch', $viewbag);
+
+            if (isset($_POST['planbatch'])) {
+                $latestBatchNumber = $this->model('productionlist')->getLatestBatchNumber();
+                $batchID = $this->batchService->createBatchNumber($latestBatchNumber);
+                $productID = filter_input(INPUT_POST, "products", FILTER_SANITIZE_STRING);
+                $productAmount = filter_input(INPUT_POST, "productAmount", FILTER_SANITIZE_STRING);
+                $deadline = strval(filter_input(INPUT_POST, "deadline", FILTER_SANITIZE_STRING));
+                $speed = filter_input(INPUT_POST, "speed", FILTER_SANITIZE_STRING);
+                $status = 'queued';
+                $this->model('Productionlist')->insertBatchToQueue($productID, $productAmount, $deadline, $speed, $status);
+                header('Location: /brewsoft/mvc/public/manager/batchQueue');
+            }
+        } catch (Exception $ex) {
+            /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
+            $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+            if (!empty($viewbag["error"])) {
+                echo "<span>" . $viewbag["error"]["exception"] . "</span>";
+            }
+        }
+    }
 
 	public function batchReport($productionlistID)
 	{
@@ -132,7 +155,7 @@ class ManagerController extends Controller
 
 	public function displayOeeForDay()
 	{
-		if ($this->post()) {
+		if ($this->post() && ($this->oeeService->getDateOfCompletion() != "")) {
 
 			if (isset($_POST['showOee'])) {
 				$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForDate($this->oeeService->getDateOfCompletion());

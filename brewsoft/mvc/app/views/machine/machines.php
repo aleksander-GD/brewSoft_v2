@@ -1,5 +1,6 @@
 
 <?php
+
 if(empty($viewbag["error"]["databaseconnection"])) {
 ?>
   <select class="form-control" name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>
