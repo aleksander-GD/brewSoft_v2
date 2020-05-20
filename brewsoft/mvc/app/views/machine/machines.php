@@ -1,6 +1,6 @@
 
 <?php
-include_once $_SERVER['DOCUMENT_ROOT'] . '\\brewsoft\\mvc\\app\\views\\partials\\error.php';
+
 if(empty($viewbag["error"]["databaseconnection"])) {
 ?>
   <select class="form-control" name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>
