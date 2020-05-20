@@ -1,25 +1,43 @@
 var timer_check;
 var timer_check_alive;
 $(document).ready(function() {
+    event.preventDefault();
     var productionlistIDValueQueue;
     var batchIDValueQueue;
     var productionlistIDValueCompleteBatch;
     var batchIDValueCompleteBatch;
+    var timer_check_alive = setInterval(function() {
+        check_database_alive_call();
+    }, 100000);
+    /*  $('.generateBatchReport').on('click', function(e) {
+         var productID;
+         var productAmount;
+         var deadline;
+         var speed;
 
-    $('.generateBatchReport').on('click', function(e) {
-        var productID;
-        var productAmount;
-        var deadline;
-        var speed;
+         //var timer_check = window.setInterval(getCompletedBatches, 1000);
+         event.preventDefault();
+         productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
+         batchIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(1)").html();
+         if (productionlistIDValueCompleteBatch != null) {
+             window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
+             window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
 
-        //var timer_check = window.setInterval(getCompletedBatches, 1000);
+         } else {
+             window.location = 'completedBatches';
+         }
 
-        var timer_check_alive = setInterval(function() {
-            check_database_alive_call();
-        }, 100000);
-    });
+     }); */
 
+    var ww = $(window).width();
+    var wh = $(window).height();
+    if (ww <= 375 && wh < 812) {
+        $("#formobilescreen").show();
+    } else {
 
+        $("#formobilescreen").hide();
+
+    }
     $('.showOeeForBatch').on('click', function(e) {
         event.preventDefault();
         productionlistIDValueCompleteBatch = $("#completedBatchData tr.selected td:eq(0)").html();
@@ -29,7 +47,7 @@ $(document).ready(function() {
             console.log(check_database_alive_call());
             if (check_database_alive_call()) {
                 if (productionlistIDValueCompleteBatch != null) {
-                    window.location = 'displayOeeForBatch/' + productionlistIDValueCompleteBatch;
+                    window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
 
                 } else {
                     window.location = 'completedBatches';
@@ -40,7 +58,6 @@ $(document).ready(function() {
         }
     });
 
-
     $('.editbatch').on('click', function(e) {
         event.preventDefault();
         productionlistIDValueQueue = $("#queuedBatchData tr.selected td:eq(0)").html();
@@ -50,13 +67,24 @@ $(document).ready(function() {
         if (productionlistIDValueQueue != null) {
             window.location = 'editBatch/' + productionlistIDValueQueue;
 
+
         } else {
 
             window.location = 'batchqueue';
         }
 
     });
+    $('#table tr').on('click', function() {
+        console.log("check");
+        if (window.location = 'completedBatches') {
+            window.location = 'batchReport/' + productionlistIDValueCompleteBatch;
+        }
+        if (window.location = 'batchqueue') {
+            window.location = 'editBatch/' + productionlistIDValueQueue;
+        }
+        return false;
 
+    });
     $('.canceleditbuttoneditbatch').on('click', function(e) {
         event.preventDefault();
         window.location.replace('/brewsoft/mvc/public/manager/batchqueue')

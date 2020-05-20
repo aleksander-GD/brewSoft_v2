@@ -39,6 +39,7 @@ class ManagerController extends Controller
 	public function editBatch($id)
     {
         try {
+            ob_start();
             if ($this->model('Productionlist')->getQueuedBatchFromListID($id)) {
                 $batch = $this->model('Productionlist')->getQueuedBatchFromListID($id);
                 //the selected batch is sent to the view.
@@ -47,6 +48,7 @@ class ManagerController extends Controller
                 $viewbag['products'] = $product;
                 //redirect to editbatch page
                 $this->view('manager/editbatch', $viewbag);
+
 
                 //Data that is sent via post from the view, to update the batch
                 if (isset($_POST['editbutton'])) {
@@ -126,11 +128,10 @@ class ManagerController extends Controller
 		$timestampArray = $this->timeInStateService->getTimestampArray($timeArray, $nextBatchFirstTime);
 		$allTimesInStateList = $this->timeInStateService->getTimeDifference($timestampArray);
 		$sortedTimeInStateList = $this->timeInStateService->getSortedTimeInStates($allTimesInStateList);
+		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
 
 		$completionDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionlistID);
 		$dateTimeArray = $this->timeInStateService->getDateTimeArray($timeArray, $completionDate);
-
-		$tempAndHumidity = $this->model('Productioninfo')->getTempAndHumid($productionlistID);
 
 		$products = $this->model('Finalbatchinformation')->getProductCounts($productionlistID);
 
@@ -145,11 +146,13 @@ class ManagerController extends Controller
 		$quality = $this->oeeService->calculateQuality($batchResults);
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
+		//$oeeResult = $this->displayOeeForBatch($productionlistID);
+
+
 		$viewbag['availability'] = $availability;
 		$viewbag['performance'] = $performance;
 		$viewbag['quality'] = $quality;
 		$viewbag['oeeForBatch'] = $oee;
-
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['datetime'] = $dateTimeArray;
 		$viewbag['products'] = $products;
@@ -179,7 +182,8 @@ class ManagerController extends Controller
 		}
 	}
 
-	public function displayOeeForBatch($productionListid) {
+	private function displayOeeForBatch($productionListid)
+	{
 		$timeArray = $this->model('TimeInState')->getTimeInStates($productionListid);
 
 		$completedDate = $this->model('Finalbatchinformation')->getDateOfCompletion($productionListid);
@@ -197,14 +201,23 @@ class ManagerController extends Controller
 		$quality = $this->oeeService->calculateQuality($batchResults);
 
 		$oee = $this->oeeService->calculateOeeForABatch($availability, $performance, $quality);
-		$viewbag['availability'] = $availability;
+		/* $viewbag['availability'] = $availability;
 		$viewbag['performance'] = $performance;
 		$viewbag['quality'] = $quality;
 
 		$viewbag['oeeForBatch'] = $oee;
-		$this->view('manager/showOeeForBatch', $viewbag);
+		$this->view('manager/showOeeForBatch', $viewbag); */
+		return $validData = [
+			'availability' => $availability,
+			'performance' => $performance,
+			'quality' => $quality,
+			'oeeForBatch' => $oee
+		];
 	}
-
+	public function managerdashboard()
+	{
+		$this->view('manager/managerdashboard');
+	}
 	public function logout()
 	{
 		session_destroy();
