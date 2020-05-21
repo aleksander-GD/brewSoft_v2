@@ -5,11 +5,11 @@ class WorkerController extends Controller
 
 	public function index()
 	{
-		header('Location: /brewSoft/mvc/public/worker/dashboardWorker');
+		header('Location: /brewSoft/mvc/public/machineapi/index');
 	}
 
     public function dashboardWorker() {
-        
+
         header('Location: /brewSoft/mvc/public/machineapi/index');
     }
 

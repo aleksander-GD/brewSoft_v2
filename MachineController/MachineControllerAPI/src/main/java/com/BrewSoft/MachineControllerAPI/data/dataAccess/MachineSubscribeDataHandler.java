@@ -210,9 +210,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     @Override
     public Batch getNextBatch() {
         if (connection.isConnected()) {
-            /*if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
                 dq.runQueue();
-            }*/
+            }
         }
         Batch batch = null;                                                                
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1");
