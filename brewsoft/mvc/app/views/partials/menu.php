@@ -25,10 +25,10 @@
                             <a class="nav-link" href="/brewsoft/mvc/public/manager/displayOeeForDay"><i class="far fa-chart-bar" aria-hidden="true"></i>Display Oee for day</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/productionview"><i class="fas fa-boxes" aria-hidden="true"></i>productionview Worker </a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/Worker/dashboardWorker"><i class="fas fa-boxes" aria-hidden="true"></i>productionview W</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brewsoft/mvc/public/manager/productionview"><i class="fas fa-boxes" aria-hidden="true"></i>productionview Manager</a>
+                            <a class="nav-link" href="/brewsoft/mvc/public/manager/managerdashboard"><i class="fas fa-boxes" aria-hidden="true"></i>productionview M</a>
                         </li>
                     </ul>
                     <span class="navbar-text">

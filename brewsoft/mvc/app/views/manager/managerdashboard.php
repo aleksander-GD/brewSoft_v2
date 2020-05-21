@@ -3,6 +3,8 @@
 
 <head>
     <title> Manager Dashboard </title>
+    <?php include_once '../app/views/partials/head.php'; ?>
+    <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/brewdashboard.css">
 </head>
 
 <body>

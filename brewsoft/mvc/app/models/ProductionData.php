@@ -48,8 +48,8 @@
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(':productionListID', $productionListID);
                 $stmt->bindParam(':machineid', $machineID);
-                $results = $stmt->fetch();
                 $stmt->execute();
+                $results = $stmt->fetch();
                 return $results;
             } catch (PDOException $e) {
                 return false;
@@ -97,7 +97,7 @@
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(':machineID', $machineID);
                 $stmt->execute();
-                $results = $stmt - fetch();
+                $results = $stmt->fetch();
                 return $results;
             } catch (PDOException $e) {
                 return false;
@@ -113,12 +113,12 @@
             exit();
         } else {
             $sql = "SELECT *
-              FROM productiondata
+              FROM produceddata
               WHERE productionlistid = :productionlistid
               ORDER BY (entrydate, entrytime) DESC LIMIT 1;";
             try {
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bindPara(':productionlistid', $productionListID);
+                $stmt->bindParam(':productionlistid', $productionListID);
                 $stmt->execute();
                 $results = $stmt->fetch();
                 return $results;

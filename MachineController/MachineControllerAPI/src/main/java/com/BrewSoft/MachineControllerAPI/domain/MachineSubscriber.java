@@ -277,6 +277,11 @@ public class MachineSubscriber implements IMachineSubscribe {
                 if (nodename.equals(VIBRATION_NODENAME)) {
                     this.vibrationValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 }
+                System.out.println(nodename);
+                if (machineObj.getHostname().equals(SOFTWARESIM)) {
+                    this.generateRandomProdValues();
+                    this.sendProductionData();
+                }
                 this.sendProductionData();
                 break;
             case DEFECT_PRODUCTS_NODENAME:
