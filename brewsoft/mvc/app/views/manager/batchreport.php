@@ -16,8 +16,7 @@
     $pixel = 0;
     ?>
     <title>Batch report</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include_once '../app/views/partials/head.php'; ?>
     <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchreport.css">
 
 <?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
@@ -310,7 +309,7 @@
                 <div id="chart_div" class="chart"></div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-6">
                 <h2>Temperature chart</h2>
