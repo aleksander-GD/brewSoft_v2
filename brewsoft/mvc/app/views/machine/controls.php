@@ -13,26 +13,6 @@
   <?php include_once '../app/views/partials/menu.php'; ?>
 
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-xl-12 col-sm-12 response">
-        <?php
-        if (!empty($viewbag["error"])) {
-          echo "Error: ";
-          foreach ($viewbag["error"] as $key => $value) {
-            echo "<div>" . $value . "</div>";
-          }
-        }
-        ?>
-        <?php
-        if (!empty($viewbag["success"])) {
-          echo "Success: ";
-          foreach ($viewbag["success"] as $key => $value) {
-            echo "<span>" . $value . "</span>";
-          }
-        }
-        ?>
-      </div>
-    </div>
     <div class="row justify-content-center">
       <?php
 //      if (!empty($viewbag["method"])) {
@@ -61,8 +41,14 @@
                   foreach ($viewbag["controls"]->commands as $key => $value) {
                     echo "<button  class='btn btn-secondary' type='submit' form='controlForm' onclick='changeCommand(this);' value='$value'><span id='".$value."-spn' class='spinner-border spinner-border-sm d-none'></span> $value</button>";
                   }
-                }
+                } else {
+                  if (!empty($viewbag["Error"])) {
+                    foreach ($viewbag["Error"] as $key => $value) {
+                      echo "<p class='p-2 bg-warning'>".$value."</p>";
+                    }
+                  }
 
+                }
                 ?>
               </div>
             </div>
@@ -71,5 +57,4 @@
       </div>
     </div>
   </div>
-
   <?php include '../app/views/partials/foot.php'; ?>
