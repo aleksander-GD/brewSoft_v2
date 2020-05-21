@@ -32,28 +32,28 @@ $batchQueueResults = $batchQueueData;
 if (!$batchQueueResults) {
     echo 'Nothing found, no connection to the database';
     echo '<tr>';
-    echo "<td>" . "</td>";
-    echo "<td>" . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
-    echo "<td>"  . "</td>";
+    echo "<td scope='row'>" . "</td>";
+    echo "<td scope='row'>" . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
+    echo "<td scope='row'>"  . "</td>";
     echo '</tr>';
 } else {
 
     foreach ($batchQueueResults as $batch) {
 
         echo '<tr>';
-        echo "<td>" . $batch['productionlistid'] . "</td>";
-        echo "<td>" . $batch['batchid'] . "</td>";
-        echo "<td>" . $batch['productid'] . "</td>";
-        echo "<td>" . $batch['productamount'] . "</td>";
-        echo "<td>" . $batch['deadline'] . "</td>";
-        echo "<td>" . $batch['speed'] . "</td>";
-        echo "<td>" . $batch['status'] . "</td>";
-        echo "<td>" . $batch['dateofcreation'] . "</td>";
+        echo "<td scope='row'>" . $batch['productionlistid'] . "</td>";
+        echo "<td scope='row'>" . $batch['batchid'] . "</td>";
+        echo "<td scope='row'>" . $batch['productid'] . "</td>";
+        echo "<td scope='row'>" . $batch['productamount'] . "</td>";
+        echo "<td scope='row'>" . $batch['deadline'] . "</td>";
+        echo "<td scope='row'>" . $batch['speed'] . "</td>";
+        echo "<td scope='row'>" . $batch['status'] . "</td>";
+        echo "<td scope='row'>" . $batch['dateofcreation'] . "</td>";
         echo '</tr>';
     }
 }

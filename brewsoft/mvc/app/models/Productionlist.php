@@ -16,7 +16,7 @@ class ProductionList extends Database
     public function insertBatchToQueue($productID, $productAmount, $deadline, $speed, $status)
     {
         $tempory_json_file = 'tempbatchfile.json';
-        if (!$this->check_database_connection()) {
+        if ($this->getConnection() == null) {
 
             $jsonAttributeName['batchID'] = 0;
             $jsonAttributeName['productID'] = $productID;
@@ -81,7 +81,7 @@ class ProductionList extends Database
 
         $insert_query = 'INSERT INTO productionList (batchID, productID, productAmount, deadline, speed, status)';
         $values = ' VALUES(:batchID, :productID, :productAmount, :deadline, :speed, :status)';
-        if (!$this->check_database_connection()) {
+        if ($this->getConnection() == null) {
             return false;
         } else {
             try {
@@ -103,7 +103,7 @@ class ProductionList extends Database
 
     public function editQueuedBatch($productID, $productAmount, $deadline, $speed, $productionListID)
     {
-        if (!$this->check_database_connection()) {
+        if ($this->getConnection() == null) {
             return false;
             exit();
         } else {
@@ -124,49 +124,51 @@ class ProductionList extends Database
         }
     }
 
-    public function getQueuedBatchFromListID($productionlistID)
-    {
-        if (!$this->check_database_connection()) {
+    public function getQueuedBatchFromListID($productionListID) {
+
+        if ($this->getConnection() == null) {
             return false;
             exit();
-        }
-        $sql = "SELECT * FROM productionlist WHERE productionlistid =" . $productionlistID . ";";
-        try {
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetchAll();
-            return $result;
-        } catch (PDOException $e) {
-            return false;
-            exit();
+        } else {
+            $sql = "SELECT * FROM productionlist WHERE productionlistid = :productionlistid;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":productionlistid",$productionListID);
+                $stmt->execute([$productionListID]);
+                return $stmt->fetchAll();
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
         }
     }
 
     public function getQueuedBatches()
     {
-        if (!$this->check_database_connection()) {
+        if ($this->getConnection() == null) {
             return false;
             exit();
-        }
-        $sql = "SELECT * FROM productionlist WHERE status = 'queued' ORDER BY deadline DESC;";
-        try {
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            $results = $stmt->fetchAll();
-            return $results;
-        } catch (PDOException $e) {
-            return false;
-            exit();
+        } else {
+            $sql = "SELECT * FROM productionlist WHERE status = 'queued' ORDER BY deadline DESC;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute();
+                $results = $stmt->fetchAll();
+                return $results;
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
         }
     }
 
     public function getCompletedBatches()
     {
-        $sql = "SELECT * FROM productionlist WHERE status = 'completed';";
-        if (!$this->check_database_connection()) {
-
+        if ($this->getConnection() == null) {
+            return false;
             exit();
         } else {
+            $sql = "SELECT * FROM productionlist WHERE status = 'completed';";
             try {
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute();
@@ -181,31 +183,20 @@ class ProductionList extends Database
 
     public function getLatestBatchNumber()
     {
-        if (!$this->check_database_connection()) {
-            return false;
-            exit();
-        }
-        $sql = "SELECT batchid FROM productionlist ORDER BY productionlistID DESC limit 1";
-        if (!$this->check_database_connection()) {
+        if ($this->getConnection() == null) {
             return false;
             exit();
         } else {
+            $sql = "SELECT batchid FROM productionlist ORDER BY productionlistID DESC limit 1";
             try {
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute();
-
                 $result = $stmt->fetch();
-
                 return $result["batchid"];
             } catch (PDOException $e) {
                 return false;
                 exit();
             }
         }
-    }
-
-    private function check_database_connection()
-    {
-        return $this->conn != null;
     }
 }

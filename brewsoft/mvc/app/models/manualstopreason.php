@@ -15,16 +15,30 @@ class manualstopreason extends Database {
     $stopid = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $stopReason = filter_input(INPUT_POST, "stopReason", FILTER_SANITIZE_STRING);
-    $sql = "INSERT INTO manualstopreason(reason, StopDuringProductionID, userid) VALUES(:stopreason, :stopId, :userid);";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bindParam(':stopreason', $stopReason);
-    $stmt->bindParam(':stopId', $stopid['StopDuringProductionID']);
-    $stmt->bindParam(':userid', $_SESSION["userid"]);
-    $stmt->execute();
-    $lastInsertId = $this->conn->lastInsertID();
+      if ($this->getConnection() == null) {
+          return false;
+          exit();
+      } else {
+          $sql = "INSERT INTO manualstopreason(reason, productionlistid) VALUES(:stopreason, :listid)";
+          try {
+              $stmt = $this->conn->prepare($sql);
+              $stmt->bindParam(':stopreason', $stopReason);
+              $stmt->bindParam(':stopId', $stopid['StopDuringProductionID']);
+              $stmt->bindParam(':userid', $_SESSION["userid"]);
+              $stmt->execute();
+              $lastInsertId = $this->conn->lastInsertID();
+          } catch (PDOException $e) {
+              return false;
+              exit();
+          }
+      }
   }
 
   public function getStopReasonsForProduction($productionListID) {
+      if ($this->getConnection() == null) {
+          return false;
+          exit();
+      } else {
     $sql = "SELECT m.reason, u.username
             FROM manualstopreason as m,
               StopDuringProduction as s,
@@ -32,9 +46,17 @@ class manualstopreason extends Database {
             WHERE m.StopDuringProductionID = s.StopDuringProductionID
               AND m.userid = u.userid
               AND s.productionlistid = :listid;";
+              try {
     $stmt = $this->conn->prepare($sql);
     $stmt->bindParam(':listid', $productionListID);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+      
+          
+          } catch (PDOException $e) {
+              return false;
+              exit();
+          }
+      }
   }
 }

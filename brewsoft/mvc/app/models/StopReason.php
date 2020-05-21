@@ -4,14 +4,24 @@
 class StopReason extends Database
 {
     public function getStopReason($ID){
-        
-        $sql = "SELECT reason 
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT reason 
                 FROM stopreason 
-                Where stopreasonid = $ID;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetch();
-        return $result['reason'];
+                Where stopreasonid = :id;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":id", $ID);
+                $stmt->execute($ID);
+                $result = $stmt->fetch();
+                return $result['reason'];
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
     }
 
 }
