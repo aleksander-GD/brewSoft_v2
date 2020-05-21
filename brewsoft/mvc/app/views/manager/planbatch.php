@@ -4,6 +4,7 @@
 <head>
     <title> Create batch </title>
     <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/stylesheet.css">
+    <?php include_once '../app/views/partials/head.php'; ?>
 </head>
 
 <body>

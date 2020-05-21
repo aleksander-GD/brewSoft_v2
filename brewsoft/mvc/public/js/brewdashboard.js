@@ -1,36 +1,49 @@
+// Consider using jQuery for element selection
+// Consider rewrite to POST?
 function updateIngredients() {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getIngredients",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getIngredients&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
 
       var response = JSON.parse(data);
-      
-      document.getElementById("barley-update").value = response.barley;
-      document.getElementById("hops-update").value = response.hops;
-      document.getElementById("malt-update").value = response.malt;
-      document.getElementById("wheat-update").value = response.wheat;
-      document.getElementById("yeast-update").value = response.yeast;
+      var inventoryMax = 36000;
+      var b = 100 - (((inventoryMax-response.barley)/inventoryMax)*100);
+      var h = 100 - (((inventoryMax-response.hops)/inventoryMax)*100);
+      var m = 100 - (((inventoryMax-response.malt)/inventoryMax)*100);
+      var w = 100 - (((inventoryMax-response.wheat)/inventoryMax)*100);
+      var y = 100 - (((inventoryMax-response.yeast)/inventoryMax)*100);
+
+      //document.querySelector("#barley-update").value = b;
+      document.querySelector("#barley-statusbar").style.height = b+"%";
+      //document.querySelector("#hops-update").value = h;
+      document.querySelector("#hops-statusbar").style.height = h+"%";
+      //document.querySelector("#malt-update").value = m;
+      document.querySelector("#malt-statusbar").style.height = m+"%";
+      //document.querySelector("#wheat-update").value = w;
+      document.querySelector("#wheat-statusbar").style.height = w+"%";
+      //document.querySelector("#yeast-update").value = y;
+      document.querySelector("#yeast-statusbar").style.height = y+"%";
     }
   });
 }
 
-function updateProductionData() {
+function updateProductionData(machineId, productionListID) {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProductionData",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProductionData&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
 
       var response = JSON.parse(data);
 
-      document.getElementById("product-type-update").value = response.productType;
-      document.getElementById("batch-id-update").value = response.batchID;
-      document.getElementById("to-be-produced-update").value = response.toBeProduced;
-      document.getElementById("products-per-minut-update").value = response.productsPerMinut;
+      document.querySelector("#product-type-update").value = response.productType;
+      document.querySelector("#batch-id-update").value = response.batchID;
+      document.querySelector("#to-be-produced-update").value = response.toBeProduced;
+      document.querySelector("#products-per-minut-update").value = response.productsPerMinut;
     }
   });
 }
@@ -39,16 +52,16 @@ function updateproducedData()
 {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProducedData",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getProducedData&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
-
+console.log(data);
       var response = JSON.parse(data);
 
-      document.getElementById("produced-update").value = response.produced;
-      document.getElementById("acceptable-products-update").value = response.acceptableCount;
-      document.getElementById("defect-products-update").value = response.defectCount;
+      document.querySelector("#produced-update").value = response.produced;
+      document.querySelector("#acceptable-products-update").value = response.acceptableCount;
+      document.querySelector("#defect-products-update").value = response.defectCount;
     }
   });
 }
@@ -57,19 +70,21 @@ function updateMachineData()
 {
   $.ajax({
     type: "GET",
-    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getMachineData",
+    url: "/brewsoft/mvc/app/services/ProductionDataService.php?method=getMachineData&machineId="+machineID+"&productionListID="+productionlistID,
     datatype: "json",
     async: true,
     success: function(data){
 
       var response = JSON.parse(data);
-
-      document.getElementById("temperature-update").value = response.temperature;
-      document.getElementById("humidity-update").value = response.humidity;
-      document.getElementById("vibration-update").value = response.vibration;
-      document.getElementById("stop-reason-update").value = response.stopReason;
-      document.getElementById("maintenance-status-update").value = response.maintenance;
-      document.getElementById("state-update").value = response.state;
+      var maintenanceFull = 30000;
+      var m = 100 - (((maintenanceFull-response.maintenance)/maintenanceFull)*100);
+      document.querySelector("#temperature-update").value = response.temperature;
+      document.querySelector("#humidity-update").value = response.humidity;
+      document.querySelector("#vibration-update").value = response.vibration;
+      document.querySelector("#stop-reason-update").value = response.stopReason;
+      //document.querySelector("#maintenance-status-update").value = m;// response.maintenance;
+      document.querySelector("#maintenance-statusbar").style.height = m+"%";
+      document.querySelector("#state-update").value = response.state;
     }
   });
 }
@@ -78,8 +93,14 @@ var updateIngredientsInterval;
 var updateProducedDataInterval;
 var updateMachineDataInterval;
 
-function startProduction()
+var machineID;
+var productionlistID;
+
+function startProduction(machineId, productionListID)
 {
+  machineID = machineId
+  productionlistID = productionListID;
+
   updateProductionData();
   updateIngredientsInterval = setInterval(updateIngredients, 1000);
   updateProducedDataInterval = setInterval(updateproducedData, 1000);

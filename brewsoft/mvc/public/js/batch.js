@@ -1,7 +1,7 @@
 var timer_check;
 var timer_check_alive;
 $(document).ready(function() {
-    event.preventDefault();
+    //event.preventDefault();
     var productionlistIDValueQueue;
     var batchIDValueQueue;
     var productionlistIDValueCompleteBatch;

@@ -3,6 +3,7 @@
 
 <head>
     <title> CalculateOEE </title>
+    <?php include_once '../app/views/partials/head.php'; ?>
 </head>
 
 <body>

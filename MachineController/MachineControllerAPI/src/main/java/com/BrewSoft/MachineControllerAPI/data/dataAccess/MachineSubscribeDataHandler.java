@@ -210,9 +210,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     @Override
     public Batch getNextBatch() {
         if (connection.isConnected()) {
-            if (dq.isQueueExisting() && !dq.isRunningQueue()) {
+            /*if (dq.isQueueExisting() && !dq.isRunningQueue()) {
                 dq.runQueue();
-            }
+            }*/
         }
         Batch batch = null;                                                                
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1");
@@ -221,16 +221,31 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
             return null;
         } else if ("stopped".equals(String.valueOf(batchSet.get(0, "status")))) {
             TemporaryProductionBatch tpb = getTemporaryProductionBatch((int) batchSet.get(0, "productionlistid"));
-            for (int i = 0; i < batchSet.getRows(); i++) {
-                batch = new Batch(
-                        (int) batchSet.get(i, "productionListID"),
-                        (int) batchSet.get(i, "batchid"),
-                        (int) batchSet.get(i, "productid"),
-                        (int) batchSet.get(i, "productamount") - (int) tpb.getAcceptedCount(),
-                        String.valueOf(batchSet.get(i, "deadline")),
-                        Float.parseFloat(String.valueOf(batchSet.get(i, "speed"))),
-                        String.valueOf(batchSet.get(i, "dateofcreation"))
-                );
+            if (tpb != null) {
+                for (int i = 0; i < batchSet.getRows(); i++) {
+                    batch = new Batch(
+                            (int) batchSet.get(i, "productionListID"),
+                            (int) batchSet.get(i, "batchid"),
+                            (int) batchSet.get(i, "productid"),
+                            (int) batchSet.get(i, "productamount") - (int) tpb.getAcceptedCount(),
+                            String.valueOf(batchSet.get(i, "deadline")),
+                            Float.parseFloat(String.valueOf(batchSet.get(i, "speed"))),
+                            String.valueOf(batchSet.get(i, "dateofcreation"))
+                    );
+                }
+            } else {
+                // IN CASE DATA WAS DELETED FROM TEMPORARY PRODUCTION TABLE - WITHOUT THE STATUS BEING CHANGED
+                for (int i = 0; i < batchSet.getRows(); i++) {
+                    batch = new Batch(
+                            (int) batchSet.get(i, "productionListID"),
+                            (int) batchSet.get(i, "batchid"),
+                            (int) batchSet.get(i, "productid"),
+                            (int) batchSet.get(i, "productamount"),
+                            String.valueOf(batchSet.get(i, "deadline")),
+                            Float.parseFloat(String.valueOf(batchSet.get(i, "speed"))),
+                            String.valueOf(batchSet.get(i, "dateofcreation"))
+                    );
+                }
             }
         } else {
             for (int i = 0; i < batchSet.getRows(); i++) {
@@ -255,7 +270,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 dq.runQueue();
             }
         }
-        System.out.println("This is productionlistID: " + productionListID);
         String sql = "UPDATE productionList SET status = ?, machineid = ? WHERE productionListID = ?";
         int result = connection.queryUpdate(sql, newStatus, machineID, productionListID);
         if (result == 0) {
@@ -286,23 +300,23 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                     ts);
         }
     }
-    
+
     @Override
     public void ingredientsUpdate(int barley, int hops, int malt, int wheat, int yeast, int machineID) {
         String sql = "INSERT INTO ingredientsupdate (barley, hops, malt, wheat, yeast, brewerymachineid) VALUES (?,?,?,?,?,?)";
         int result = connection.queryUpdate(sql, barley, hops, malt, wheat, yeast, machineID);
     }
-    
+
     @Override
     public void machinedata(int machineID, float maintenace, int state) {
         String sql = "INSERT INTO machinedata (brewerymachineid, maintenace, state) VALUES (?,?,?)";
         int result = connection.queryUpdate(sql, machineID, maintenace, state);
     }
-    
+
     @Override
-    public void producedData(int productionlistid, int produced, int acceptable, int defect) {
-        String sql = "INSERT INTO produceddata (productionlistid, produced, acceptable, defect) VALUES (?,?,?,?)";
-        int result = connection.queryUpdate(sql, productionlistid, produced, acceptable, defect);
+    public void producedData(int productionlistid, int produced, int acceptable, int defect, int machineid) {
+        String sql = "INSERT INTO produceddata (productionlistid, produced, acceptable, defect, brewerymachineid) VALUES (?,?,?,?,?)";
+        int result = connection.queryUpdate(sql, productionlistid, produced, acceptable, defect, machineid);
     }
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {

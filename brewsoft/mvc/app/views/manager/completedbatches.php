@@ -3,10 +3,9 @@
 
 <head>
     <title>Completed batches</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchqueue.css">
-    <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <?php include_once '../app/views/partials/head.php'; ?>
+    <!--script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script-->
 </head>
 
 <body>

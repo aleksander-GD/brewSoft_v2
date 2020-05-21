@@ -6,7 +6,6 @@ import com.BrewSoft.MachineControllerAPI.crossCutting.objects.TemporaryProductio
 import com.BrewSoft.MachineControllerAPI.data.interfaces.IMachineSubscriberDataHandler;
 import com.BrewSoft.MachineControllerAPI.domain.interfaces.IMachineSubscribe;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -226,7 +225,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
     
     public void produceddata() {
-        msdh.producedData(batch.getProductionListID(), productionCountValue, acceptableCountValue, defectCountValue);
+        msdh.producedData(batch.getProductionListID(), productionCountValue, acceptableCountValue, defectCountValue, machineObj.getMachineID());
     }
 
     public void completedBatch() {
@@ -298,12 +297,9 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
                 this.maintenanceValue = Integer.parseInt(dataValue.getValue().getValue().toString());
-                // To simulate values on software simulator
-                if (machineObj.getHostname().equals(SOFTWARESIM)) {
-                    this.generateRandomProdValues();
-                    this.sendProductionData();
-                }
-                // End of software simulator values
+                System.out.println("maintain: " + maintenanceValue);
+                this.machineData();
+                break;
             case STATE_CURRENT_NODENAME:
                 if(nodename.equals(STATE_CURRENT_NODENAME)) {
                     this.currentStateValue = Integer.parseInt(dataValue.getValue().getValue().toString());
@@ -313,22 +309,24 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case BARLEY_NODENAME:
                 this.barleyValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                this.ingredientsUpdate();
+                // Hvorfor fjerne break og kun have den her sidst?
+                //Hvad giver mest kode og mindst problemer med vedligeholdelse?
+                break;
             case HOPS_NODENAME:
-                if(nodename.equals(HOPS_NODENAME)) {
-                    this.hopsValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
+                this.hopsValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                this.ingredientsUpdate();
+                break;
             case MALT_NODENAME:
-                if(nodename.equals(MALT_NODENAME)) {
-                    this.maltValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
+                this.maltValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                this.ingredientsUpdate();
+                break;
             case WHEAT_NODENAME:
-                if(nodename.equals(WHEAT_NODENAME)) {
-                    this.wheatValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
+                this.wheatValue = Float.parseFloat(dataValue.getValue().getValue().toString());
+                this.ingredientsUpdate();
+                break;
             case YEAST_NODENAME:
-                if(nodename.equals(YEAST_NODENAME)) {
-                    this.yeastValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                }
+                this.yeastValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 this.ingredientsUpdate();
                 break;
             default:

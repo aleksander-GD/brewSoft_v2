@@ -16,12 +16,10 @@
     $pixel = 0;
     ?>
     <title>Batch report</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchreport.css">
-</head>
 
-<?php include_once '../app/views/partials/menu.php'; ?>
+    <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchreport.css">
+    <?php include_once '../app/views/partials/head.php'; ?>
+
 <?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -312,7 +310,7 @@
                 <div id="chart_div" class="chart"></div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-6">
                 <h2>Temperature chart</h2>
@@ -362,7 +360,7 @@
     <?php include '../app/views/partials/foot.php'; ?>
 
     <?php
-    // Performance 03 requirement test 
+    // Performance 03 requirement test
     $end_time = microtime(true);
     $execution_time = ($end_time - $viewbag['start']);
     echo "The batch report was generated in " . $execution_time . " seconds ";

@@ -19,7 +19,6 @@ if(empty($viewbag["error"]["databaseconnection"])) {
     <?php
       $i++;
     }
-    //  echo "<select name='machineSelect' id='machineSelect' onchange='fillHiddenForm();'>{$options}</select>";
     ?>
   </select>
   <input type="hidden" name="hostname" id="hostname" value="<?php echo $viewbag["availableMachines"][$machine]['hostname']; ?>">

@@ -5,6 +5,7 @@ class AdminController extends Controller
     public function index()
     {
         $viewbag = array();
+        $this->view('admin/index');
     }
 
     public function logout()

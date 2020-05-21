@@ -1,74 +1,25 @@
-div.barley {
-  display: inline-block;
+input[type="text"] {
+  text-align:center;
 }
 
-div.hops {
-  display: inline-block;
+.progress-bar-vertical {
+  width: 5em;
+  min-height: 80%;
+  display: flex;
+  align-items: flex-end;
+  margin-right: 20px;
+  /*float: left;*/
 }
 
-div.malt {
-  display: inline-block;
+.progress-bar-vertical .progress-bar {
+  width: 100%;
+  height: 0;
+  -webkit-transition: height 0.6s ease;
+  -o-transition: height 0.6s ease;
+  transition: height 0.6s ease;
 }
 
-div.wheat {
-  display: inline-block;
-}
-
-div.yeast {
-  display: inline-block;
-}
-
-
-div.product-type {
-  display: inline-block;
-}
-
-div.batch-id {
-  display: inline-block;
-}
-
-div.to-be-produced {
-  display: inline-block;
-}
-
-div.produced {
-  display: inline-block;
-}
-
-div.acceptable-products {
-  display: inline-block;
-}
-
-div.defect-products {
-  display: inline-block;
-}
-
-
-div.products-per-minut {
-  display: inline-block;
-}
-
-div.temperature {
-  display: inline-block;
-}
-
-div.humidity {
-  display: inline-block;
-}
-
-div.vibration {
-  display: inline-block;
-}
-
-
-div.stop-reason {
-  display: inline-block;
-}
-
-div.maintenance-status {
-  display: inline-block;
-}
-
-div.state {
-  display: inline-block;
+.maintenance-status,
+.inventory {
+  min-height:10em;
 }

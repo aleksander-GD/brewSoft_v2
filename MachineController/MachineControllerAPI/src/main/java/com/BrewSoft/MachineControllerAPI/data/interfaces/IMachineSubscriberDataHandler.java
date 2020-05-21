@@ -23,7 +23,7 @@ public interface IMachineSubscriberDataHandler {
     
     public void machinedata(int machineID, float maintenace, int state);
     
-    public void producedData(int productionlistid, int produced, int acceptable, int defect);
+    public void producedData(int productionlistid, int produced, int acceptable, int defect, int machineid);
 
     public Batch getNextBatch();
     

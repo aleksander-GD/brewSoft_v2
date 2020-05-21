@@ -1,6 +1,6 @@
 <?php
 /*
- * TODO: Add error handling of cURL results, i.e. startProduction L89
+ * TODO: Add Error handling of cURL results, i.e. startProduction L89
  * TODO: $machineId from somewhere, maybe from the view?
  */
 class MachineApiController extends Controller
@@ -9,15 +9,31 @@ class MachineApiController extends Controller
   public function index()
   {
     $this->machineControls();
-    $this->view('brewworker/dashboard');
+    /* $this->chooseMachine();
+    $this->view('machine/machines'); */
   }
 
-  public function availableMachines()
-  {
+  protected function validate() {
+    $max_range = $_SESSION['machineMax'];
+    $filters = array(
+      "hostname" => FILTER_SANITIZE_STRING,
+      "port" => FILTER_VALIDATE_INT,
+      "machineID" => array("filter"=> FILTER_VALIDATE_INT,
+                           "options"=> array("default" => 0,
+                                             "min_range" => 0,
+                                             "max_range" => $max_range
+                                            )
+                          )
+    );
+    $machine = filter_input_array(INPUT_POST, $filters);
+    return $machine;
+  }
+
+  public function availableMachines() {
     $viewbag = [];
     $availMachines = $this->model('MachineList')->getMachineList();
-    if (!empty($availMachines["error"])) {
-      $viewbag['error']["databaseconnection"] = $availMachines["error"];
+    if (!empty($availMachines["Error"])) {
+      $viewbag['Error']["databaseconnection"] = $availMachines["Error"];
       // MANUEL INDTASTNING AF HOSTNAME + PORT?
       // MANUEL INDTASTNING AF BATCH INFORMATION?
     } else {
@@ -66,68 +82,82 @@ class MachineApiController extends Controller
         // Close request to clear up some resources
         curl_close($ch);
       } catch (Exception $ex) {
-        /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-        $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+        /* LOG Error, SEND TO ALARM VIEW THINGIE */
+        $viewbag["Error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
       }
     } else {
-      $viewbag["error"]['method'] = "Wrong method. Only accessible through POST";
+      $viewbag["Error"]['method'] = "Wrong method. Only accessible through POST";
     }
+
   }
 
-  public function startProduction($machineId)
+  public function Start($machineId)
   {
     $viewbag = [];
     try {
-      $ch = curl_init('http://localhost:8080/machineStart?machineId=' . $machineId);
+      $machine = $this->validate();
+      $ch = curl_init('http://localhost:8080/machineStart?machineId='.$machine['machineID']);
       curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => ['Accept:application/json']
       ));
       $result = json_decode(curl_exec($ch));
+      foreach ($result as $key => $value) {
+        $viewbag[$key][] = $value;
+      }
+      /*
       if (isset($result->Error)) {
-        $viewbag["error"]["API"] = $result->Error;
+        $viewbag["Error"]["API"] += $result->Error;
       }
       if (isset($result->Success)) {
-        $viewbag["success"]["API"] = $result->Success;
+        $viewbag["success"]["API"] += $result->Success;
       }
+      */
     } catch (Exception $ex) {
-      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+      /* LOG Error, SEND TO ALARM VIEW THINGIE */
+      $viewbag["Error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
     }
-    return $viewbag;
+    echo json_encode($viewbag);
   }
 
-  public function stopProduction($machineId)
+  public function Stop($machineId)
   {
     $viewbag = [];
     try {
-      $ch = curl_init('http://localhost:8080/machineStop?machineId=' . $machineId);
+      $machine = $this->validate();
+      $ch = curl_init('http://localhost:8080/machineStop?machineId='.$machine['machineID']);
       curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => ['Accept:application/json']
       ));
       $result = json_decode(curl_exec($ch));
+      foreach ($result as $key => $value) {
+        $viewbag[$key][] = $value;
+      }
+      /*
       if (isset($result->Error)) {
-        $viewbag["error"]["API"] = $result->Error;
+        $viewbag["Error"]["API"] += $result->Error;
       }
       if (isset($result->Success)) {
-        $viewbag["success"]["API"] = $result->Success;
+        $viewbag["success"]["API"] += $result->Success;
       }
+      */
       $viewbag["method"] = "stop";
     } catch (Exception $ex) {
-      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+      /* LOG Error, SEND TO ALARM VIEW THINGIE */
+      $viewbag["Error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
     }
-    return $viewbag;
+    echo json_encode($viewbag);
   }
 
-  public function resetMachine($machineId)
+  public function Reset($machineId)
   {
     $viewbag = [];
     try {
-      $endpoint = 'http://localhost:8080/machineReset?machineId=' . $machineId;
+      $machine = $this->validate();
+      $endpoint = 'http://localhost:8080/machineReset?machineId='.$machine["machineID"];
       $ch = curl_init();
       curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
@@ -137,74 +167,89 @@ class MachineApiController extends Controller
       ));
 
       $result = json_decode(curl_exec($ch));
+      foreach ($result as $key => $value) {
+        $viewbag[$key][] = $value;
+      }
+      /*
       if (isset($result->Error)) {
-        $viewbag["error"]["API"] = $result->Error;
+        $viewbag["Error"]["API"] = "";
+        $viewbag["Error"]["API"] += $result->Error;
       }
       if (isset($result->Success)) {
-        $viewbag["success"]["API"] = $result->Success;
-      }
+
+        //$viewbag["success"]["API"] = $result->Success;
+      }*/
     } catch (Exception $ex) {
-      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+      /* LOG Error, SEND TO ALARM VIEW THINGIE */
+      $viewbag["Error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
     }
-    return $viewbag;
+    echo json_encode($viewbag);
   }
 
-  public function clearMachine($machineId)
+  public function Clear($machineId)
   {
     $viewbag = [];
     try {
-      $ch = curl_init('http://localhost:8080/machineClear?machineId=' . $machineId);
+      $machine = $this->validate();
+      $ch = curl_init('http://localhost:8080/machineClear?machineId='.$machine['machineID']);
       curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => ['Accept:application/json']
       ));
       $result = json_decode(curl_exec($ch));
+      foreach ($result as $key => $value) {
+        $viewbag[$key][] = $value;
+      }
+      /*
       if (isset($result->Error)) {
-        $viewbag["error"]["API"] = $result->Error;
+        $viewbag["Error"]["API"] += $result->Error;
       }
       if (isset($result->Success)) {
-        $viewbag["success"]["API"] = $result->Success;
+        $viewbag["success"]["API"] += $result->Success;
       }
+      */
     } catch (Exception $ex) {
-      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+      /* LOG Error, SEND TO ALARM VIEW THINGIE */
+      $viewbag["Error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
     }
-    return $viewbag;
+    echo json_encode($viewbag);
   }
 
-  public function abortMachine($machineId)
+  public function Abort($machineId)
   {
     $viewbag = [];
     try {
-      $ch = curl_init('http://localhost:8080/machineAbort?machineId=' . $machineId);
+      $machine = $this->validate();
+      $ch = curl_init('http://localhost:8080/machineAbort?machineId='.$machine['machineID']);
       curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => ['Accept:application/json']
       ));
       $result = json_decode(curl_exec($ch));
+      foreach ($result as $key => $value) {
+        $viewbag[$key][] = $value;
+      }
+      /*
       if (isset($result->Error)) {
-        $viewbag["error"]["API"] = $result->Error;
+        $viewbag["Error"]["API"] += $result->Error;
       }
       if (isset($result->Success)) {
-        $viewbag["success"]["API"] = $result->Success;
+        $viewbag["success"]["API"] += $result->Success;
       }
+      */
       $viewbag["method"] = "abort";
     } catch (Exception $ex) {
-      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+      /* LOG Error, SEND TO ALARM VIEW THINGIE */
+      $viewbag["Error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
     }
-    return $viewbag;
+    echo json_encode($viewbag);
   }
 
   public function saveStopReason()
   {
     if ($this->post()) {
-      echo "POST: <pre>";
-      var_dump($_POST);
-      echo "</pre>";
       $this->model('manualstopreason')->saveStopReason();
     }
   }
@@ -247,7 +292,7 @@ class MachineApiController extends Controller
           break;
       }
 
-      $viewbag += $return;
+      //$viewbag += $return;
     }
     $viewbag += $this->availableMachines();
     $endpoint = "http://localhost:8080/MachineControls";
@@ -271,17 +316,17 @@ class MachineApiController extends Controller
             $viewbag["controls"] = json_decode($resp);
             break;
           default:
-            $viewbag["error"]["http_code"] = 'Unexpected HTTP code: ' . $http_code . "\n";
-            $viewbag["error"]["response"] = $resp;
+            $viewbag["Error"]["http_code"] = 'Unexpected HTTP code: ' . $http_code . "\n";
+            $viewbag["Error"]["response"] = $resp;
         }
       } else {
-        $viewbag["error"]["curl"] = curl_error($curl) . ". Check the machinecontroller is running.";
+        $viewbag["Error"]["curl"] = curl_Error($curl) . ". Check the machinecontroller is running.";
       }
       // Close request to clear up some resources
       curl_close($curl);
     } catch (Exception $ex) {
-      /* LOG ERROR, SEND TO ALARM VIEW THINGIE */
-      $viewbag["error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
+      /* LOG Error, SEND TO ALARM VIEW THINGIE */
+      $viewbag["Error"]["exception"] = sprintf("Error while sending request, reason: %s\n", $ex->getMessage());
     }
     // Show available commands
     $this->view("machine/controls", $viewbag);
