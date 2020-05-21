@@ -16,8 +16,9 @@
     $pixel = 0;
     ?>
     <title>Batch report</title>
-    <?php include_once '../app/views/partials/head.php'; ?>
+
     <link rel="stylesheet" href="<?php echo DOC_ROOT; ?>/css/batchreport.css">
+    <?php include_once '../app/views/partials/head.php'; ?>
 
 <?php if (isset($_SESSION['usertype']) && ($_SESSION['usertype'] == 'Manager' || $_SESSION['usertype'] == 'Admin')) : ?>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
