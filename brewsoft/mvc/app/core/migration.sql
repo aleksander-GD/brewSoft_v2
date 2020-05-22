@@ -6,7 +6,8 @@ SET search_path = brewSoftDBTest;
 Create Table BreweryMachine (
     BreweryMachineID serial Primary Key,
     Hostname VARCHAR (255),
-    Port int
+    Port int,
+    Running BOOL DEFAULT 'false'
 );
 
 Create table ProductionList(
