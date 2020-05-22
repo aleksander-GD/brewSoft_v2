@@ -24,7 +24,7 @@
                                 foreach ($viewbag['products'] as $prod) { ?>
                                     <option value="<?php echo $prod['productid'];
                                                     $_POST['speed'] = $prod['speed'];  ?>"><?php echo $prod['productname'];
-                                                                                        $_POST['productname'] = $prod['productname']; ?></option>
+                                                                                            $_POST['productname'] = $prod['productname']; ?></option>
                                 <?php }
                             } else { ?>
                                 <input type="text" id="products" name="products"><br>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="form-group">
                         <label for="productAmount"> Amount to produce: </label><br>
-                        <input type="text" id="productAmount" class="form-control" name="productAmount"><br>
+                        <input type="number" id="productAmount" class="form-control" name="productAmount"><br>
                     </div>
                     <div class="form-group">
                         <label for="deadline"> Deadline: </label><br>
@@ -45,7 +45,7 @@
                     <div class="form-group">
                         <label for="speed"> Speed: </label><br>
 
-                        <input type="text" id="speed" class="form-control" name="speed" disabled="disabled"><br>
+                        <input type="number" id="speed" class="form-control" name="speed" disabled="disabled"><br>
                         <div class="btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-dark active">
                                 <input type="checkbox" id="speedcheckbox" checked> Change speed
@@ -59,9 +59,6 @@
         <script>
             $(document).ready(function() {
                 var productname;
-
-
-
 
                 var productsArray = [
                     <?php
@@ -85,19 +82,13 @@
                         temparray = productsArray[i];
                         for (j = 0; j < temparray.length; j++) {
                             if (temparray[j] === productname) {
-                                console.log('j', temparray[j]);
                                 speed = temparray[j + 1];
-                                console.log('s', temparray[j + 1]);
-
                             }
                         }
                     }
                     $('#speed').val(speed);
                 });
 
-                /*  $('#speedcheckbox').on('click', function(e) {
-                     $('#speed').attr("enabled", true) 
-                 }); */
                 $('#speedcheckbox').click(function() {
                     $('#speed').attr('disabled', !(this.checked))
                 });

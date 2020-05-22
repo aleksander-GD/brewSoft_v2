@@ -43,7 +43,7 @@
 
                         <div class="form-group">
                             <label for="productAmount" id="productAmount-label">Product amount: </label>
-                            <input type="text" name="productAmount" id="productAmount" class="form-control" value="<?php echo $viewbag['batch'][0]['productamount'] ?>">
+                            <input type="number" name="productAmount" id="productAmount" class="form-control" value="<?php echo $viewbag['batch'][0]['productamount'] ?>">
                             <br>
                         </div>
                         <div class="form-group">
@@ -53,7 +53,7 @@
                         </div>
                         <div class="form-group">
                             <label for="speed" id="speed-label">Speed: </label>
-                            <input type="text" name="speed" id="speed" class="form-control" value="<?php echo $viewbag['batch'][0]['speed'] ?>">
+                            <input type="number" name="speed" id="speed" class="form-control" value="<?php echo $viewbag['batch'][0]['speed'] ?>">
                             <br>
                         </div>
                         <div class="form-group">
