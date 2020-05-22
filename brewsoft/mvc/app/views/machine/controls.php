@@ -57,4 +57,3 @@
       </div>
     </div>
   </div>
-  <?php include '../app/views/partials/foot.php'; ?>

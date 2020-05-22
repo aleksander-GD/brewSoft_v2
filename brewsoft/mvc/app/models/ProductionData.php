@@ -31,6 +31,25 @@
 
     }
 
+    public function getProductionListIdInProduction($machineId) {
+      if ($this->getConnection() == null) {
+          return false+"conn";
+          exit();
+      } else {
+        $sql = "SELECT productionlistid FROM productionlist WHERE machineid = :machineid AND status = 'In Production' ORDER BY productionlistid DESC LIMIT 1;";
+        try {
+          $stmt = $this->conn->prepare($sql);
+          $stmt->bindParam(':machineid', $machineId);
+          $stmt->execute();
+          $results = $stmt->fetch();
+          return $results;
+        } catch(PDOException $e) {
+          return $e;
+          exit();
+        }
+      }
+    }
+
     public function MachineData($productionListID, $machineID)
     {
         if ($this->getConnection() == null) {

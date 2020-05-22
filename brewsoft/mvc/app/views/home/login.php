@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Register</title>
+    <title>Log in</title>
     <?php include_once '../app/views/partials/head.php'; ?>
 </head>
 

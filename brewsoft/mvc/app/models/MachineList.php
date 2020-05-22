@@ -6,7 +6,7 @@ class MachineList extends Database {
           return array("error" => "No database connection. Contact network admin.");
           exit();
       } else {
-          $sql = "SELECT * FROM brewerymachine;";
+          $sql = "SELECT * FROM brewerymachine ORDER BY brewerymachineid ASC;";
           try {
               $stmt = $this->conn->prepare($sql);
               $stmt->execute();

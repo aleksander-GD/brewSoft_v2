@@ -27,6 +27,10 @@ public interface IMachineSubscriberDataHandler {
 
     public Batch getNextBatch();
     
+    public void changeMachineStatus(boolean Status, int breweryMachineId);
+    
+    public boolean checkMachineStatus(int breweryMachineId);
+    
     public boolean hasQueue();
     
     public void runQueue();
