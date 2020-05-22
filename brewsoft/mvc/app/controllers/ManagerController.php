@@ -88,7 +88,7 @@ class ManagerController extends Controller
     {
         try {
             ob_start();
-            $product = $this->model('ProductType')->getProducts();
+			$product = $this->model('ProductType')->getProducts();
             $viewbag['products'] = $product;
             $this->view('manager/planbatch', $viewbag);
 
