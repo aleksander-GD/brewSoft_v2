@@ -45,7 +45,7 @@
                     <div class="form-group">
                         <label for="speed"> Speed: </label><br>
 
-                        <input type="number" id="speed" class="form-control" name="speed" disabled="disabled"><br>
+                        <input type="number" id="speed" class="form-control" name="speed" readonly><br>
                         <div class="btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-dark active">
                                 <input type="checkbox" id="speedcheckbox" checked> Change speed
@@ -90,7 +90,7 @@
                 });
 
                 $('#speedcheckbox').click(function() {
-                    $('#speed').attr('disabled', !(this.checked))
+                    $('#speed').attr('readonly', !(this.checked))
                 });
             });
         </script>

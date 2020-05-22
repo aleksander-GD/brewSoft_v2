@@ -274,24 +274,6 @@ class MachineApiController extends Controller
       );
       $machine = filter_input_array(INPUT_POST, $filters);
 
-      switch ($machine["command"]) {
-        case 'Start':
-          $return = $this->startProduction($machine["machineID"]);
-          break;
-        case 'Stop':
-          $return = $this->stopProduction($machine["machineID"]);
-          break;
-        case 'Reset':
-          $return = $this->resetMachine($machine["machineID"]);
-          break;
-        case 'Clear':
-          $return = $this->clearMachine($machine["machineID"]);
-          break;
-        case 'Abort':
-          $return = $this->abortMachine($machine["machineID"]);
-          break;
-      }
-
       //$viewbag += $return;
     }
     $viewbag += $this->availableMachines();
