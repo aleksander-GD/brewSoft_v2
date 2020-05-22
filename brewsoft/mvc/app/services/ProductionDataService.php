@@ -4,13 +4,21 @@
   class ProductionDataService
   {
 
-    private $productionlistID = 163;
-    private $machineID = 2;
+    private $productionlistID = 0;
+    private $machineID = 0;
 
     private $model;
 
     public function __construct(){
       $this->model = new ProductionData();
+    }
+
+    public function productionListInProduction() {
+      $listid = $this->model->getProductionListIdInProduction($this->machineID);
+      if(!$listid) {
+        $listid = array("Error"=>"No production found for machine " . $this->machineID);
+      }
+      echo json_encode($listid);
     }
 
     public function getIngredients()
@@ -101,6 +109,9 @@
     case 'getMachineData':
       echo $objInstance->getMachineData();
       break;
+    case 'productionListInProduction':
+    echo $objInstance->productionListInProduction();
+    break;
     default:
       echo "Not a variable";
       break;

@@ -114,24 +114,24 @@ class ManagerController extends Controller
 
 	public function batchReport($productionlistID)
 	{
-		
+
 		// Start performance requirement 03
 		$start_time = microtime(true);
 		$viewbag['start'] = $start_time;
 		// End of performance requirement 03
-		
+
 
 		$sortedTimeInStateList = $this->model('TimeInState')->sortedTimeStates($productionlistID);			// for time spent in each state
-		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID); 						// for timeline 
+		$timeArray = $this->model('TimeInState')->getTimeInStates($productionlistID); 						// for timeline
 
 		$finalBatchInformation = $this->model('Finalbatchinformation')->getAllStaticDataFromProdlistID($productionlistID);	// all finalbatch information + batchid, beertype and speed.
 		$dateTimeArray = $this->model('TimeInState')->getDateTimeArray($timeArray,$finalBatchInformation['dateofcompletion']); 		// for timeline. Date needs a fix.
-		
+
 		$productionInfo = $this->model('Productioninfo')->getProductionInfo($productionlistID); 				// Data for temp and humid graphs
 
 		$viewbag['highlowtemphumid'] = $this->model('Productioninfo')->getHighLowValues($productionlistID);	// Peak and low values for temp and humid.
 
-		
+
 		// OEE calculations
 		$batchResults = $this->model('Finalbatchinformation')->getAcceptedAndTotalCountForProdlistID($productionlistID);
 		$idealcycletime = $this->model('ProductType')->getIdealCycleTimeForProductID($batchResults[0]['productid'])[0]['idealcycletime'];
@@ -149,7 +149,7 @@ class ManagerController extends Controller
 		$viewbag['sortedTimes'] = $sortedTimeInStateList;
 		$viewbag['datetime'] = $dateTimeArray;
 		$viewbag['productioninfo'] = $productionInfo;
-		
+
 		$this->view('manager/batchreport', $viewbag);
 	}
 
@@ -207,9 +207,27 @@ class ManagerController extends Controller
 			'oeeForBatch' => $oee
 		];
 	}
+
+  public function availableMachines() {
+    $viewbag = [];
+    $availMachines = $this->model('MachineList')->getMachineList();
+    if (!empty($availMachines["Error"])) {
+      $viewbag['Error']["databaseconnection"] = $availMachines["Error"];
+      // MANUEL INDTASTNING AF HOSTNAME + PORT?
+      // MANUEL INDTASTNING AF BATCH INFORMATION?
+    } else {
+      $viewbag['availableMachines'] = $availMachines;
+      $_SESSION["machineMax"] = count($availMachines);
+    }
+
+    return $viewbag;
+  }
+
 	public function managerdashboard()
 	{
-		$this->view('manager/managerdashboard');
+    $viewbag = [];
+    $viewbag += $this->availableMachines();
+		$this->view('manager/managerdashboard', $viewbag);
 	}
 	public function logout()
 	{

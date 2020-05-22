@@ -192,8 +192,28 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                     defectCount,
                     acceptedCount);
         }
+        changeMachineStatus(false, ProductionListID);
     }
 
+    @Override
+    public void changeMachineStatus(boolean Status, int breweryMachineId) {
+        String sql = "UPDATE brewerymachine SET running = ? WHERE breweryMachineId = ?";
+        int result = connection.queryUpdate(sql, Status, breweryMachineId);
+        if (result == 0) {
+            dq.addToQueue("queryUpdate", sql, Status, breweryMachineId);
+        }
+    }
+    
+    @Override
+    public boolean checkMachineStatus(int breweryMachineId) {
+        String sql = "SELECT running FROM brewerymachine WHERE breweryMachineId = ?";
+        SimpleSet set = connection.query(sql, breweryMachineId);
+        boolean t = Boolean.valueOf(String.valueOf(set.get(0, "running")));
+        //Arrays.deepToString(values)
+        System.out.println(t);
+        return t;
+    }
+    
     @Override
     public boolean hasQueue() {
         return dq.isQueueExisting();

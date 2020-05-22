@@ -1,5 +1,11 @@
+var oldClass = "";
 function fillHiddenForm() {
-  var select = $("#machineSelect").val();//.value;
+  if(oldClass != "" && oldClass != $("#machineSelect :selected").attr('class')) {
+    $("#machineSelect").removeClass(oldClass);
+  }
+  oldClass = $("#machineSelect :selected").attr('class');
+  $("#machineSelect").addClass(oldClass);
+  var select = $("#machineSelect").val();
   var json = JSON.parse(select);
   $("#hostname").val(json.hostname);
   $("#port").val(json.port);
@@ -72,3 +78,4 @@ $(function() {
     });
   });
 });
+$(document).ready(fillHiddenForm);

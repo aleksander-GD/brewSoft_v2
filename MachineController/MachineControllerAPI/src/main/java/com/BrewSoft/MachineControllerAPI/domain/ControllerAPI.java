@@ -22,7 +22,7 @@ public class ControllerAPI {
 
     private Machine machineObj;// = new Machine(1, "localhost", 4840);
     private Map<Integer, MachineController> machineControllerMap = new HashMap();
-    private Map<Integer, MachineSubscriber> machineSubscriberMap = new HashMap(); // NEEDED FOR SHOWING THE "LIVE" DASHBOARD
+    private Map<Integer, MachineSubscriber> machineSubscriberMap = new HashMap();
     private MachineSubscriber sub;// = new MachineSubscriber(machineObj);
     private MachineController mc;// = new MachineController(machineObj, sub);
     private ChooseMachineDataHandler cmdh;// = new ChooseMachineDataHandler();
