@@ -10,7 +10,7 @@ class ProductType extends Database
             return false;
             exit();
         } else {
-            $sql = "SELECT productid, productname FROM ProductType";
+            $sql = "SELECT productid, productname, speed FROM ProductType";
             try {
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute();
