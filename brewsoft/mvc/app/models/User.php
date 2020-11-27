@@ -1,32 +1,103 @@
 <?php
-class User extends Database {
-	
-	public function login($username){
-		$sql = "SELECT username, password FROM users WHERE username = :username";
-		
-		$stmt = $this->conn->prepare($sql);
-		$stmt->bindParam(':username', $username);
-		$stmt->execute();
+class User extends Database
+{
+    public function login()
+    {
 
-		$result = $stmt->fetch(); //fetchAll to get multiple rows
+        $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
 
-		print_r($result);
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT * FROM users WHERE username = :username;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':username', $username);
+                $stmt->execute();
+                $users = $stmt->fetchAll();
+                foreach ($users as $user) {
+                    $hashedPassword = $user['password'];
+                    if (password_verify($password, $hashedPassword)) {
+                        $_SESSION['logged_in'] = true;
+                        $_SESSION['username'] = $username;
+                        $_SESSION['usertype'] = $user['usertype'];
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
+    }
 
+    public function createUser($username, $password, $usertype)
+    {
+        $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
+        $usertype = filter_input(INPUT_POST, "usertype", FILTER_SANITIZE_STRING);
 
-		//todo: make an actual login function!!
-		return true;
-	}
+        if ($this->getConnection() == null) {
+            echo 'Error: no database connection.';
+            return false;
+            exit();
+        } else {
+            if ($this->regexCheck($username, $password)) {
+                $hashed_pwd = password_hash($password, PASSWORD_DEFAULT);
 
-	public function getAll () {
+                if (!$this->userExists($username)) {
+                    $sql = "INSERT INTO users (username, password, usertype) VALUES (:username, :password, :usertype);";
+                    try {
+                        $stmt = $this->conn->prepare($sql);
+                        $stmt->bindParam(':username', $username);
+                        $stmt->bindParam(':password', $hashed_pwd);
+                        $stmt->bindParam(':usertype', $usertype);
+                        $stmt->execute([$username, $hashed_pwd, $usertype]);
+                        return true;
+                    } catch (PDOException $e) {
+                        return false;
+                        exit();
+                    }
+                } else {
+                    echo 'A user with that username already exists.';
+                }
+            } else {
+                echo "Username must contain at least one character without any special characters. \n Password must contain at least 8 characters.";
+            }
+        }
+    }
 
-		$sql = "SELECT username FROM users";
+    private function regexCheck($username, $password)
+    {
+        $usrRegex = '/[A-Za-zÆØÅæøå1-9]{1,}/';
+        $pswdRegex = '/[A-Za-zÆØÅæøå\d@$!%*#?&]{8,}/';
+        if (preg_match($usrRegex, $username) && preg_match($pswdRegex, $password)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		$stmt = $this->conn->prepare($sql);
-		$stmt->execute();
-
-		$result = $stmt->fetchAll();
-
-		return $result;
-	}
-
+    public function userExists($username)
+    {
+        if ($this->getConnection() == null) {
+            return false;
+            exit();
+        } else {
+            $sql = "SELECT * FROM users WHERE username = :username;";
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":username", $username);
+                $stmt->execute([$username]);
+                return $stmt->fetchAll();
+            } catch (PDOException $e) {
+                return false;
+                exit();
+            }
+        }
+    }
 }

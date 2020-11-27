@@ -1,5 +1,10 @@
-<?php include '../app/views/partials/menu.php'; ?>
+<!DOCTYPE html>
+<html>
 
-Hello there, <?=$viewbag['username']?>
+<head>
+    <title>Index</title>
+    <?php include_once '../app/views/partials/head.php'; ?>
+</head>
 
-<?php include '../app/views/partials/foot.php'; ?>
+<body>
+    <?php include '../app/views/partials/foot.php'; ?>
